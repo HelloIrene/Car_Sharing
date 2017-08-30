@@ -1,10 +1,13 @@
 package com.company.editCarInformation;
 
+import org.omg.CORBA.DATA_CONVERSION;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Date;
+import java.util.Date;
+import java.util.Calendar;
 
 /**
  * @author student Ross
@@ -158,6 +161,12 @@ public class EditCarInfFrame extends JFrame {
     }
 
     private void iniBasicData() {
+        Calendar calendar = Calendar.getInstance();
+        Date today = new Date(System.currentTimeMillis());
+        calendar.setTime(today);
+//        calendar.add(Calendar.WEEK_OF_YEAR, -1);
+        calendar.add(Calendar.YEAR, 1);
+        Date nextyearToday  = (Date) calendar.getTime();
         for (int i = 0; i < basicDateName.length; i++) {
             basicData.add(setjLabel(basicDateName[i], i));
         }
@@ -186,32 +195,32 @@ public class EditCarInfFrame extends JFrame {
         jTextFieldStartMils.setBounds(120, 190, 175, 20);
         basicData.add(jTextFieldStartMils);
 
-        YLFTime=setJSpinner(YLFTime);
+        YLFTime=setJSpinner(YLFTime,today);
         YLFTime.setBounds(120, 215, 175, 22);
         basicData.add(YLFTime);
-        NSTime=setJSpinner(NSTime);
+        NSTime=setJSpinner(NSTime,today);
         NSTime.setBounds(120, 240, 175, 22);
         basicData.add(NSTime);
-        BXTime=setJSpinner(BXTime);
+        BXTime=setJSpinner(BXTime,today);
         BXTime.setBounds(120, 265, 175, 22);
         basicData.add(BXTime);
-        CCSTime=setJSpinner(CCSTime);
+        CCSTime=setJSpinner(CCSTime,today);
         CCSTime.setBounds(120, 290, 175, 22);
         basicData.add(CCSTime);
-        LQPTime=setJSpinner(LQPTime);
+        LQPTime=setJSpinner(LQPTime,today);
         LQPTime.setBounds(120, 315, 175, 22);
         basicData.add(LQPTime);
-        YYZTime=setJSpinner(YYZTime);
+        YYZTime=setJSpinner(YYZTime,today);
         YYZTime.setBounds(120, 340, 175, 22);
         basicData.add(YYZTime);
-        GLFTime=setJSpinner(GLFTime);
+        GLFTime=setJSpinner(GLFTime,today);
         GLFTime.setBounds(120, 365, 175, 22);
         basicData.add(GLFTime);
         erBaoMils = new JTextField();
         erBaoMils.setBounds(120, 390, 175, 20);
         basicData.add(erBaoMils);
 
-        buyyingTime=setJSpinner(buyyingTime);
+        buyyingTime=setJSpinner(buyyingTime,today);
         buyyingTime.setBounds(385, 15, 175, 22);
         basicData.add(buyyingTime);
         color = new JComboBox();
@@ -237,15 +246,35 @@ public class EditCarInfFrame extends JFrame {
         basicData.add(nowMils);
         nextErBao = new JTextField();
 
-
+        YLFEndTime=setJSpinner(YLFEndTime,nextyearToday);
+        YLFEndTime.setBounds(385, 215, 175, 22);
+        basicData.add(YLFEndTime);
+        NSEndTime=setJSpinner(NSEndTime,nextyearToday);
+        NSEndTime.setBounds(385, 240, 175, 22);
+        basicData.add(NSEndTime);
+        BXEndTime=setJSpinner(BXEndTime,nextyearToday);
+        BXEndTime.setBounds(385, 265, 175, 22);
+        basicData.add(BXEndTime);
+        CCSEndTime=setJSpinner(CCSEndTime,nextyearToday);
+        CCSEndTime.setBounds(385, 290, 175, 22);
+        basicData.add(CCSEndTime);
+        LQPEndTime=setJSpinner(LQPEndTime,nextyearToday);
+        LQPEndTime.setBounds(385, 315, 175, 22);
+        basicData.add(LQPEndTime);
+        YYZEndTime=setJSpinner(YYZEndTime,nextyearToday);
+        YYZEndTime.setBounds(385, 340, 175, 22);
+        basicData.add(YYZEndTime);
+        GLFEndTime=setJSpinner(GLFEndTime,nextyearToday);
+        GLFEndTime.setBounds(385, 365, 175, 22);
+        basicData.add(GLFEndTime);
         nextErBao.setBounds(385, 390, 175, 20);
         basicData.add(nextErBao);
     }
 
-    private JSpinner setJSpinner(JSpinner temp){
+    private JSpinner setJSpinner(JSpinner temp, Date tempDate){
         SpinnerDateModel model = new SpinnerDateModel();
         temp = new JSpinner(model);
-        temp.setValue(new Date(System.currentTimeMillis()));
+        temp.setValue(tempDate);
         JSpinner.DateEditor edit = new JSpinner.DateEditor(temp, "yyyy-MM-dd");
         temp.setEditor(edit);
         return temp;

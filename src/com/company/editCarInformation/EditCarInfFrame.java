@@ -1,6 +1,8 @@
 package com.company.editCarInformation;
 
 import javax.swing.*;
+import javax.swing.text.DateFormatter;
+import javax.swing.text.DefaultFormatterFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -198,32 +200,32 @@ public class EditCarInfFrame extends JFrame {
         jTextFieldStartMils.setBounds(120, 190, 175, 20);
         basicData.add(jTextFieldStartMils);
 
-        YLFTime = setJSpinner(YLFTime, today);
+        YLFTime = setJSpinner(YLFTime, today,true);
         YLFTime.setBounds(120, 215, 175, 22);
         basicData.add(YLFTime);
-        NSTime = setJSpinner(NSTime, today);
+        NSTime = setJSpinner(NSTime, today,true);
         NSTime.setBounds(120, 240, 175, 22);
         basicData.add(NSTime);
-        BXTime = setJSpinner(BXTime, today);
+        BXTime = setJSpinner(BXTime, today,true);
         BXTime.setBounds(120, 265, 175, 22);
         basicData.add(BXTime);
-        CCSTime = setJSpinner(CCSTime, today);
+        CCSTime = setJSpinner(CCSTime, today,true);
         CCSTime.setBounds(120, 290, 175, 22);
         basicData.add(CCSTime);
-        LQPTime = setJSpinner(LQPTime, today);
+        LQPTime = setJSpinner(LQPTime, today,true);
         LQPTime.setBounds(120, 315, 175, 22);
         basicData.add(LQPTime);
-        YYZTime = setJSpinner(YYZTime, today);
+        YYZTime = setJSpinner(YYZTime, today,true);
         YYZTime.setBounds(120, 340, 175, 22);
         basicData.add(YYZTime);
-        GLFTime = setJSpinner(GLFTime, today);
+        GLFTime = setJSpinner(GLFTime, today,true);
         GLFTime.setBounds(120, 365, 175, 22);
         basicData.add(GLFTime);
         erBaoMils = new JTextField();
         erBaoMils.setBounds(120, 390, 175, 20);
         basicData.add(erBaoMils);
 
-        buyyingTime = setJSpinner(buyyingTime, today);
+        buyyingTime = setJSpinner(buyyingTime, today,true);
         buyyingTime.setBounds(385, 15, 175, 22);
         basicData.add(buyyingTime);
         color = new JComboBox();
@@ -249,25 +251,25 @@ public class EditCarInfFrame extends JFrame {
         basicData.add(nowMils);
         nextErBao = new JTextField();
 
-        YLFEndTime = setJSpinner(YLFEndTime, nextyearToday);
+        YLFEndTime = setJSpinner(YLFEndTime, nextyearToday,false);
         YLFEndTime.setBounds(385, 215, 175, 22);
         basicData.add(YLFEndTime);
-        NSEndTime = setJSpinner(NSEndTime, nextyearToday);
+        NSEndTime = setJSpinner(NSEndTime, nextyearToday,false);
         NSEndTime.setBounds(385, 240, 175, 22);
         basicData.add(NSEndTime);
-        BXEndTime = setJSpinner(BXEndTime, nextyearToday);
+        BXEndTime = setJSpinner(BXEndTime, nextyearToday,false);
         BXEndTime.setBounds(385, 265, 175, 22);
         basicData.add(BXEndTime);
-        CCSEndTime = setJSpinner(CCSEndTime, nextyearToday);
+        CCSEndTime = setJSpinner(CCSEndTime, nextyearToday,false);
         CCSEndTime.setBounds(385, 290, 175, 22);
         basicData.add(CCSEndTime);
-        LQPEndTime = setJSpinner(LQPEndTime, nextyearToday);
+        LQPEndTime = setJSpinner(LQPEndTime, nextyearToday,false);
         LQPEndTime.setBounds(385, 315, 175, 22);
         basicData.add(LQPEndTime);
-        YYZEndTime = setJSpinner(YYZEndTime, nextyearToday);
+        YYZEndTime = setJSpinner(YYZEndTime,nextyearToday ,false);
         YYZEndTime.setBounds(385, 340, 175, 22);
         basicData.add(YYZEndTime);
-        GLFEndTime = setJSpinner(GLFEndTime, nextyearToday);
+        GLFEndTime = setJSpinner(GLFEndTime,nextyearToday ,false);
         GLFEndTime.setBounds(385, 365, 175, 22);
         basicData.add(GLFEndTime);
         nextErBao.setBounds(385, 390, 175, 20);
@@ -279,6 +281,20 @@ public class EditCarInfFrame extends JFrame {
         temp = new JSpinner(model);
         temp.setValue(tempDate);
         JSpinner.DateEditor edit = new JSpinner.DateEditor(temp, "yyyy-MM-dd");
+        temp.setEditor(edit);
+        return temp;
+    }
+
+    private JSpinner setJSpinner(JSpinner temp, Date tempDate,boolean isEditable) {
+        SpinnerDateModel model = new SpinnerDateModel();
+        temp = new JSpinner(model);
+        temp.setValue(tempDate);
+        JSpinner.DateEditor edit = new JSpinner.DateEditor(temp, "yyyy-MM-dd");
+        edit.getTextField().setEditable(isEditable);
+        DefaultFormatterFactory factory = (DefaultFormatterFactory)edit.getTextField().getFormatterFactory();
+        DateFormatter formatter = (DateFormatter)factory.getDefaultFormatter();
+        formatter.setAllowsInvalid(false);
+        formatter.setOverwriteMode(true);
         temp.setEditor(edit);
         return temp;
     }

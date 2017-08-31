@@ -1,5 +1,7 @@
 package com.company.editCarInformation;
 
+import com.company.changSkin.ChaneSkin;
+
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
@@ -14,7 +16,8 @@ import java.util.Calendar;
  * @2017年8月30日
  */
 public class EditCarInfFrame extends JFrame {
-    private boolean skin = false;
+    private ChaneSkin chaneSkin;
+    private boolean skin;
     private JPanel mianBody;
     private JTabbedPane jTabbedPane;
     private JPanel basicData;
@@ -107,7 +110,13 @@ public class EditCarInfFrame extends JFrame {
         jButtonChangeSkin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                changeSkin();
+                chaneSkin = new ChaneSkin(skin);
+                int back = chaneSkin.showChangeSkin(EditCarInfFrame.this);
+                if (back == chaneSkin.APPROVE_OPTION) {
+                    skin = chaneSkin.returnSkinStyle();
+                    changeSkin();
+                    revalidate();
+                }
             }
         });
 
@@ -125,12 +134,10 @@ public class EditCarInfFrame extends JFrame {
     //换肤方法待改善，需要设计新窗口
     private void changeSkin() {
         try {
-            if (skin) {
+            if (!skin) {
                 UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
-                skin = !skin;
             } else {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                skin = !skin;
             }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -311,6 +318,7 @@ public class EditCarInfFrame extends JFrame {
         this.setSize(680, 490);
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        skin = true;
 //        try {
 //            //UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
 //            //Darcula主题可以换肤

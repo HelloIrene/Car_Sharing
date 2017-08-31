@@ -9,7 +9,7 @@ public class ChangeSkinFrameTest {
 //        EventQueue.invokeLater(new Runnable() {
 //            @Override
 //            public void run() {
-                ChaneSkin chaneSkin = new ChaneSkin();
+                ChaneSkin chaneSkin = new ChaneSkin(false);
                 chaneSkin.setVisible(true);
 //            }
 //        });

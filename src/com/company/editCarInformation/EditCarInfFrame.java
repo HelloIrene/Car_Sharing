@@ -1,6 +1,7 @@
 package com.company.editCarInformation;
 
 import com.company.changSkin.ChaneSkin;
+import com.company.dao.CommonDAOImpl;
 import com.company.entity.CarInformation;
 
 import javax.swing.*;
@@ -10,6 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Calendar;
 
@@ -18,6 +20,7 @@ import java.util.Calendar;
  * @2017年8月30日
  */
 public class EditCarInfFrame extends JFrame {
+    private CommonDAOImpl commonDAO = new CommonDAOImpl();
     private ChaneSkin chaneSkin;
     private boolean skin;
     private JPanel mianBody;
@@ -67,10 +70,10 @@ public class EditCarInfFrame extends JFrame {
     private JSpinner GLFTime;   //管理费
     private JSpinner GLFEndTime;
 
-    private String[] carTyle={"小轿车","中巴车","大卡车"};
-
     private JLabel jLabel;
-
+    private String[] carTyle = {"小轿车", "中巴车", "大卡车"};
+    private String[] carColor = {"黑", "白", "灰"};
+    private String[] carSeat={"4","5","6","7"};
     private String[] basicDateName = {
             "车牌号：", "车型：", "出厂编号：", "底盘编号：", "购买价格：", "上牌费：", "车主姓名：", "起始公里数："
             , "养路费购买时间：", "年审时间：", "保险购买时间：", "车船税购买时间：", "路桥票购买时间：", "运营证办理时间：", "运营费购买时间：", "二保里程："
@@ -115,7 +118,33 @@ public class EditCarInfFrame extends JFrame {
                 carInformation.setShangpai_fee(new BigDecimal(jTextFieldGetCarNoFee.getText()));
                 carInformation.setChezhu_Name(jTextFieldCarOwnerName.getText());
                 carInformation.setStart_Gongli(new BigDecimal(jTextFieldStartMils.getText()));
-                carInformation.setYLF_Starttime(YLFTime.getSe);
+
+                carInformation.setYLF_Starttime(new Timestamp(((Date) YLFTime.getValue()).getTime()));
+                carInformation.setNS_Starttime(new Timestamp(((Date) NSTime.getValue()).getTime()));
+                carInformation.setBX_Starttime(new Timestamp(((Date) BXTime.getValue()).getTime()));
+                carInformation.setCCS_Starttime(new Timestamp(((Date) CCSTime.getValue()).getTime()));
+                carInformation.setYYZ_Starttime(new Timestamp(((Date) YYZTime.getValue()).getTime()));
+                carInformation.setYGF_Starttime(new Timestamp(((Date) GLFTime.getValue()).getTime()));
+                carInformation.setErbaolicheng(new BigDecimal(erBaoMils.getText()));
+
+                carInformation.setBuy_Time(new Timestamp(((Date) buyyingTime.getValue()).getTime()));
+                carInformation.setCar_Color(carColor[color.getSelectedIndex()]);
+                carInformation.setMotor_Id(enginerNo.getText());
+                carInformation.setChair_Num(carSeat[seatNum.getSelectedIndex()]);
+                carInformation.setBuy_tax(new BigDecimal(purchaseTax.getText()));
+                System.out.println(new BigDecimal(decorationFee.getText()));
+                carInformation.setCar_Zhuangshi(new BigDecimal(decorationFee.getText()));
+                carInformation.setTel(telNo.getText());
+                carInformation.setCurrent_Gongli(new BigDecimal(nowMils.getText()));
+
+                carInformation.setYLF_Endtime(new Timestamp(((Date)YLFEndTime.getValue()).getTime()));
+                carInformation.setNS_Endtime(new Timestamp(((Date) NSEndTime.getValue()).getTime()));
+                carInformation.setBX_Endtime(new Timestamp(((Date) BXEndTime.getValue()).getTime()));
+                carInformation.setCCS_Endtime(new Timestamp(((Date) CCSEndTime.getValue()).getTime()));
+                carInformation.setYYZ_Endtime(new Timestamp(((Date) YYZEndTime.getValue()).getTime()));
+                carInformation.setYGF_Endtime(new Timestamp(((Date) GLFEndTime.getValue()).getTime()));
+                carInformation.setNextErbao(new BigDecimal(nextErBao.getText()));
+                commonDAO.add2(carInformation,"tb_car");
             }
         });
         jButtonSave = new JButton("存盘(S)");
@@ -256,13 +285,13 @@ public class EditCarInfFrame extends JFrame {
         buyyingTime = setJSpinner(buyyingTime, today, true);
         buyyingTime.setBounds(385, 15, 175, 22);
         basicData.add(buyyingTime);
-        color = new JComboBox();
+        color = new JComboBox(carColor);
         color.setBounds(385, 40, 175, 22);
         basicData.add(color);
         enginerNo = new JTextField();
         enginerNo.setBounds(385, 65, 175, 20);
         basicData.add(enginerNo);
-        seatNum = new JComboBox();
+        seatNum = new JComboBox(carSeat);
         seatNum.setBounds(385, 90, 175, 22);
         basicData.add(seatNum);
         purchaseTax = new JTextField();

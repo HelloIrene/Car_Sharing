@@ -19,7 +19,8 @@ public class CarInformation {
     public BigDecimal Buy_Price;
     public BigDecimal Buy_tax;
     public BigDecimal Shangpai_fee;
-    public BigDecimal Car_Zhuangshi;
+
+    public BigDecimal Zhuangshi;
     public String Chezhu_Name;
     public String Tel;
     public BigDecimal Start_Gongli;
@@ -131,12 +132,12 @@ public class CarInformation {
         Shangpai_fee = shangpai_fee;
     }
 
-    public BigDecimal getCar_Zhuangshi() {
-        return Car_Zhuangshi;
+    public BigDecimal getZhuangshi() {
+        return Zhuangshi;
     }
 
-    public void setCar_Zhuangshi(BigDecimal car_Zhuangshi) {
-        Car_Zhuangshi = car_Zhuangshi;
+    public void setCar_Zhuangshi(BigDecimal zhuangshi) {
+        Zhuangshi = zhuangshi;
     }
 
     public String getChezhu_Name() {

@@ -1,5 +1,7 @@
 package com.company.dao;
 
+import com.company.entity.CarInformation;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -82,6 +84,7 @@ public class CommonDAOImpl implements CommonDAO {
                     ps.setObject(i + 1, params.get(i));
                 }
             }
+            System.out.println(ps);
             row = ps.executeUpdate();
             conn.commit();
             conn.setAutoCommit(true);
@@ -89,7 +92,7 @@ public class CommonDAOImpl implements CommonDAO {
             e.printStackTrace();
         } catch (SecurityException e) {
             /*try
-			{
+            {
 				conn.rollback();
 			}
 			catch (SQLException e1)
@@ -122,6 +125,7 @@ public class CommonDAOImpl implements CommonDAO {
                     }
                 }
                 ps.addBatch();
+                System.out.println(ps);
             }
             ps.executeBatch();
             conn.commit();
@@ -203,6 +207,43 @@ public class CommonDAOImpl implements CommonDAO {
             }
             sb.append(" WHERE " + primaryField.getName() + "=?");
             params.add(primaryField.get(obj));
+            row = executeUpdate(sb.toString(), params);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+
+    public int add2(Object obj, String tableName) {
+        int row = 0;
+        try {
+            // 获取到对象声明的所有属性字段
+            Field[] fields = obj.getClass().getDeclaredFields();
+            List<Object> params = new ArrayList<Object>();
+            StringBuffer sb = new StringBuffer();
+            sb.append("INSERT INTO ");
+            sb.append(tableName);
+            sb.append(" (");
+//            sb.append("car_id,");
+//            params.add("22");
+            for (int i = 0; i < fields.length; i++) {
+                fields[i].setAccessible(true);
+                // 如果字段上标记了@Id注解，表示这是一个主键
+                boolean b = fields[i].isAnnotationPresent(Id.class);
+                if (!b) {
+                    if (i < fields.length - 1) {
+                        sb.append(fields[i].getName() + ",");
+                    } else {
+                        sb.append(fields[i].getName() + ") VALUES (");
+                    }
+                    params.add(fields[i].get(obj));
+                }
+            }
+            for (int i = 0; i < params.size() - 1; i++) {
+                sb.append("?,");
+            }
+            sb.append("?)");
+            System.out.println(sb.toString());
             row = executeUpdate(sb.toString(), params);
         } catch (IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();

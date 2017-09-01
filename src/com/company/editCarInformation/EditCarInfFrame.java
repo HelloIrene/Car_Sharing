@@ -1,6 +1,7 @@
 package com.company.editCarInformation;
 
 import com.company.changSkin.ChaneSkin;
+import com.company.entity.CarInformation;
 
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
@@ -8,6 +9,7 @@ import javax.swing.text.DefaultFormatterFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Calendar;
 
@@ -65,6 +67,8 @@ public class EditCarInfFrame extends JFrame {
     private JSpinner GLFTime;   //管理费
     private JSpinner GLFEndTime;
 
+    private String[] carTyle={"小轿车","中巴车","大卡车"};
+
     private JLabel jLabel;
 
     private String[] basicDateName = {
@@ -97,6 +101,23 @@ public class EditCarInfFrame extends JFrame {
         jButtonDesgin.setBounds(585, 250, 84, 40);
         jButtonAdd = new JButton("增加(A)");
         jButtonAdd.setBounds(585, 290, 84, 40);
+        jButtonAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO finish
+                CarInformation carInformation = new CarInformation();
+                carInformation.setCar_Id(jTextFieldCarNo.getText());
+                System.out.println(carTyle[carClass.getSelectedIndex()]);
+                carInformation.setCar_Type(carTyle[carClass.getSelectedIndex()]);
+                carInformation.setChuchang_Id(jTextFieldOutFactoryNo.getText());
+                carInformation.setDipan_Id(jTextFieldDIPANNo.getText());
+                carInformation.setBuy_Price(new BigDecimal(jTextFieldPrice.getText()));
+                carInformation.setShangpai_fee(new BigDecimal(jTextFieldGetCarNoFee.getText()));
+                carInformation.setChezhu_Name(jTextFieldCarOwnerName.getText());
+                carInformation.setStart_Gongli(new BigDecimal(jTextFieldStartMils.getText()));
+                carInformation.setYLF_Starttime(YLFTime.getSe);
+            }
+        });
         jButtonSave = new JButton("存盘(S)");
         jButtonSave.setBounds(585, 330, 84, 40);
         jButtonCancel = new JButton("取消(C)");
@@ -186,7 +207,7 @@ public class EditCarInfFrame extends JFrame {
         jTextFieldCarNo.setBounds(120, 15, 175, 20);
         basicData.add(jTextFieldCarNo);
         jTextFieldOutFactoryNo = new JTextField();
-        carClass = new JComboBox();
+        carClass = new JComboBox(carTyle);
         carClass.setBounds(120, 40, 175, 22);
         basicData.add(carClass);
         jTextFieldOutFactoryNo.setBounds(120, 65, 175, 20);

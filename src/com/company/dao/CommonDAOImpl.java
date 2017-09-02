@@ -224,20 +224,14 @@ public class CommonDAOImpl implements CommonDAO {
             sb.append("INSERT INTO ");
             sb.append(tableName);
             sb.append(" (");
-//            sb.append("car_id,");
-//            params.add("22");
             for (int i = 0; i < fields.length; i++) {
                 fields[i].setAccessible(true);
-                // 如果字段上标记了@Id注解，表示这是一个主键
-                boolean b = fields[i].isAnnotationPresent(Id.class);
-                if (!b) {
-                    if (i < fields.length - 1) {
-                        sb.append(fields[i].getName() + ",");
-                    } else {
-                        sb.append(fields[i].getName() + ") VALUES (");
-                    }
-                    params.add(fields[i].get(obj));
+                if (i < fields.length - 1) {
+                    sb.append(fields[i].getName() + ",");
+                } else {
+                    sb.append(fields[i].getName() + ") VALUES (");
                 }
+                params.add(fields[i].get(obj));
             }
             for (int i = 0; i < params.size() - 1; i++) {
                 sb.append("?,");

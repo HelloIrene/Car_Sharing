@@ -123,6 +123,7 @@ public class EditCarInfFrame extends JFrame {
                 carInformation.setNS_Starttime(new Timestamp(((Date) NSTime.getValue()).getTime()));
                 carInformation.setBX_Starttime(new Timestamp(((Date) BXTime.getValue()).getTime()));
                 carInformation.setCCS_Starttime(new Timestamp(((Date) CCSTime.getValue()).getTime()));
+                carInformation.setLQP_Starttime(new Timestamp(((Date) LQPTime.getValue()).getTime()));
                 carInformation.setYYZ_Starttime(new Timestamp(((Date) YYZTime.getValue()).getTime()));
                 carInformation.setYGF_Starttime(new Timestamp(((Date) GLFTime.getValue()).getTime()));
                 carInformation.setErbaolicheng(new BigDecimal(erBaoMils.getText()));
@@ -141,6 +142,7 @@ public class EditCarInfFrame extends JFrame {
                 carInformation.setNS_Endtime(new Timestamp(((Date) NSEndTime.getValue()).getTime()));
                 carInformation.setBX_Endtime(new Timestamp(((Date) BXEndTime.getValue()).getTime()));
                 carInformation.setCCS_Endtime(new Timestamp(((Date) CCSEndTime.getValue()).getTime()));
+                carInformation.setLQP_Endtime(new Timestamp(((Date) LQPEndTime.getValue()).getTime()));
                 carInformation.setYYZ_Endtime(new Timestamp(((Date) YYZEndTime.getValue()).getTime()));
                 carInformation.setYGF_Endtime(new Timestamp(((Date) GLFEndTime.getValue()).getTime()));
                 carInformation.setNextErbao(new BigDecimal(nextErBao.getText()));
@@ -153,6 +155,13 @@ public class EditCarInfFrame extends JFrame {
         jButtonCancel.setBounds(585, 370, 84, 40);
         jButtonBack = new JButton("·µ»Ø(R)");
         jButtonBack.setBounds(585, 410, 84, 40);
+        jButtonBack.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();
+            }
+        });
+
         iniTabbedPanel();
 
         jButtonChangeSkin = new JButton("»»·ô");

@@ -73,7 +73,7 @@ public class EditCarInfFrame extends JFrame {
     private JLabel jLabel;
     private String[] carTyle = {"小轿车", "中巴车", "大卡车"};
     private String[] carColor = {"黑", "白", "灰"};
-    private String[] carSeat={"4","5","6","7"};
+    private String[] carSeat = {"4", "5", "6", "7"};
     private String[] basicDateName = {
             "车牌号：", "车型：", "出厂编号：", "底盘编号：", "购买价格：", "上牌费：", "车主姓名：", "起始公里数："
             , "养路费购买时间：", "年审时间：", "保险购买时间：", "车船税购买时间：", "路桥票购买时间：", "运营证办理时间：", "运营费购买时间：", "二保里程："
@@ -108,51 +108,29 @@ public class EditCarInfFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //TODO finish
-                CarInformation carInformation = new CarInformation();
-                carInformation.setCar_Id(jTextFieldCarNo.getText());
-                System.out.println(carTyle[carClass.getSelectedIndex()]);
-                carInformation.setCar_Type(carTyle[carClass.getSelectedIndex()]);
-                carInformation.setChuchang_Id(jTextFieldOutFactoryNo.getText());
-                carInformation.setDipan_Id(jTextFieldDIPANNo.getText());
-                carInformation.setBuy_Price(new BigDecimal(jTextFieldPrice.getText()));
-                carInformation.setShangpai_fee(new BigDecimal(jTextFieldGetCarNoFee.getText()));
-                carInformation.setChezhu_Name(jTextFieldCarOwnerName.getText());
-                carInformation.setStart_Gongli(new BigDecimal(jTextFieldStartMils.getText()));
-
-                carInformation.setYLF_Starttime(new Timestamp(((Date) YLFTime.getValue()).getTime()));
-                carInformation.setNS_Starttime(new Timestamp(((Date) NSTime.getValue()).getTime()));
-                carInformation.setBX_Starttime(new Timestamp(((Date) BXTime.getValue()).getTime()));
-                carInformation.setCCS_Starttime(new Timestamp(((Date) CCSTime.getValue()).getTime()));
-                carInformation.setLQP_Starttime(new Timestamp(((Date) LQPTime.getValue()).getTime()));
-                carInformation.setYYZ_Starttime(new Timestamp(((Date) YYZTime.getValue()).getTime()));
-                carInformation.setYGF_Starttime(new Timestamp(((Date) GLFTime.getValue()).getTime()));
-                carInformation.setErbaolicheng(new BigDecimal(erBaoMils.getText()));
-
-                carInformation.setBuy_Time(new Timestamp(((Date) buyyingTime.getValue()).getTime()));
-                carInformation.setCar_Color(carColor[color.getSelectedIndex()]);
-                carInformation.setMotor_Id(enginerNo.getText());
-                carInformation.setChair_Num(carSeat[seatNum.getSelectedIndex()]);
-                carInformation.setBuy_tax(new BigDecimal(purchaseTax.getText()));
-                System.out.println(new BigDecimal(decorationFee.getText()));
-                carInformation.setCar_Zhuangshi(new BigDecimal(decorationFee.getText()));
-                carInformation.setTel(telNo.getText());
-                carInformation.setCurrent_Gongli(new BigDecimal(nowMils.getText()));
-
-                carInformation.setYLF_Endtime(new Timestamp(((Date)YLFEndTime.getValue()).getTime()));
-                carInformation.setNS_Endtime(new Timestamp(((Date) NSEndTime.getValue()).getTime()));
-                carInformation.setBX_Endtime(new Timestamp(((Date) BXEndTime.getValue()).getTime()));
-                carInformation.setCCS_Endtime(new Timestamp(((Date) CCSEndTime.getValue()).getTime()));
-                carInformation.setLQP_Endtime(new Timestamp(((Date) LQPEndTime.getValue()).getTime()));
-                carInformation.setYYZ_Endtime(new Timestamp(((Date) YYZEndTime.getValue()).getTime()));
-                carInformation.setYGF_Endtime(new Timestamp(((Date) GLFEndTime.getValue()).getTime()));
-                carInformation.setNextErbao(new BigDecimal(nextErBao.getText()));
-                commonDAO.add2(carInformation,"tb_car");
+                if (commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id")) {
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数","!!!",JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+                commonDAO.add2(getPanelINf(), "tb_car");
             }
         });
         jButtonSave = new JButton("存盘(S)");
         jButtonSave.setBounds(585, 330, 84, 40);
+        jButtonSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                commonDAO.update2(getPanelINf(), "tb_car");
+            }
+        });
         jButtonCancel = new JButton("取消(C)");
         jButtonCancel.setBounds(585, 370, 84, 40);
+        jButtonCancel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         jButtonBack = new JButton("返回(R)");
         jButtonBack.setBounds(585, 410, 84, 40);
         jButtonBack.addActionListener(new ActionListener() {
@@ -188,6 +166,49 @@ public class EditCarInfFrame extends JFrame {
         mianBody.add(jButtonCancel);
         mianBody.add(jButtonBack);
         mianBody.add(jTabbedPane);
+    }
+
+    private CarInformation getPanelINf() {
+        CarInformation carInformation = new CarInformation();
+        carInformation.setCar_Id(jTextFieldCarNo.getText());
+        System.out.println(carTyle[carClass.getSelectedIndex()]);
+        carInformation.setCar_Type(carTyle[carClass.getSelectedIndex()]);
+        carInformation.setChuchang_Id(jTextFieldOutFactoryNo.getText());
+        carInformation.setDipan_Id(jTextFieldDIPANNo.getText());
+        carInformation.setBuy_Price(new BigDecimal(jTextFieldPrice.getText()));
+        carInformation.setShangpai_fee(new BigDecimal(jTextFieldGetCarNoFee.getText()));
+        carInformation.setChezhu_Name(jTextFieldCarOwnerName.getText());
+        carInformation.setStart_Gongli(new BigDecimal(jTextFieldStartMils.getText()));
+
+        carInformation.setYLF_Starttime(new Timestamp(((Date) YLFTime.getValue()).getTime()));
+        carInformation.setNS_Starttime(new Timestamp(((Date) NSTime.getValue()).getTime()));
+        carInformation.setBX_Starttime(new Timestamp(((Date) BXTime.getValue()).getTime()));
+        carInformation.setCCS_Starttime(new Timestamp(((Date) CCSTime.getValue()).getTime()));
+        carInformation.setLQP_Starttime(new Timestamp(((Date) LQPTime.getValue()).getTime()));
+        carInformation.setYYZ_Starttime(new Timestamp(((Date) YYZTime.getValue()).getTime()));
+        carInformation.setYGF_Starttime(new Timestamp(((Date) GLFTime.getValue()).getTime()));
+        carInformation.setErbaolicheng(new BigDecimal(erBaoMils.getText()));
+
+        carInformation.setBuy_Time(new Timestamp(((Date) buyyingTime.getValue()).getTime()));
+        carInformation.setCar_Color(carColor[color.getSelectedIndex()]);
+        carInformation.setMotor_Id(enginerNo.getText());
+        carInformation.setChair_Num(carSeat[seatNum.getSelectedIndex()]);
+        carInformation.setBuy_tax(new BigDecimal(purchaseTax.getText()));
+        System.out.println(new BigDecimal(decorationFee.getText()));
+        carInformation.setCar_Zhuangshi(new BigDecimal(decorationFee.getText()));
+        carInformation.setTel(telNo.getText());
+        carInformation.setCurrent_Gongli(new BigDecimal(nowMils.getText()));
+
+        carInformation.setYLF_Endtime(new Timestamp(((Date) YLFEndTime.getValue()).getTime()));
+        carInformation.setNS_Endtime(new Timestamp(((Date) NSEndTime.getValue()).getTime()));
+        carInformation.setBX_Endtime(new Timestamp(((Date) BXEndTime.getValue()).getTime()));
+        carInformation.setCCS_Endtime(new Timestamp(((Date) CCSEndTime.getValue()).getTime()));
+        carInformation.setLQP_Endtime(new Timestamp(((Date) LQPEndTime.getValue()).getTime()));
+        carInformation.setYYZ_Endtime(new Timestamp(((Date) YYZEndTime.getValue()).getTime()));
+        carInformation.setYGF_Endtime(new Timestamp(((Date) GLFEndTime.getValue()).getTime()));
+        carInformation.setNextErbao(new BigDecimal(nextErBao.getText()));
+
+        return carInformation;
     }
 
     //换肤方法待改善，需要设计新窗口

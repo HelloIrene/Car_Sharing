@@ -178,6 +178,41 @@ public class CommonDAOImpl implements CommonDAO {
         }
     }
 
+    public int update2(Object obj,String tableName) {
+        int row = 0;
+        try {
+            // 获取到对象声明的所有属性字段
+            Field[] fields = obj.getClass().getDeclaredFields();
+            Field primaryField = null;
+            List<Object> params = new ArrayList<Object>();
+            StringBuffer sb = new StringBuffer();
+            sb.append("UPDATE ");
+            sb.append(tableName);
+            sb.append(" SET ");
+            for (int i = 0; i < fields.length; i++) {
+                fields[i].setAccessible(true);
+                // 如果字段上标记了@Id注解，表示这是一个主键
+                boolean b = fields[i].isAnnotationPresent(Id.class);
+                if (!b) {
+                    if (i < fields.length - 1) {
+                        sb.append(fields[i].getName() + "=?,");
+                    } else {
+                        sb.append(fields[i].getName() + "=? ");
+                    }
+                    params.add(fields[i].get(obj));
+                } else {
+                    primaryField = fields[i]; // 获取主键属性
+                }
+            }
+            sb.append(" WHERE " + primaryField.getName() + "=?");
+            params.add(primaryField.get(obj));
+            row = executeUpdate(sb.toString(), params);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+
     @Override
     public int update(Object obj) {
         int row = 0;
@@ -308,5 +343,35 @@ public class CommonDAOImpl implements CommonDAO {
             e.printStackTrace();
         }
         return row;
+    }
+
+    public boolean searchClo(String searchInf,String tableName,String columnName){
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<String> back=new ArrayList<>();
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("SElECT ");
+        stringBuffer.append(columnName);
+        stringBuffer.append(" AS inf FROM ");
+        stringBuffer.append(tableName);
+        conn = DBTool.getInstance().getConnection();
+        try {
+            ps = conn.prepareStatement(stringBuffer.toString());
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()){
+                back.add(rs.getString("inf"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (back.size() != 0) {
+            for(String backinf : back){
+                if (backinf.equals(searchInf)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

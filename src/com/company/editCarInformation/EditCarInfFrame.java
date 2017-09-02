@@ -3,6 +3,7 @@ package com.company.editCarInformation;
 import com.company.changSkin.ChaneSkin;
 import com.company.dao.CommonDAOImpl;
 import com.company.entity.CarInformation;
+import org.apache.poi.hssf.usermodel.*;
 
 import javax.swing.*;
 import javax.swing.text.DateFormatter;
@@ -10,10 +11,14 @@ import javax.swing.text.DefaultFormatterFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.Properties;
 
 /**
  * @author student Ross
@@ -94,14 +99,30 @@ public class EditCarInfFrame extends JFrame {
         jButtonPrint = new JButton("打印档案");
         jButtonPrint.setBounds(585, 210, 84, 40);
         jButtonPrint.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Properties p = new Properties();
+                PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(EditCarInfFrame.this, "客户登记表编辑", p);
+                Graphics pg = jp.getGraphics();//Graphics打印图形的图形环境
+                if (pg != null) {
+                    try {
+                        EditCarInfFrame.this.printAll(pg); //打印该窗体及其所有的组件
+                    } finally {
+                        pg.dispose(); //注销图形环境
+                    }
+                }
+                jp.end(); //结束打印作业
+            }
+        });
+
+        jButtonDesgin = new JButton("设计档案");
+        jButtonDesgin.setBounds(585, 250, 84, 40);
+        jButtonDesgin.addActionListener(new ActionListener() {
             @Override
             //实验各皮肤弹出窗口
             public void actionPerformed(ActionEvent e) {
                 JOptionPane.showConfirmDialog(EditCarInfFrame.this, "", "!!!", JOptionPane.OK_OPTION);
             }
         });
-        jButtonDesgin = new JButton("设计档案");
-        jButtonDesgin.setBounds(585, 250, 84, 40);
         jButtonAdd = new JButton("增加(A)");
         jButtonAdd.setBounds(585, 290, 84, 40);
         jButtonAdd.addActionListener(new ActionListener() {
@@ -109,7 +130,7 @@ public class EditCarInfFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //TODO finish
                 if (commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id")) {
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数","!!!",JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数", "!!!", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
                 commonDAO.add2(getPanelINf(), "tb_car");
@@ -128,7 +149,20 @@ public class EditCarInfFrame extends JFrame {
         jButtonCancel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                jTextFieldCarNo.setText("");
+                jTextFieldOutFactoryNo.setText("");
+                jTextFieldDIPANNo.setText("");
+                jTextFieldPrice.setText("");
+                jTextFieldGetCarNoFee.setText("");
+                jTextFieldCarOwnerName.setText("");
+                jTextFieldStartMils.setText("");
+                erBaoMils.setText("");
+                enginerNo.setText("");
+                purchaseTax.setText("");
+                decorationFee.setText("");
+                telNo.setText("");
+                nowMils.setText("");
+                nextErBao.setText("");
             }
         });
         jButtonBack = new JButton("返回(R)");
@@ -391,6 +425,61 @@ public class EditCarInfFrame extends JFrame {
         jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         jLabel.setBounds(10 + 265 * (i / 16), 15 + 25 * (i % 16), 104, 20);
         return jLabel;
+    }
+
+    private void saveASExcel() {
+        // 第一步，创建一个webbook，对应一个Excel文件
+        HSSFWorkbook wb = new HSSFWorkbook();
+        // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
+        HSSFSheet sheet = wb.createSheet("学生表一");
+        // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
+        HSSFRow row = sheet.createRow((int) 0);
+        // 第四步，创建单元格，并设置值表头 设置表头居中
+        HSSFCellStyle style = wb.createCellStyle();
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+
+        HSSFCell cell = row.createCell((short) 0);
+        cell.setCellValue("学号");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 1);
+        cell.setCellValue("姓名");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 2);
+        cell.setCellValue("年龄");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 3);
+        cell.setCellValue("生日");
+        cell.setCellStyle(style);
+
+        //TODO 存盘excel文件
+        // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
+        List<CarInformation> list = commonDAO.getAllInfFormTb_car("tb_car");
+
+        for (int i = 0; i < list.size(); i++)
+        {
+            row = sheet.createRow((int) i + 1);
+            CarInformation stu = (CarInformation) list.get(i);
+            // 第四步，创建单元格，并设置值
+            row.createCell((short) 0).setCellValue((double) stu.getCode());
+            row.createCell((short) 1).setCellValue(stu.getName());
+            row.createCell((short) 2).setCellValue((double) stu.getAge());
+            cell = row.createCell((short) 3);
+            cell.setCellValue(new SimpleDateFormat("yyyy-mm-dd").format(stu
+                    .getBirth()));
+        }
+    }
+
+    private void saveFile() {
+        JFileChooser jfc = new JFileChooser();
+        jfc.showSaveDialog(EditCarInfFrame.this);
+        try {
+            File file = jfc.getSelectedFile();
+            FileOutputStream fout = new FileOutputStream(file);
+            wb.write(fout);
+            fout.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     private void iniFrame() {

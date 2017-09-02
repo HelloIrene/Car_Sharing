@@ -178,7 +178,7 @@ public class CommonDAOImpl implements CommonDAO {
         }
     }
 
-    public int update2(Object obj,String tableName) {
+    public int update2(Object obj, String tableName) {
         int row = 0;
         try {
             // 获取到对象声明的所有属性字段
@@ -345,10 +345,10 @@ public class CommonDAOImpl implements CommonDAO {
         return row;
     }
 
-    public boolean searchClo(String searchInf,String tableName,String columnName){
+    public boolean searchClo(String searchInf, String tableName, String columnName) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<String> back=new ArrayList<>();
+        List<String> back = new ArrayList<>();
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("SElECT ");
         stringBuffer.append(columnName);
@@ -359,19 +359,27 @@ public class CommonDAOImpl implements CommonDAO {
             ps = conn.prepareStatement(stringBuffer.toString());
             System.out.println(ps);
             rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 back.add(rs.getString("inf"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         if (back.size() != 0) {
-            for(String backinf : back){
-                if (backinf.equals(searchInf)){
+            for (String backinf : back) {
+                if (backinf.equals(searchInf)) {
                     return true;
                 }
             }
         }
         return false;
+    }
+
+    public List<CarInformation> getAllInfFormTb_car(String tableName) {
+        //TODO
+        List<CarInformation> list = new ArrayList<>();
+        StringBuffer stringBuffer = new StringBuffer("SELECT * FROM ");
+        stringBuffer.append(tableName);
+        return executeQuery(CarInformation.class, stringBuffer.toString(), null);
     }
 }

@@ -16,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.Properties;
@@ -438,31 +440,153 @@ public class EditCarInfFrame extends JFrame {
         HSSFCellStyle style = wb.createCellStyle();
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
 
+        /*
+        public String Car_Id;
+    public Timestamp Buy_Time;
+    public String Car_Type;
+    public String Car_Color;
+    public String Chuchang_Id;
+    public String Motor_Id;
+    public String Dipan_Id;
+    public String Chair_Num;
+
+    public BigDecimal Buy_Price;
+    public BigDecimal Buy_tax;
+    public BigDecimal Shangpai_fee;
+
+    public BigDecimal Zhuangshi;
+    public String Chezhu_Name;
+    public String Tel;
+    public BigDecimal Start_Gongli;
+    public BigDecimal Current_Gongli;
+
+    public Timestamp YLF_Starttime;
+    public Timestamp YLF_Endtime;
+    public Timestamp NS_Starttime;
+    public Timestamp NS_Endtime;
+    public Timestamp BX_Starttime;
+    public Timestamp BX_Endtime;
+    public Timestamp CCS_Starttime;
+    public Timestamp CCS_Endtime;
+    public Timestamp LQP_Starttime;
+    public Timestamp LQP_Endtime;
+    public Timestamp YYZ_Starttime;
+    public Timestamp YYZ_Endtime;
+    public Timestamp YGF_Starttime;
+    public Timestamp YGF_Endtime;
+
+    public BigDecimal Erbaolicheng;
+    public BigDecimal NextErbao;
+         */
         HSSFCell cell = row.createCell((short) 0);
-        cell.setCellValue("学号");
+        cell.setCellValue("车牌号");
         cell.setCellStyle(style);
         cell = row.createCell((short) 1);
-        cell.setCellValue("姓名");
+        cell.setCellValue("购买时间");
         cell.setCellStyle(style);
         cell = row.createCell((short) 2);
-        cell.setCellValue("年龄");
+        cell.setCellValue("车型");
         cell.setCellStyle(style);
         cell = row.createCell((short) 3);
-        cell.setCellValue("生日");
+        cell.setCellValue("颜色");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 4);
+        cell.setCellValue("出厂编号");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 5);
+        cell.setCellValue("发动机号");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 6);
+        cell.setCellValue("底盘编号");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 7);
+        cell.setCellValue("座位数");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 8);
+        cell.setCellValue("购买价格");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 9);
+        cell.setCellValue("购置税");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 10);
+        cell.setCellValue("上牌费");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 11);
+        cell.setCellValue("汽车装饰");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 12);
+        cell.setCellValue("车主姓名");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 13);
+        cell.setCellValue("联系电话");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 14);
+        cell.setCellValue("起始公里数");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 15);
+        cell.setCellValue("当前公里数");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 16);
+        cell.setCellValue("养路费购买时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 17);
+        cell.setCellValue("养路费截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 18);
+        cell.setCellValue("年审时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 19);
+        cell.setCellValue("年审截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 20);
+        cell.setCellValue("保险购买时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 21);
+        cell.setCellValue("保险截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 22);
+        cell.setCellValue("车船税购买时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 23);
+        cell.setCellValue("车船税截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 24);
+        cell.setCellValue("路桥票购买时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 25);
+        cell.setCellValue("路桥票截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 26);
+        cell.setCellValue("营运证办理时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 27);
+        cell.setCellValue("营运证截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 28);
+        cell.setCellValue("运营费购买时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 29);
+        cell.setCellValue("运营费截止时间");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 30);
+        cell.setCellValue("二保里程");
+        cell.setCellStyle(style);
+        cell = row.createCell((short) 31);
+        cell.setCellValue("下次二保");
         cell.setCellStyle(style);
 
         //TODO 存盘excel文件
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
-        List<CarInformation> list = commonDAO.getAllInfFormTb_car("tb_car");
-
+        //java.awt和java.util下都有list要声明正确
+        java.util.List<CarInformation> list = commonDAO.getAllInfFormTb_car("tb_car");
         for (int i = 0; i < list.size(); i++)
         {
             row = sheet.createRow((int) i + 1);
-            CarInformation stu = (CarInformation) list.get(i);
+            CarInformation carInf = list.get(i);
             // 第四步，创建单元格，并设置值
-            row.createCell((short) 0).setCellValue((double) stu.getCode());
-            row.createCell((short) 1).setCellValue(stu.getName());
-            row.createCell((short) 2).setCellValue((double) stu.getAge());
+            row.createCell((short) 0).setCellValue(carInf.getCar_Id());
+            row.createCell((short) 1).setCellValue(new SimpleDateFormat("yyyy-mm-dd").format(carInf.getBuy_Time()));
+            row.createCell((short) 2).setCellValue(carInf.getCar_Type());
             cell = row.createCell((short) 3);
             cell.setCellValue(new SimpleDateFormat("yyyy-mm-dd").format(stu
                     .getBirth()));
@@ -475,7 +599,7 @@ public class EditCarInfFrame extends JFrame {
         try {
             File file = jfc.getSelectedFile();
             FileOutputStream fout = new FileOutputStream(file);
-            wb.write(fout);
+            //wb.write(fout);
             fout.close();
         } catch (IOException e1) {
             e1.printStackTrace();

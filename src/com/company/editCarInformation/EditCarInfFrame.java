@@ -154,16 +154,20 @@ public class EditCarInfFrame extends JFrame {
         jButtonSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                switch (saveASExcel()) {
-                    case 0:
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
-                        break;
-                    case 1:
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
-                        break;
-                    default:
-                        break;
+                int res = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "将要导出数据库全部汽车信息，是否继续！", "警告！", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                if (res == JOptionPane.OK_OPTION) {
+                    switch (saveASExcel()) {
+                        case 0:
+                            JOptionPane.showMessageDialog(EditCarInfFrame.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                            break;
+                        case 1:
+                            JOptionPane.showMessageDialog(EditCarInfFrame.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
+                            break;
+                        default:
+                            break;
+                    }
                 }
+                return;
             }
         });
         jButtonCancel = new JButton("取消(C)");

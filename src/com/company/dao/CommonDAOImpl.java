@@ -4,6 +4,7 @@ import com.company.entity.CarInformation;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -35,7 +36,7 @@ public class CommonDAOImpl implements CommonDAO {
             }
             rs = ps.executeQuery();
             Field[] fields = clazz.getDeclaredFields();
-
+            System.out.println(ps);
             while (rs.next()) {
                 @SuppressWarnings("unchecked")
                 T entity = (T) clazz.newInstance(); //利用反射实例化一个对象
@@ -51,6 +52,63 @@ public class CommonDAOImpl implements CommonDAO {
                             val = ((BigDecimal) rsVal).doubleValue();
                         } else if (field.getType() == Integer.class) {
                             val = ((BigDecimal) rsVal).intValue();
+                        } else if (field.getType() == Long.class) {
+                            val = ((BigDecimal) rsVal).longValue();
+                        } else {
+                            val = rsVal;
+                        }
+                    } else {
+                        val = rsVal;
+                    }
+                    //##############ORACLE##############
+                    field.set(entity, val);
+                }
+                itemList.add(entity);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException
+                | SecurityException e) {
+            e.printStackTrace();
+        } finally {
+            DBTool.closeAll(rs, ps, conn);
+        }
+        return itemList;
+    }
+
+    public <T> List<T> executeQuery2(Class<?> clazz, String query,
+                                    List<Object> params) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<T> itemList = new ArrayList<T>();
+        try {
+            conn = DBTool.getInstance().getConnection();
+            // 设置隔离级别
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            ps = conn.prepareStatement(query);
+            if (params != null && params.size() > 0) {
+                for (int i = 0; i < params.size(); i++) {
+                    ps.setObject(i + 1, params.get(i));
+                }
+            }
+            rs = ps.executeQuery();
+            Field[] fields = clazz.getDeclaredFields();
+            System.out.println(ps);
+            while (rs.next()) {
+                @SuppressWarnings("unchecked")
+                T entity = (T) clazz.newInstance(); //利用反射实例化一个对象
+                for (Field field : fields) {
+                    // VERY IMPORTANT!!!
+                    field.setAccessible(true);
+                    Object rsVal = rs.getObject(field.getName());
+
+                    //##############ORACLE##############
+                    Object val = null;
+                    if (rsVal.getClass() == BigDecimal.class) {
+                        if (field.getType() == Double.class) {
+                            val = ((BigDecimal) rsVal).doubleValue();
+                        } else if (field.getType() == Integer.class) {
+                            val = ((BigDecimal) rsVal).intValue();
+                        } else if (field.getType() == Long.class) {
+                            val = ((BigDecimal) rsVal).longValue();
                         } else {
                             val = rsVal;
                         }
@@ -205,6 +263,7 @@ public class CommonDAOImpl implements CommonDAO {
                 }
             }
             sb.append(" WHERE " + primaryField.getName() + "=?");
+            System.out.println(sb);
             params.add(primaryField.get(obj));
             row = executeUpdate(sb.toString(), params);
         } catch (IllegalArgumentException | IllegalAccessException e) {
@@ -382,4 +441,32 @@ public class CommonDAOImpl implements CommonDAO {
         stringBuffer.append(tableName);
         return executeQuery(CarInformation.class, stringBuffer.toString(), null);
     }
+
+    /*********************************************************/
+//    public void commitBatch()
+//    {
+//        try {
+//            conn.commit();
+//            conn.setAutoCommit(true);
+//        } catch (SQLException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        finally {
+//            DBTool.closeAll(null,conn,null);
+//        }
+//    }
+//
+//    public void rollbackBatch()
+//    {
+//        try {
+//            conn.rollback();
+//            conn.setAutoCommit(true);
+//        } catch (SQLException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        DbUtil.close2(rs,conn);
+//    }
 }
+

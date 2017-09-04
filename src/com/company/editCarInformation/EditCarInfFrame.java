@@ -12,6 +12,8 @@ import javax.swing.text.DefaultFormatterFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +47,7 @@ public class EditCarInfFrame extends JFrame {
     private JButton jButtonCancel;
     private JButton jButtonBack;
     private JButton jButtonChangeSkin;
+    private JButton jButtonUpdate;
 
     private JTextField jTextFieldCarNo;
     private JTextField jTextFieldOutFactoryNo;
@@ -100,8 +103,10 @@ public class EditCarInfFrame extends JFrame {
         mianBody.setLayout(null);
         jCheckBox = new JCheckBox("停用");
         jCheckBox.setBounds(585, 50, 60, 20);
+        jCheckBox.addItemListener(new EditCarInfFrame.ItemCheckBoxListener());
+
         jButtonPrint = new JButton("打印档案");
-        jButtonPrint.setBounds(585, 210, 84, 40);
+        jButtonPrint.setBounds(585, 170, 84, 40);
         jButtonPrint.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Properties p = new Properties();
@@ -119,16 +124,16 @@ public class EditCarInfFrame extends JFrame {
         });
 
         jButtonDesgin = new JButton("设计档案");
-        jButtonDesgin.setBounds(585, 250, 84, 40);
+        jButtonDesgin.setBounds(585, 210, 84, 40);
         jButtonDesgin.addActionListener(new ActionListener() {
             @Override
             //实验各皮肤弹出窗口
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showConfirmDialog(EditCarInfFrame.this, "", "!!!", JOptionPane.OK_OPTION);
+
             }
         });
         jButtonAdd = new JButton("增加(A)");
-        jButtonAdd.setBounds(585, 290, 84, 40);
+        jButtonAdd.setBounds(585, 250, 84, 40);
         jButtonAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -142,6 +147,29 @@ public class EditCarInfFrame extends JFrame {
                     if (commonDAO.add2(getPanelINf(), "tb_car") != 0) {
                         JOptionPane.showMessageDialog(EditCarInfFrame.this, "添加成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                     }
+
+                } else if (carNoNo == false) {
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "电话格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+        jButtonUpdate = new JButton("更新(U)");
+        jButtonUpdate.setBounds(585, 290, 84, 40);
+        jButtonUpdate.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean carNoNo = isCar(jTextFieldCarNo.getText());
+                boolean telNoNo = isTel(telNo.getText());
+                if (carNoNo && telNoNo) {
+                    if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
+                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有数据还更新，心里有没有点比数！", "错误！", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    if (commonDAO.update2(getPanelINf(), "tb_car") != 0) {
+                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "更新成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                    }
                 } else if (carNoNo == false) {
                     JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
                 } else {
@@ -154,7 +182,7 @@ public class EditCarInfFrame extends JFrame {
         jButtonSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int res = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "将要导出数据库全部汽车信息，是否继续！", "警告！", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
+                int res = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "将要导出数据库全部汽车信息，是否继续！", "警告！", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (res == JOptionPane.OK_OPTION) {
                     switch (saveASExcel()) {
                         case 0:
@@ -203,7 +231,7 @@ public class EditCarInfFrame extends JFrame {
         iniTabbedPanel();
 
         jButtonChangeSkin = new JButton("换肤");
-        jButtonChangeSkin.setBounds(585, 170, 84, 40);
+        jButtonChangeSkin.setBounds(585, 130, 84, 40);
         jButtonChangeSkin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -226,6 +254,7 @@ public class EditCarInfFrame extends JFrame {
         mianBody.add(jButtonCancel);
         mianBody.add(jButtonBack);
         mianBody.add(jTabbedPane);
+        mianBody.add(jButtonUpdate);
     }
 
     private CarInformation getPanelINf() {
@@ -684,5 +713,78 @@ public class EditCarInfFrame extends JFrame {
 //            e.printStackTrace();
 //        }
         changeSkin();
+    }
+
+    class ItemCheckBoxListener implements ItemListener {
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (jCheckBox.isSelected()) {
+                jTextFieldCarNo.setEnabled(false);
+                jTextFieldOutFactoryNo.setEnabled(false);
+                jTextFieldDIPANNo.setEnabled(false);
+                jTextFieldPrice.setEnabled(false);
+                jTextFieldGetCarNoFee.setEnabled(false);
+                jTextFieldCarOwnerName.setEnabled(false);
+                jTextFieldStartMils.setEnabled(false);
+                erBaoMils.setEnabled(false);
+                enginerNo.setEnabled(false);
+                purchaseTax.setEnabled(false);
+                decorationFee.setEnabled(false);
+                telNo.setEnabled(false);
+                nowMils.setEnabled(false);
+                nextErBao.setEnabled(false);
+                carClass.setEnabled(false);
+                color.setEnabled(false);
+                seatNum.setEnabled(false);
+                buyyingTime.setEnabled(false);
+                YLFTime.setEnabled(false);
+                YLFEndTime.setEnabled(false);
+                NSTime.setEnabled(false);
+                NSEndTime.setEnabled(false);
+                BXTime.setEnabled(false);
+                BXEndTime.setEnabled(false);
+                CCSTime.setEnabled(false);
+                CCSEndTime.setEnabled(false);
+                LQPTime.setEnabled(false);
+                LQPEndTime.setEnabled(false);
+                YYZTime.setEnabled(false);
+                YYZEndTime.setEnabled(false);
+                GLFTime.setEnabled(false);
+                GLFEndTime.setEnabled(false);
+            } else {
+                jTextFieldCarNo.setEnabled(true);
+                jTextFieldOutFactoryNo.setEnabled(true);
+                jTextFieldDIPANNo.setEnabled(true);
+                jTextFieldPrice.setEnabled(true);
+                jTextFieldGetCarNoFee.setEnabled(true);
+                jTextFieldCarOwnerName.setEnabled(true);
+                jTextFieldStartMils.setEnabled(true);
+                erBaoMils.setEnabled(true);
+                enginerNo.setEnabled(true);
+                purchaseTax.setEnabled(true);
+                decorationFee.setEnabled(true);
+                telNo.setEnabled(true);
+                nowMils.setEnabled(true);
+                nextErBao.setEnabled(true);
+                carClass.setEnabled(true);
+                color.setEnabled(true);
+                seatNum.setEnabled(true);
+                buyyingTime.setEnabled(true);
+                YLFTime.setEnabled(true);
+                YLFEndTime.setEnabled(true);
+                NSTime.setEnabled(true);
+                NSEndTime.setEnabled(true);
+                BXTime.setEnabled(true);
+                BXEndTime.setEnabled(true);
+                CCSTime.setEnabled(true);
+                CCSEndTime.setEnabled(true);
+                LQPTime.setEnabled(true);
+                LQPEndTime.setEnabled(true);
+                YYZTime.setEnabled(true);
+                YYZEndTime.setEnabled(true);
+                GLFTime.setEnabled(true);
+                GLFEndTime.setEnabled(true);
+            }
+        }
     }
 }

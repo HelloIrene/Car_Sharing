@@ -14,24 +14,6 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Login frame = new Login();
-					frame.setResizable(false);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
 	/**
 	 * Create the frame.
 	 */
@@ -47,9 +29,11 @@ public class Login extends JFrame {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		setIconImage(Toolkit.getDefaultToolkit().getImage("E:\\eclipse32\\workspace\\Car_Rental\\image\\1.png"));
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/1.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 400, 385);
+		setSize( 400, 385);
+		setLocationRelativeTo(null);
+		setResizable(false);
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -86,7 +70,7 @@ public class Login extends JFrame {
 		passwordField.setBounds(120, 200, 130, 25);
 		panel.add(passwordField);
 		
-		String path1 = "image/0.png";  
+		String path1 = "img/0.png";
         // 背景图片  
         ImageIcon background1 = new ImageIcon(path1);  
         // 把背景图片显示在一个标签里面  
@@ -98,7 +82,7 @@ public class Login extends JFrame {
 //        //设置位置  
 //        setLocation(200, 50);  
         //背景图片的路径。（相对路径或者绝对路径。本例图片放于"java项目名"的文件下）  
-        String path = "image/2.png";  
+        String path = "img/2.png";
         // 背景图片  
         ImageIcon background = new ImageIcon(path);  
         // 把背景图片显示在一个标签里面  

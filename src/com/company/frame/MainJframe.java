@@ -1,7 +1,6 @@
 package com.company.frame;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -22,7 +21,8 @@ public class MainJframe extends JFrame {
      */
     public MainJframe() {
         try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
+            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -33,8 +33,9 @@ public class MainJframe extends JFrame {
             e.printStackTrace();
         }
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 700, 500);
-        this.setResizable(false);
+        setSize(700, 500);
+        setResizable(false);
+        setLocationRelativeTo(null);
 
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -152,7 +153,6 @@ public class MainJframe extends JFrame {
         btnNewButton_8.setBorder(border);
         toolBar.add(btnNewButton_8);
 
-//		JPanel panel = new JPanel();
         JPanel panel_1 = new MyPanel();
         contentPane.add(panel_1, BorderLayout.CENTER);
     }

@@ -481,7 +481,6 @@ public class EditCarInfFrame extends JFrame {
         jLabel.setBounds(10 + 265 * (i / 16), 15 + 25 * (i % 16), 104, 20);
         return jLabel;
     }
-
     private int saveASExcel() {
         // 第一步，创建一个webbook，对应一个Excel文件
         HSSFWorkbook wb = new HSSFWorkbook();
@@ -489,108 +488,73 @@ public class EditCarInfFrame extends JFrame {
         HSSFSheet sheet = wb.createSheet("学生表一");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
         HSSFRow row = sheet.createRow((int) 0);
-        // 第四步，创建单元格，并设置值表头 设置表头居中
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-
+//        // 第四步，创建单元格，并设置值表头 设置表头居中
+//        HSSFCellStyle style = wb.createCellStyle();
+//        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
         HSSFCell cell = row.createCell(0);
         cell.setCellValue("车牌号");
-        cell.setCellStyle(style);
         cell = row.createCell(1);
         cell.setCellValue("购买时间");
-        cell.setCellStyle(style);
         cell = row.createCell(2);
         cell.setCellValue("车型");
-        cell.setCellStyle(style);
         cell = row.createCell(3);
         cell.setCellValue("颜色");
-        cell.setCellStyle(style);
         cell = row.createCell(4);
         cell.setCellValue("出厂编号");
-        cell.setCellStyle(style);
         cell = row.createCell(5);
         cell.setCellValue("发动机号");
-        cell.setCellStyle(style);
         cell = row.createCell(6);
         cell.setCellValue("底盘编号");
-        cell.setCellStyle(style);
         cell = row.createCell(7);
         cell.setCellValue("座位数");
-        cell.setCellStyle(style);
         cell = row.createCell(8);
         cell.setCellValue("购买价格");
-        cell.setCellStyle(style);
         cell = row.createCell(9);
         cell.setCellValue("购置税");
-        cell.setCellStyle(style);
         cell = row.createCell(10);
         cell.setCellValue("上牌费");
-        cell.setCellStyle(style);
         cell = row.createCell(11);
         cell.setCellValue("汽车装饰");
-        cell.setCellStyle(style);
         cell = row.createCell(12);
         cell.setCellValue("车主姓名");
-        cell.setCellStyle(style);
         cell = row.createCell(13);
         cell.setCellValue("联系电话");
-        cell.setCellStyle(style);
         cell = row.createCell(14);
         cell.setCellValue("起始公里数");
-        cell.setCellStyle(style);
         cell = row.createCell(15);
         cell.setCellValue("当前公里数");
-        cell.setCellStyle(style);
         cell = row.createCell(16);
         cell.setCellValue("养路费购买时间");
-        cell.setCellStyle(style);
         cell = row.createCell(17);
         cell.setCellValue("养路费截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(18);
         cell.setCellValue("年审时间");
-        cell.setCellStyle(style);
         cell = row.createCell(19);
         cell.setCellValue("年审截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(20);
         cell.setCellValue("保险购买时间");
-        cell.setCellStyle(style);
         cell = row.createCell(21);
         cell.setCellValue("保险截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(22);
         cell.setCellValue("车船税购买时间");
-        cell.setCellStyle(style);
         cell = row.createCell(23);
         cell.setCellValue("车船税截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(24);
         cell.setCellValue("路桥票购买时间");
-        cell.setCellStyle(style);
         cell = row.createCell(25);
         cell.setCellValue("路桥票截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(26);
         cell.setCellValue("营运证办理时间");
-        cell.setCellStyle(style);
         cell = row.createCell(27);
         cell.setCellValue("营运证截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(28);
         cell.setCellValue("运营费购买时间");
-        cell.setCellStyle(style);
         cell = row.createCell(29);
         cell.setCellValue("运营费截止时间");
-        cell.setCellStyle(style);
         cell = row.createCell(30);
         cell.setCellValue("二保里程");
-        cell.setCellStyle(style);
         cell = row.createCell(31);
         cell.setCellValue("下次二保");
-        cell.setCellStyle(style);
-
-        //TODO 存盘excel文件
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
         //java.awt和java.util下都有list要声明正确
         java.util.List<CarInformation> list = commonDAO.getAllInfFormTb_car("tb_car");
@@ -646,8 +610,6 @@ public class EditCarInfFrame extends JFrame {
             //假如用户填写的文件名不带我们制定的后缀名，那么我们给它添上后缀
             if (fname.indexOf(".xls") == -1) {
                 file = new File(jfc.getCurrentDirectory(), fname + ".xls");
-//            System.out.println("renamed");
-//            System.out.println(file.getName());
             }
             try {
                 FileOutputStream fout = new FileOutputStream(file);
@@ -699,19 +661,6 @@ public class EditCarInfFrame extends JFrame {
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         skin = true;
-//        try {
-//            //UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
-//            //Darcula主题可以换肤
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (InstantiationException e) {
-//            e.printStackTrace();
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        } catch (UnsupportedLookAndFeelException e) {
-//            e.printStackTrace();
-//        }
         changeSkin();
     }
 
@@ -751,6 +700,15 @@ public class EditCarInfFrame extends JFrame {
                 YYZEndTime.setEnabled(false);
                 GLFTime.setEnabled(false);
                 GLFEndTime.setEnabled(false);
+                jButtonPrint.setEnabled(false);
+                jButtonDesgin.setEnabled(false);
+                jButtonAdd.setEnabled(false);
+                jButtonSave.setEnabled(false);
+                jButtonCancel.setEnabled(false);
+                jButtonBack.setEnabled(false);
+                jButtonChangeSkin.setEnabled(false);
+                jButtonUpdate.setEnabled(false);
+                jTabbedPane.setEnabled(false);
             } else {
                 jTextFieldCarNo.setEnabled(true);
                 jTextFieldOutFactoryNo.setEnabled(true);
@@ -784,6 +742,14 @@ public class EditCarInfFrame extends JFrame {
                 YYZEndTime.setEnabled(true);
                 GLFTime.setEnabled(true);
                 GLFEndTime.setEnabled(true);
+                jButtonPrint.setEnabled(true);
+                jButtonDesgin.setEnabled(true);
+                jButtonAdd.setEnabled(true);
+                jButtonSave.setEnabled(true);
+                jButtonCancel.setEnabled(true);
+                jButtonBack.setEnabled(true);
+                jButtonChangeSkin.setEnabled(true);
+                jTabbedPane.setEnabled(true);
             }
         }
     }

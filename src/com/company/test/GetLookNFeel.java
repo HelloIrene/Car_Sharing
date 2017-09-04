@@ -1,6 +1,7 @@
 package com.company.test;
 
 import com.company.changSkin.ShowSystemLookNFeelClass;
+import com.company.frame.Login;
 
 import java.awt.*;
 
@@ -9,8 +10,7 @@ public class GetLookNFeel {
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                ShowSystemLookNFeelClass showSystemLookNFeelClass = new ShowSystemLookNFeelClass();
-                showSystemLookNFeelClass.setVisible(true);
+                new Login().setVisible(true);
             }
         });
     }

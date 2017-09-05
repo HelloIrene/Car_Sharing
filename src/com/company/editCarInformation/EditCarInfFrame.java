@@ -30,7 +30,8 @@ import java.util.regex.Pattern;
  * @author student Ross
  * @2017年8月30日
  */
-public class EditCarInfFrame extends JFrame {
+public class EditCarInfFrame extends JDialog {
+    private int idIdentify;
     private CommonDAOImpl commonDAO = new CommonDAOImpl();
     private ChaneSkin chaneSkin;
     private boolean skin;
@@ -92,7 +93,9 @@ public class EditCarInfFrame extends JFrame {
             , "购买时间：", "颜色：", "发动机号：", "座位数：", "购置税：", "汽车装饰：", "联系电话：", "当前公里数："
             , "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "下次二保："};
 
-    public EditCarInfFrame() {
+    public EditCarInfFrame(int i) {
+        idIdentify=i;
+        setModal(true);
         iniFrame();
         iniBody();
         this.add(mianBody);
@@ -109,17 +112,17 @@ public class EditCarInfFrame extends JFrame {
         jButtonPrint.setBounds(585, 170, 84, 40);
         jButtonPrint.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Properties p = new Properties();
-                PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(EditCarInfFrame.this, "客户登记表编辑", p);
-                Graphics pg = jp.getGraphics();//Graphics打印图形的图形环境
-                if (pg != null) {
-                    try {
-                        EditCarInfFrame.this.printAll(pg); //打印该窗体及其所有的组件
-                    } finally {
-                        pg.dispose(); //注销图形环境
-                    }
-                }
-                jp.end(); //结束打印作业
+//                Properties p = new Properties();
+//                PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(EditCarInfFrame.this, "客户登记表编辑", p);
+//                Graphics pg = jp.getGraphics();//Graphics打印图形的图形环境
+//                if (pg != null) {
+//                    try {
+//                        EditCarInfFrame.this.printAll(pg); //打印该窗体及其所有的组件
+//                    } finally {
+//                        pg.dispose(); //注销图形环境
+//                    }
+//                }
+//                jp.end(); //结束打印作业
             }
         });
 
@@ -485,7 +488,7 @@ public class EditCarInfFrame extends JFrame {
         // 第一步，创建一个webbook，对应一个Excel文件
         HSSFWorkbook wb = new HSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-        HSSFSheet sheet = wb.createSheet("学生表一");
+        HSSFSheet sheet = wb.createSheet("汽车信息表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
         HSSFRow row = sheet.createRow((int) 0);
 //        // 第四步，创建单元格，并设置值表头 设置表头居中

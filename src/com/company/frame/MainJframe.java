@@ -1,28 +1,35 @@
 package com.company.frame;
 
-import java.awt.BorderLayout;
+import com.company.dao.CommonDAOImpl;
+import com.company.editCarInformation.EditCarInfFrame;
+import com.company.entity.LoginIdentity;
+
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.imageio.ImageIO;
 
 public class MainJframe extends JFrame {
-
+    //todo 导入身份权限后的相应限制
     private static final long serialVersionUID = 4745675222291465223L;
     private JPanel contentPane;
-
+    private CommonDAOImpl commonDAO;
+    private LoginIdentity users;
+    private int idIdentify;
     /**
      * Create the frame.
      */
-    public MainJframe() {
+    public MainJframe(int inputidIdentify) {
+        idIdentify=inputidIdentify;
         try {
-            UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
-            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -103,36 +110,72 @@ public class MainJframe extends JFrame {
                 "img/password_manager.png"));
         Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
         btnNewButton.setBorder(border);
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MainJframe.ChangePassword().setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton);
 
         JButton btnNewButton_1 = new JButton("\u8F66\u8F86\u6863\u6848");
         btnNewButton_1.setIcon(
                 new ImageIcon("img/carfile.png"));
         btnNewButton_1.setBorder(border);
+        btnNewButton_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new EditCarInfFrame(idIdentify).setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton_1);
 
         JButton btnNewButton_2 = new JButton("\u5BA2\u6237\u8D44\u6599");
         btnNewButton_2.setIcon(
                 new ImageIcon("img/customer.png"));
         btnNewButton_2.setBorder(border);
+        btnNewButton_2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MyFrame(idIdentify).setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton_2);
 
         JButton btnNewButton_3 = new JButton("\u5BA2\u6237\u9884\u8BA2");
         btnNewButton_3.setIcon(
                 new ImageIcon("img/Order.png"));
         btnNewButton_3.setBorder(border);
+        btnNewButton_3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ClientRegisterWindow(idIdentify).setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton_3);
 
         JButton btnNewButton_4 = new JButton("\u79DF\u8D41\u767B\u8BB0");
         btnNewButton_4.setIcon(
                 new ImageIcon("img/register.png"));
         btnNewButton_4.setBorder(border);
+        btnNewButton_4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 new RegisterFrame().setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton_4);
 
         JButton btnNewButton_5 = new JButton("\u79DF\u8D41\u7ED3\u7B97");
         btnNewButton_5.setIcon(
                 new ImageIcon("img/dollar.png"));
         btnNewButton_5.setBorder(border);
+        btnNewButton_5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CarSettlement().setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton_5);
 
         JButton btnNewButton_6 = new JButton("\u65E5\u8BB0\u8D26");
@@ -151,6 +194,12 @@ public class MainJframe extends JFrame {
         btnNewButton_8.setIcon(
                 new ImageIcon("img/sign_out.png"));
         btnNewButton_8.setBorder(border);
+        btnNewButton_8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
         toolBar.add(btnNewButton_8);
 
         JPanel panel_1 = new MyPanel();
@@ -167,6 +216,60 @@ public class MainJframe extends JFrame {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    class ChangePassword extends JDialog {
+        public ChangePassword() {
+            setTitle("修改密码");
+            setLocationRelativeTo(null);
+            setSize(250, 225);
+            setResizable(false);
+            setModal(true);
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(null);
+            JLabel jLabel = new JLabel("用户名:");
+            jLabel.setBounds(30, 30, 150, 25);
+            mainPanel.add(jLabel);
+            JLabel jLabelold = new JLabel("旧密码:");
+            jLabelold.setBounds(30, 70, 150, 25);
+            mainPanel.add(jLabelold);
+            JLabel jLabelNew = new JLabel("新密码:");
+            jLabelNew.setBounds(30, 110, 150, 25);
+            mainPanel.add(jLabelNew);
+
+            JTextField jTextFielduserName = new JTextField();
+            jTextFielduserName.setBounds(75, 30, 150, 20);
+            JPasswordField jTextFieldOldPassword = new JPasswordField();
+            jTextFieldOldPassword.setBounds(75, 70, 150, 20);
+            JPasswordField jTextFieldNewPassword = new JPasswordField();
+            jTextFieldNewPassword.setBounds(75, 110, 150, 20);
+            mainPanel.add(jTextFielduserName);
+            mainPanel.add(jTextFieldOldPassword);
+            mainPanel.add(jTextFieldNewPassword);
+
+            JButton isConfirm = new JButton("确定");
+            isConfirm.setBounds(75, 145, 84, 40);
+            isConfirm.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    commonDAO = new CommonDAOImpl();
+                    if (!(commonDAO.searchClo(jTextFielduserName.getText(), "user_customer", "user_id"))) {
+                        JOptionPane.showMessageDialog(ChangePassword.this, "没有此用户！", "提示！", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    } else if(commonDAO.isPasswordRight(new String(jTextFieldOldPassword.getPassword()),jTextFielduserName.getText())){
+                        if (commonDAO.updatePassword(new String(jTextFieldNewPassword.getPassword()), jTextFielduserName.getText()) != 0) {
+                            JOptionPane.showMessageDialog(ChangePassword.this, "修改成功！", "提示！", JOptionPane.WARNING_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(ChangePassword.this, "修改失败！", "提示！", JOptionPane.WARNING_MESSAGE);
+                        }
+                    }else {
+                        JOptionPane.showMessageDialog(ChangePassword.this, "密码错误！", "提示！", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            });
+            mainPanel.add(isConfirm);
+            this.add(mainPanel);
         }
     }
 }

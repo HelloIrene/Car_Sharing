@@ -1,13 +1,10 @@
 package com.company.frame;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
-import java.awt.Component;
 
 public class Login extends JFrame {
 
@@ -46,8 +43,6 @@ public class Login extends JFrame {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(270, 150, 70, 25);
 		panel.add(comboBox);
-//		List<String> uList = dao.deptName();
-//		comboBox_1 = new JComboBox(uList.toArray(new String[uList.size()]));
 		String[] s={"master","system","customer"};
 		for(String dept:s){
 			comboBox.addItem(dept);
@@ -77,10 +72,6 @@ public class Login extends JFrame {
         JLabel label1 = new JLabel(background1);  
         label1.setBounds(150, 5, 100, 120);
         panel.add(label1);
-		
-//		setSize(500, 400);  
-//        //设置位置  
-//        setLocation(200, 50);  
         //背景图片的路径。（相对路径或者绝对路径。本例图片放于"java项目名"的文件下）  
         String path = "img/2.png";
         // 背景图片  

@@ -134,8 +134,8 @@ public class ChaneSkin extends JDialog  {
         setSkin();
     }
 
-    public final int showChangeSkin(JFrame jFrame){
-        setLocationRelativeTo(jFrame);
+    public final int showChangeSkin(JDialog jDialog){
+        setLocationRelativeTo(jDialog);
         revalidate();
         setVisible(true);
         return returnValue;

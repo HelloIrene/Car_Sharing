@@ -9,7 +9,7 @@ public class FrameTest {
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     try {
-                        EditCarInfFrame frame = new EditCarInfFrame();
+                        EditCarInfFrame frame = new EditCarInfFrame(1);
                         frame.setVisible(true);
                     } catch (Exception e) {
                         e.printStackTrace();

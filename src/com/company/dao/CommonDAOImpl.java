@@ -74,61 +74,6 @@ public class CommonDAOImpl implements CommonDAO {
         return itemList;
     }
 
-    public <T> List<T> executeQuery2(Class<?> clazz, String query,
-                                    List<Object> params) {
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<T> itemList = new ArrayList<T>();
-        try {
-            conn = DBTool.getInstance().getConnection();
-            // 设置隔离级别
-            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-            ps = conn.prepareStatement(query);
-            if (params != null && params.size() > 0) {
-                for (int i = 0; i < params.size(); i++) {
-                    ps.setObject(i + 1, params.get(i));
-                }
-            }
-            rs = ps.executeQuery();
-            Field[] fields = clazz.getDeclaredFields();
-            System.out.println(ps);
-            while (rs.next()) {
-                @SuppressWarnings("unchecked")
-                T entity = (T) clazz.newInstance(); //利用反射实例化一个对象
-                for (Field field : fields) {
-                    // VERY IMPORTANT!!!
-                    field.setAccessible(true);
-                    Object rsVal = rs.getObject(field.getName());
-
-                    //##############ORACLE##############
-                    Object val = null;
-                    if (rsVal.getClass() == BigDecimal.class) {
-                        if (field.getType() == Double.class) {
-                            val = ((BigDecimal) rsVal).doubleValue();
-                        } else if (field.getType() == Integer.class) {
-                            val = ((BigDecimal) rsVal).intValue();
-                        } else if (field.getType() == Long.class) {
-                            val = ((BigDecimal) rsVal).longValue();
-                        } else {
-                            val = rsVal;
-                        }
-                    } else {
-                        val = rsVal;
-                    }
-                    //##############ORACLE##############
-                    field.set(entity, val);
-                }
-                itemList.add(entity);
-            }
-        } catch (SQLException | InstantiationException | IllegalAccessException
-                | SecurityException e) {
-            e.printStackTrace();
-        } finally {
-            DBTool.closeAll(rs, ps, conn);
-        }
-        return itemList;
-    }
-
     public int executeUpdate(String query, List<Object> params) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -149,14 +94,6 @@ public class CommonDAOImpl implements CommonDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (SecurityException e) {
-            /*try
-            {
-				conn.rollback();
-			}
-			catch (SQLException e1)
-			{
-				e1.printStackTrace();
-			}*/
             e.printStackTrace();
         } finally {
             DBTool.closeAll(rs, ps, conn);
@@ -267,6 +204,22 @@ public class CommonDAOImpl implements CommonDAO {
             params.add(primaryField.get(obj));
             row = executeUpdate(sb.toString(), params);
         } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+
+    public int updatePassword(String password, String user_id) {
+        int row = 0;
+        try {
+            // 获取到对象声明的所有属性字段
+            List<Object> params = new ArrayList<Object>();
+            StringBuffer sb = new StringBuffer();
+            sb.append("UPDATE user_customer SET password=? WHERE user_id=?");
+            params.add(password);
+            params.add(user_id);
+            row = executeUpdate(sb.toString(), params);
+        } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
         return row;
@@ -404,6 +357,33 @@ public class CommonDAOImpl implements CommonDAO {
         return row;
     }
 
+    public boolean isPasswordRight(String oldPassword, String user_id) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String back = new String();
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("SElECT password from user_customer where user_id = '");
+        stringBuffer.append(user_id);
+        stringBuffer.append("'");
+        conn = DBTool.getInstance().getConnection();
+        try {
+            ps = conn.prepareStatement(stringBuffer.toString());
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                back = rs.getString("password");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (back != null) {
+            if (back.equals(oldPassword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean searchClo(String searchInf, String tableName, String columnName) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -441,32 +421,5 @@ public class CommonDAOImpl implements CommonDAO {
         stringBuffer.append(tableName);
         return executeQuery(CarInformation.class, stringBuffer.toString(), null);
     }
-
-    /*********************************************************/
-//    public void commitBatch()
-//    {
-//        try {
-//            conn.commit();
-//            conn.setAutoCommit(true);
-//        } catch (SQLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        finally {
-//            DBTool.closeAll(null,conn,null);
-//        }
-//    }
-//
-//    public void rollbackBatch()
-//    {
-//        try {
-//            conn.rollback();
-//            conn.setAutoCommit(true);
-//        } catch (SQLException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        DbUtil.close2(rs,conn);
-//    }
 }
 

@@ -509,14 +509,4 @@ public class DateChooser extends JFrame{
             });
         }
     }
-    public static void main(String[] args) {
-        final DateChooser mp=new DateChooser();
-        JFrame jf=new JFrame("test");
-        jf.add(mp,BorderLayout.CENTER);
-        jf.add(new JButton("≤‚ ‘”√µƒ"),BorderLayout.NORTH);
-        jf.pack();
-        jf.setLocationRelativeTo(null);
-        jf.setVisible(true);
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
 }

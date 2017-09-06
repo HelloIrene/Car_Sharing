@@ -82,7 +82,7 @@ public class CommonDAOImpl implements CommonDAO {
             conn = DBTool.getInstance().getConnection();
             conn.setAutoCommit(false);
             ps = conn.prepareStatement(query);
-            if (params.size() > 0) {
+            if (params != null && params.size() > 0) {
                 for (int i = 0; i < params.size(); i++) {
                     ps.setObject(i + 1, params.get(i));
                 }
@@ -420,6 +420,24 @@ public class CommonDAOImpl implements CommonDAO {
         StringBuffer stringBuffer = new StringBuffer("SELECT * FROM ");
         stringBuffer.append(tableName);
         return executeQuery(CarInformation.class, stringBuffer.toString(), null);
+    }
+
+    public int setBlock(String sqlquery,String tableName, String primaryKey, String primaryInf, int isBlockUp) {
+        int row = 0;
+        try {
+            // 获取到对象声明的所有属性字段
+            List<Object> params = new ArrayList<Object>();
+            StringBuffer sb = new StringBuffer();
+            sb.append("UPDATE ? SET isBlockUp=? WHERE ? = ? ");
+            params.add(tableName);
+            params.add(isBlockUp);
+            params.add(primaryKey);
+            params.add(primaryInf);
+            row = executeUpdate(sb.toString(), params);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return row;
     }
 }
 

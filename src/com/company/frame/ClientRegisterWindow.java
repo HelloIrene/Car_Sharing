@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -268,6 +270,19 @@ public class ClientRegisterWindow extends JDialog implements ActionListener {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+        this.addWindowListener(new WindowAdapter(){
+            public void windowClosing(WindowEvent e){
+                int exitChoose=JOptionPane.showConfirmDialog(ClientRegisterWindow.this,"确定要退出吗?","退出提示",JOptionPane.OK_CANCEL_OPTION);
+                if(exitChoose==JOptionPane.OK_OPTION)
+                {
+//		        	Register.this.dispose(); //退出本界面
+                    //System.exit(0);
+                    dispose();
+                }else{
+                    return;
+                }
+            }
+        });
 	}
 
 	@Override

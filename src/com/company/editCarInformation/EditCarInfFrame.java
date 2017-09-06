@@ -3,6 +3,8 @@ package com.company.editCarInformation;
 import com.company.changSkin.ChaneSkin;
 import com.company.dao.CommonDAOImpl;
 import com.company.entity.CarInformation;
+import com.company.frame.RegisterFrame;
+import com.company.other.Regex;
 import org.apache.poi.hssf.usermodel.*;
 
 import javax.swing.*;
@@ -10,14 +12,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.PrivateKey;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -31,6 +31,9 @@ import java.util.regex.Pattern;
  * @2017年8月30日
  */
 public class EditCarInfFrame extends JDialog {
+    private JLabel warningInf;
+    private JLabel warningBody;
+    private Regex regex = new Regex();
     private int idIdentify;
     private CommonDAOImpl commonDAO = new CommonDAOImpl();
     private ChaneSkin chaneSkin;
@@ -42,7 +45,6 @@ public class EditCarInfFrame extends JDialog {
     private JPanel demo;
     private JCheckBox jCheckBox;
     private JButton jButtonPrint;
-    private JButton jButtonDesgin;
     private JButton jButtonAdd;
     private JButton jButtonSave;
     private JButton jButtonCancel;
@@ -94,10 +96,11 @@ public class EditCarInfFrame extends JDialog {
             , "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "下次二保："};
 
     public EditCarInfFrame(int i) {
-        idIdentify=i;
+        idIdentify = i;
         setModal(true);
         iniFrame();
         iniBody();
+        judgeID();
         this.add(mianBody);
     }
 
@@ -106,10 +109,60 @@ public class EditCarInfFrame extends JDialog {
         mianBody.setLayout(null);
         jCheckBox = new JCheckBox("停用");
         jCheckBox.setBounds(585, 50, 60, 20);
-        jCheckBox.addItemListener(new EditCarInfFrame.ItemCheckBoxListener());
+        jCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (jCheckBox.isSelected()) {
+                    StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
+                    String warning = new String();
+                    if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
+                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    stringBuffer.append(0);
+                    stringBuffer.append(" WHERE Car_Id = '");
+                    stringBuffer.append(jTextFieldCarNo.getText());
+                    stringBuffer.append("' ");
+                    if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
+                        warning="停用成功！";
+                    }else{
+                        warning="停用失败";
+                    }
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
+                    return;
+                } else {
+                    StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
+                    String warning = new String();
+                    if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
+                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
+                        return;
+                    }
+                    stringBuffer.append(1);
+                    stringBuffer.append(" WHERE Car_Id = '");
+                    stringBuffer.append(jTextFieldCarNo.getText());
+                    stringBuffer.append("' ");
+                    if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
+                        warning="恢复启用成功！";
+                    }else{
+                        warning="恢复启用失败";
+                    }
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
+                    return;
+                }
+            }
+        });
+
+        warningInf = new JLabel();
+        warningInf.setForeground(Color.RED);
+        warningInf.setBounds(585, 100, 84, 30);
+        mianBody.add(warningInf);
+        warningBody = new JLabel();
+        warningBody.setForeground(Color.RED);
+        warningBody.setBounds(585, 120, 84, 30);
+        mianBody.add(warningBody);
 
         jButtonPrint = new JButton("打印档案");
-        jButtonPrint.setBounds(585, 170, 84, 40);
+        jButtonPrint.setBounds(585, 210, 84, 40);
         jButtonPrint.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
 //                Properties p = new Properties();
@@ -126,23 +179,12 @@ public class EditCarInfFrame extends JDialog {
             }
         });
 
-        jButtonDesgin = new JButton("设计档案");
-        jButtonDesgin.setBounds(585, 210, 84, 40);
-        jButtonDesgin.addActionListener(new ActionListener() {
-            @Override
-            //实验各皮肤弹出窗口
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
         jButtonAdd = new JButton("增加(A)");
         jButtonAdd.setBounds(585, 250, 84, 40);
         jButtonAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean carNoNo = isCar(jTextFieldCarNo.getText());
-                boolean telNoNo = isTel(telNo.getText());
-                if (carNoNo && telNoNo) {
+                if (isInfRight()) {
                     if (commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id")) {
                         JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数！", "错误！", JOptionPane.WARNING_MESSAGE);
                         return;
@@ -150,11 +192,6 @@ public class EditCarInfFrame extends JDialog {
                     if (commonDAO.add2(getPanelINf(), "tb_car") != 0) {
                         JOptionPane.showMessageDialog(EditCarInfFrame.this, "添加成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                     }
-
-                } else if (carNoNo == false) {
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "电话格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -163,9 +200,7 @@ public class EditCarInfFrame extends JDialog {
         jButtonUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean carNoNo = isCar(jTextFieldCarNo.getText());
-                boolean telNoNo = isTel(telNo.getText());
-                if (carNoNo && telNoNo) {
+                if (isInfRight()) {
                     if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
                         JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有数据还更新，心里有没有点比数！", "错误！", JOptionPane.WARNING_MESSAGE);
                         return;
@@ -173,10 +208,6 @@ public class EditCarInfFrame extends JDialog {
                     if (commonDAO.update2(getPanelINf(), "tb_car") != 0) {
                         JOptionPane.showMessageDialog(EditCarInfFrame.this, "更新成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                     }
-                } else if (carNoNo == false) {
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "电话格式不正确！", "错误！", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -234,7 +265,7 @@ public class EditCarInfFrame extends JDialog {
         iniTabbedPanel();
 
         jButtonChangeSkin = new JButton("换肤");
-        jButtonChangeSkin.setBounds(585, 130, 84, 40);
+        jButtonChangeSkin.setBounds(585, 170, 84, 40);
         jButtonChangeSkin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -251,7 +282,6 @@ public class EditCarInfFrame extends JDialog {
         mianBody.add(jButtonChangeSkin);
         mianBody.add(jCheckBox);
         mianBody.add(jButtonPrint);
-        mianBody.add(jButtonDesgin);
         mianBody.add(jButtonAdd);
         mianBody.add(jButtonSave);
         mianBody.add(jButtonCancel);
@@ -484,6 +514,7 @@ public class EditCarInfFrame extends JDialog {
         jLabel.setBounds(10 + 265 * (i / 16), 15 + 25 * (i % 16), 104, 20);
         return jLabel;
     }
+
     private int saveASExcel() {
         // 第一步，创建一个webbook，对应一个Excel文件
         HSSFWorkbook wb = new HSSFWorkbook();
@@ -628,36 +659,6 @@ public class EditCarInfFrame extends JDialog {
         return 0;
     }
 
-    public boolean isTel(String str) {
-        Pattern p = null;
-        Matcher m = null;
-        boolean b = false;
-        //^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\\d{8}$
-        //^1[3|4|5|8][0-9]\d{8}\s?$ ←\s?表示句末可以允许一个空格(暂时不用)
-        //^1[3|4|5|8][0-9]\d{8}$
-        p = Pattern.compile(
-                "^1[3|4|5|8][0-9]\\d{8}$"); // 验证手机号
-        m = p.matcher(str);
-        b = m.matches();
-        return b;
-    }
-
-    public boolean isCar(String str) {
-        /*
-        1.常规车牌号：仅允许以汉字开头，后面可录入六个字符，由大写英文字母和阿拉伯数字组成。如：粤B12345；
-        2.最后一个为汉字的车牌：允许以汉字开头，后面可录入六个字符，前五位字符，由大写英文字母和阿拉伯数字组成，而最后一个字符为汉字，汉字包括“挂”、“学”、“警”、“港”、“澳”。如：粤Z1234港。
-        3.新军车牌：以两位为大写英文字母开头，后面以5位阿拉伯数字组成。如：BA12345。
-         */
-        Pattern p = null;
-        Matcher m = null;
-        boolean b = false;
-        p = Pattern.compile(
-                "^[京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领A-Z]{1}[A-Z]{1}[A-Z0-9]{4}[A-Z0-9挂学警港澳]{1}$"); // 验证车牌号
-        m = p.matcher(str);
-        b = m.matches();
-        return b;
-    }
-
     private void iniFrame() {
         this.setTitle("汽车档案编辑");
         this.setSize(680, 490);
@@ -665,95 +666,174 @@ public class EditCarInfFrame extends JDialog {
         this.setLocationRelativeTo(null);
         skin = true;
         changeSkin();
+        this.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int exitChoose = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
+                if (exitChoose == JOptionPane.OK_OPTION) {
+//		        	Register.this.dispose(); //退出本界面
+                    //System.exit(0);
+                    dispose();
+                } else {
+                    return;
+                }
+            }
+        });
     }
 
-    class ItemCheckBoxListener implements ItemListener {
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (jCheckBox.isSelected()) {
-                jTextFieldCarNo.setEnabled(false);
-                jTextFieldOutFactoryNo.setEnabled(false);
-                jTextFieldDIPANNo.setEnabled(false);
-                jTextFieldPrice.setEnabled(false);
-                jTextFieldGetCarNoFee.setEnabled(false);
-                jTextFieldCarOwnerName.setEnabled(false);
-                jTextFieldStartMils.setEnabled(false);
-                erBaoMils.setEnabled(false);
-                enginerNo.setEnabled(false);
-                purchaseTax.setEnabled(false);
-                decorationFee.setEnabled(false);
-                telNo.setEnabled(false);
-                nowMils.setEnabled(false);
-                nextErBao.setEnabled(false);
-                carClass.setEnabled(false);
-                color.setEnabled(false);
-                seatNum.setEnabled(false);
-                buyyingTime.setEnabled(false);
-                YLFTime.setEnabled(false);
-                YLFEndTime.setEnabled(false);
-                NSTime.setEnabled(false);
-                NSEndTime.setEnabled(false);
-                BXTime.setEnabled(false);
-                BXEndTime.setEnabled(false);
-                CCSTime.setEnabled(false);
-                CCSEndTime.setEnabled(false);
-                LQPTime.setEnabled(false);
-                LQPEndTime.setEnabled(false);
-                YYZTime.setEnabled(false);
-                YYZEndTime.setEnabled(false);
-                GLFTime.setEnabled(false);
-                GLFEndTime.setEnabled(false);
-                jButtonPrint.setEnabled(false);
-                jButtonDesgin.setEnabled(false);
-                jButtonAdd.setEnabled(false);
-                jButtonSave.setEnabled(false);
-                jButtonCancel.setEnabled(false);
-                jButtonBack.setEnabled(false);
-                jButtonChangeSkin.setEnabled(false);
-                jButtonUpdate.setEnabled(false);
-                jTabbedPane.setEnabled(false);
-            } else {
-                jTextFieldCarNo.setEnabled(true);
-                jTextFieldOutFactoryNo.setEnabled(true);
-                jTextFieldDIPANNo.setEnabled(true);
-                jTextFieldPrice.setEnabled(true);
-                jTextFieldGetCarNoFee.setEnabled(true);
-                jTextFieldCarOwnerName.setEnabled(true);
-                jTextFieldStartMils.setEnabled(true);
-                erBaoMils.setEnabled(true);
-                enginerNo.setEnabled(true);
-                purchaseTax.setEnabled(true);
-                decorationFee.setEnabled(true);
-                telNo.setEnabled(true);
-                nowMils.setEnabled(true);
-                nextErBao.setEnabled(true);
-                carClass.setEnabled(true);
-                color.setEnabled(true);
-                seatNum.setEnabled(true);
-                buyyingTime.setEnabled(true);
-                YLFTime.setEnabled(true);
-                YLFEndTime.setEnabled(true);
-                NSTime.setEnabled(true);
-                NSEndTime.setEnabled(true);
-                BXTime.setEnabled(true);
-                BXEndTime.setEnabled(true);
-                CCSTime.setEnabled(true);
-                CCSEndTime.setEnabled(true);
-                LQPTime.setEnabled(true);
-                LQPEndTime.setEnabled(true);
-                YYZTime.setEnabled(true);
-                YYZEndTime.setEnabled(true);
-                GLFTime.setEnabled(true);
-                GLFEndTime.setEnabled(true);
-                jButtonPrint.setEnabled(true);
-                jButtonDesgin.setEnabled(true);
-                jButtonAdd.setEnabled(true);
-                jButtonSave.setEnabled(true);
-                jButtonCancel.setEnabled(true);
-                jButtonBack.setEnabled(true);
-                jButtonChangeSkin.setEnabled(true);
-                jTabbedPane.setEnabled(true);
-            }
+
+    private void judgeID() {
+        if (idIdentify == 0) {
+            warningInf.setText("客户无法编辑");
+            jCheckBox.setEnabled(false);
+            jTextFieldCarNo.setEnabled(false);
+            jTextFieldOutFactoryNo.setEnabled(false);
+            jTextFieldDIPANNo.setEnabled(false);
+            jTextFieldPrice.setEnabled(false);
+            jTextFieldGetCarNoFee.setEnabled(false);
+            jTextFieldCarOwnerName.setEnabled(false);
+            jTextFieldStartMils.setEnabled(false);
+            erBaoMils.setEnabled(false);
+            enginerNo.setEnabled(false);
+            purchaseTax.setEnabled(false);
+            decorationFee.setEnabled(false);
+            telNo.setEnabled(false);
+            nowMils.setEnabled(false);
+            nextErBao.setEnabled(false);
+            carClass.setEnabled(false);
+            color.setEnabled(false);
+            seatNum.setEnabled(false);
+            buyyingTime.setEnabled(false);
+            YLFTime.setEnabled(false);
+            YLFEndTime.setEnabled(false);
+            NSTime.setEnabled(false);
+            NSEndTime.setEnabled(false);
+            BXTime.setEnabled(false);
+            BXEndTime.setEnabled(false);
+            CCSTime.setEnabled(false);
+            CCSEndTime.setEnabled(false);
+            LQPTime.setEnabled(false);
+            LQPEndTime.setEnabled(false);
+            YYZTime.setEnabled(false);
+            YYZEndTime.setEnabled(false);
+            GLFTime.setEnabled(false);
+            GLFEndTime.setEnabled(false);
+            jButtonPrint.setEnabled(false);
+            jButtonAdd.setEnabled(false);
+            jButtonSave.setEnabled(false);
+            jButtonCancel.setEnabled(false);
+            jButtonBack.setEnabled(false);
+            jButtonChangeSkin.setEnabled(false);
+            jButtonUpdate.setEnabled(false);
+            jTabbedPane.setEnabled(false);
         }
+    }
+
+//    class ItemCheckBoxListener implements ItemListener {
+//        @Override
+//        public void itemStateChanged(ItemEvent e) {
+//            if (jCheckBox.isSelected()) {
+//                StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
+//                String warning = new String();
+//                if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
+//                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
+//                    return;
+//                }
+//                stringBuffer.append(0);
+//                stringBuffer.append(" WHERE Car_Id = '");
+//                stringBuffer.append(jTextFieldCarNo.getText());
+//                stringBuffer.append("' ");
+//                if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
+//                    warning="成功！";
+//                }else{
+//                    warning="失败";
+//                }
+//                JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
+//                return;
+//            } else {
+//                StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
+//                String warning = new String();
+//                if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
+//                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
+//                    return;
+//                }
+//                stringBuffer.append(1);
+//                stringBuffer.append(" WHERE Car_Id = '");
+//                stringBuffer.append(jTextFieldCarNo.getText());
+//                stringBuffer.append("' ");
+//                if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
+//                    warning="成功！";
+//                }else{
+//                    warning="失败";
+//                }
+//                JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
+//                return;
+//            }
+//
+//        }
+//    }
+
+    /*
+        private JTextField jTextFieldOutFactoryNo;
+        private JTextField jTextFieldDIPANNo;
+        private JTextField enginerNo;
+        private JTextField nowMils;
+     */
+    private boolean isInfRight() {
+        if (!(regex.isCar(jTextFieldCarNo.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！");
+            showWarning("车牌号", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(jTextFieldPrice.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "价格格式不正确！");
+            showWarning("价格", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(purchaseTax.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "购置税格式不正确！");
+            showWarning("购置税", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(jTextFieldGetCarNoFee.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "上牌费格式不正确！");
+            showWarning("上牌费", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(decorationFee.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "装饰费格式不正确！");
+            showWarning("汽车装饰费", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isTel(telNo.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "手机号格式不正确！");
+            showWarning("联系电话", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(jTextFieldStartMils.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "起始里程格式不正确！");
+            showWarning("起始里程", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(nowMils.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "当前公里数格式不正确！");
+            showWarning("当前公里数", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(erBaoMils.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "二保里程格式不正确！");
+            showWarning("二保里程", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isAllNum(nextErBao.getText()))) {
+            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "下次二保格式不正确！");
+            showWarning("下次二保", "格式不正确！");
+            return false;
+        }
+        return true;
+    }
+
+    private void showWarning(String Inf, String Body) {
+        warningInf.setText(Inf);
+        warningBody.setText(Body);
     }
 }

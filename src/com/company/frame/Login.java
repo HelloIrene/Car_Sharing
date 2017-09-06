@@ -43,7 +43,7 @@ public class Login extends JFrame {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(270, 150, 70, 25);
 		panel.add(comboBox);
-		String[] s={"master","system","customer"};
+		String[] s={"customer","master","system"};
 		for(String dept:s){
 			comboBox.addItem(dept);
 		}

@@ -305,4 +305,8 @@ public class CarInformation {
         NextErbao = nextErbao;
     }
 
+    public String toString(){
+        return Car_Id+"\t"+Buy_Time+"\t"+Car_Type+"\t"+Car_Color+"\t"+Motor_Id+"\t"+Chezhu_Name+"\t"+Tel;
+    }
+
 }

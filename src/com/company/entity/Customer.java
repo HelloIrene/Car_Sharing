@@ -125,5 +125,12 @@ public class Customer {
 		this.shiShouFee = shiShouFee;
 	}
 
+	public String toString(){
+		return cId+"\t"+startTime+"\t"+endTime+"\t"+customerName+"\t"+customerSex+"\t"+customerType+"\t"+customerPsd
+				+"\t"+lingZhengTime+"\t"+zhunJiaType+"\t"+creditId+"\t"+officeTel+"\t"+mobileTel+"\t"+homeAddress+"\t"+gongSiName
+				+gongSiAddress+"\t"+yingShouFee+"\t"+shiShouFee;
+	}
+
+
 
 }

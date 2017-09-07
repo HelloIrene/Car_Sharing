@@ -375,8 +375,4 @@ public class CarServiceFrame extends JFrame {
 		}
 		return 0;
 	}
-//todo 加车辆维修登记表
-	public static void main(String[] args) {
-		new CarServiceFrame().setVisible(true);
-	}
 }

@@ -1,37 +1,32 @@
 package com.company.frame;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 import com.company.entity.Car_settlement;
 import com.company.entity.CustZL;
+import com.company.other.Regex;
 import com.company.dao.CommonDAOImpl;
-
 
 import java.awt.Component;
 
 import java.awt.Color;
 import java.awt.SystemColor;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.sql.Timestamp;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.awt.Font;
-import java.awt.Image;
 
 public class CarSettlement extends JDialog {
 
@@ -134,6 +129,7 @@ public class CarSettlement extends JDialog {
         panel_1.add(label_14);
 
         Zulin_Qixian = new JTextField();
+        Zulin_Qixian.setHorizontalAlignment(SwingConstants.RIGHT);
         Zulin_Qixian.setBackground(Color.GRAY);
         Zulin_Qixian.setBounds(397, 7, 72, 21);
         panel_1.add(Zulin_Qixian);
@@ -145,7 +141,7 @@ public class CarSettlement extends JDialog {
 
         Yingshou_Zujin = new JTextField();
         Yingshou_Zujin.setHorizontalAlignment(SwingConstants.RIGHT);
-        Yingshou_Zujin.setBounds(558, 7, 78, 21);
+        Yingshou_Zujin.setBounds(558, 7, 66, 21);
         panel_1.add(Yingshou_Zujin);
         Yingshou_Zujin.setColumns(10);
 
@@ -185,7 +181,7 @@ public class CarSettlement extends JDialog {
 
         Baogangjia = new JTextField();
         Baogangjia.setHorizontalAlignment(SwingConstants.RIGHT);
-        Baogangjia.setBounds(558, 42, 78, 21);
+        Baogangjia.setBounds(558, 42, 66, 21);
         panel_1.add(Baogangjia);
         Baogangjia.setColumns(10);
 
@@ -215,11 +211,12 @@ public class CarSettlement extends JDialog {
 
         Xiaoji_Fee = new JTextField();
         Xiaoji_Fee.setHorizontalAlignment(SwingConstants.RIGHT);
-        Xiaoji_Fee.setBounds(558, 73, 78, 21);
+        Xiaoji_Fee.setBounds(558, 73, 66, 21);
         panel_1.add(Xiaoji_Fee);
         Xiaoji_Fee.setColumns(10);
 
         Shouche_Date = new JTextField();
+        Shouche_Date.setHorizontalAlignment(SwingConstants.LEFT);
         Shouche_Date.setBounds(92, 7, 81, 21);
         Shouche_Date.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -230,6 +227,7 @@ public class CarSettlement extends JDialog {
         Shouche_Date.setColumns(10);
 
         Shouche_Time = new JTextField();
+        Shouche_Time.setHorizontalAlignment(SwingConstants.LEFT);
         Shouche_Time.setBounds(245, 7, 79, 21);
         Shouche_Time.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -238,6 +236,7 @@ public class CarSettlement extends JDialog {
         });
         panel_1.add(Shouche_Time);
         Shouche_Time.setColumns(10);
+
 
         JPanel panel_2 = new JPanel(null);
         panel_2.setBorder(BorderFactory.createLineBorder(Color.gray));//设置面板边框颜色
@@ -343,6 +342,7 @@ public class CarSettlement extends JDialog {
         Yanjin.setColumns(10);
 
         Fache_Date = new JTextField();
+        Fache_Date.setHorizontalAlignment(SwingConstants.LEFT);
         Fache_Date.setBounds(93, 67, 79, 21);
         Fache_Date.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -405,7 +405,7 @@ public class CarSettlement extends JDialog {
 
         Weiyuejin = new JTextField();
         Weiyuejin.setHorizontalAlignment(SwingConstants.RIGHT);
-        Weiyuejin.setBounds(558, 7, 78, 21);
+        Weiyuejin.setBounds(558, 7, 66, 21);
         panel_3.add(Weiyuejin);
         Weiyuejin.setColumns(10);
 
@@ -445,7 +445,7 @@ public class CarSettlement extends JDialog {
 
         Clean_Fee = new JTextField();
         Clean_Fee.setHorizontalAlignment(SwingConstants.RIGHT);
-        Clean_Fee.setBounds(558, 38, 78, 21);
+        Clean_Fee.setBounds(558, 38, 66, 21);
         panel_3.add(Clean_Fee);
         Clean_Fee.setColumns(10);
 
@@ -486,7 +486,7 @@ public class CarSettlement extends JDialog {
 
         Other_Fee = new JTextField();
         Other_Fee.setHorizontalAlignment(SwingConstants.RIGHT);
-        Other_Fee.setBounds(558, 73, 78, 21);
+        Other_Fee.setBounds(558, 73, 66, 21);
         panel_3.add(Other_Fee);
         Other_Fee.setColumns(10);
 
@@ -506,7 +506,7 @@ public class CarSettlement extends JDialog {
 
         Fujia_Fee = new JTextField();
         Fujia_Fee.setHorizontalAlignment(SwingConstants.RIGHT);
-        Fujia_Fee.setBounds(558, 104, 78, 21);
+        Fujia_Fee.setBounds(558, 104, 66, 21);
         panel_3.add(Fujia_Fee);
         Fujia_Fee.setColumns(10);
 
@@ -531,17 +531,17 @@ public class CarSettlement extends JDialog {
 
         Shishou_Jine = new JTextField();
         Shishou_Jine.setHorizontalAlignment(SwingConstants.RIGHT);
-        Shishou_Jine.setBounds(249, 7, 63, 21);
+        Shishou_Jine.setBounds(249, 7, 54, 21);
         textField6.add(Shishou_Jine);
         Shishou_Jine.setColumns(10);
 
         JCheckBox chckbxNewCheckBox = new JCheckBox("\u5E94\u6536\u8D26\u6B3E\uFF1A");
-        chckbxNewCheckBox.setBounds(310, 6, 94, 23);
+        chckbxNewCheckBox.setBounds(305, 6, 92, 23);
         textField6.add(chckbxNewCheckBox);
 
         Yingshou_Zhangkuan = new JTextField();
         Yingshou_Zhangkuan.setHorizontalAlignment(SwingConstants.RIGHT);
-        Yingshou_Zhangkuan.setBounds(410, 7, 74, 21);
+        Yingshou_Zhangkuan.setBounds(398, 7, 78, 21);
         textField6.add(Yingshou_Zhangkuan);
         Yingshou_Zhangkuan.setColumns(10);
 
@@ -551,7 +551,7 @@ public class CarSettlement extends JDialog {
 
         Yingtui_Zhangkuan = new JTextField();
         Yingtui_Zhangkuan.setHorizontalAlignment(SwingConstants.RIGHT);
-        Yingtui_Zhangkuan.setBounds(558, 7, 78, 21);
+        Yingtui_Zhangkuan.setBounds(558, 7, 65, 21);
         textField6.add(Yingtui_Zhangkuan);
         Yingtui_Zhangkuan.setColumns(10);
 
@@ -559,17 +559,18 @@ public class CarSettlement extends JDialog {
         label_39.setBounds(29, 41, 54, 15);
         textField6.add(label_39);
 
+
         JLabel label_41 = new JLabel("\u4EA4\u6B3E\u4EBA\uFF1A");
         label_41.setBounds(200, 41, 54, 15);
         textField6.add(label_41);
 
         jiaokuanren = new JTextField();
-        jiaokuanren.setBounds(249, 38, 63, 21);
+        jiaokuanren.setBounds(249, 38, 54, 21);
         textField6.add(jiaokuanren);
         jiaokuanren.setColumns(10);
 
         JLabel label_42 = new JLabel("...\u6536\u6B3E\u65E5\u671F\uFF1A");
-        label_42.setBounds(312, 41, 78, 15);
+        label_42.setBounds(317, 41, 78, 15);
         textField6.add(label_42);
 
         JLabel label_40 = new JLabel("...");
@@ -581,7 +582,8 @@ public class CarSettlement extends JDialog {
         textField6.add(label_43);
 
         Shoukuang_Date = new JTextField();
-        Shoukuang_Date.setBounds(410, 38, 74, 21);
+        Shoukuang_Date.setHorizontalAlignment(SwingConstants.LEFT);
+        Shoukuang_Date.setBounds(398, 38, 78, 21);
         Shoukuang_Date.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 test(Shoukuang_Date, textField6);
@@ -591,7 +593,7 @@ public class CarSettlement extends JDialog {
         Shoukuang_Date.setColumns(10);
 
         Zhipiao_Id = new JTextField();
-        Zhipiao_Id.setBounds(558, 38, 78, 21);
+        Zhipiao_Id.setBounds(558, 38, 65, 21);
         textField6.add(Zhipiao_Id);
         Zhipiao_Id.setColumns(10);
 
@@ -600,7 +602,7 @@ public class CarSettlement extends JDialog {
         textField6.add(label_44);
 
         Demo = new JTextField();
-        Demo.setBounds(94, 66, 542, 56);
+        Demo.setBounds(94, 66, 529, 56);
         textField6.add(Demo);
         Demo.setColumns(10);
         //下拉框
@@ -638,6 +640,7 @@ public class CarSettlement extends JDialog {
         count.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 count_settlement(Integer.parseInt(Inner_id.getText()));
+
             }
         });
         count.setBounds(656, 340, 108, 23);
@@ -696,69 +699,75 @@ public class CarSettlement extends JDialog {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ");
         String str = sdf.format(new Date());
 
-        params.setCustomer_Name(Customer_Name.getText());
-        params.setCar_Id(Car_Id.getText());
-        params.setPre_Zujin(Integer.parseInt(Pre_Zujin.getText()));
-        params.setOutTime_Fee1(Integer.parseInt(OutTime_Fee1.getText()));
-        params.setYanjin(Integer.parseInt(Yanjin.getText()));
-        params.setXianshi_licheng(Integer.parseInt(Xianshi_licheng.getText()));
-        params.setZulin_Price(Integer.parseInt(Zulin_Price.getText()));
-        params.setChaoshi_Fee1(Integer.parseInt(Chaoshi_Fee1.getText()));
+        params.setCustomer_Name(lin2(Customer_Name.getText()));
+        params.setCar_Id(lin2(Car_Id.getText()));
 
-        Date da = new Date();//取当前时间
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
+        params.setPre_Zujin(Integer.parseInt(lin(Pre_Zujin.getText())));
+
+        params.setOutTime_Fee1(Integer.parseInt(lin(OutTime_Fee1.getText())));
+
+        params.setYanjin(Integer.parseInt(lin(Yanjin.getText())));
+
+        params.setXianshi_licheng(Integer.parseInt(lin(Xianshi_licheng.getText())));
+
+        params.setZulin_Price(Integer.parseInt(lin(Zulin_Price.getText())));
+
+        params.setChaoshi_Fee1(Integer.parseInt(lin(Chaoshi_Fee1.getText())));
+
+
+        java.util.Date da = new java.util.Date();//取当前时间
+        SimpleDateFormat sf = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
         String formatDa = sf.format(da);//
         params.setFache_Date(Timestamp.valueOf(formatDa));
 
-        params.setDriver(Driver.getText());
-        params.setStart_Licheng(Integer.parseInt(Start_Licheng.getText()));
-        params.setInner_id(Inner_id.getText());
+        params.setDriver(lin2(Driver.getText()));
+        params.setStart_Licheng(Integer.parseInt(lin(Start_Licheng.getText())));
 
+        params.setInner_id(lin2(Inner_id.getText()));
 
-        Date da1 = new Date();//取当前时间
-        SimpleDateFormat sf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
+        java.util.Date da1 = new java.util.Date();//取当前时间
+        SimpleDateFormat sf1 = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
         String formatDa1 = sf1.format(da1);//
         params.setShouche_Date(Timestamp.valueOf(formatDa1));
 
-        Date da2 = new Date();//取当前时间
-        SimpleDateFormat sf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
+        java.util.Date da2 = new java.util.Date();//取当前时间
+        SimpleDateFormat sf2 = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
         String formatDa2 = sf2.format(da2);//
         params.setShouche_Time(Timestamp.valueOf(formatDa2));
 
-        params.setZulin_Qixian(Integer.parseInt(Zulin_Qixian.getText()));
-        params.setYingshou_Zujin(Integer.parseInt(Yingshou_Zujin.getText()));
-        params.setEnd_Licheng(Integer.parseInt(End_Licheng.getText()));
-        params.setChaoshi_Licheng(Integer.parseInt(Chaoshi_Licheng.getText()));
-        params.setChaoshi_Fee(Integer.parseInt(Chaoshi_Fee.getText()));
-        params.setBaogangjia(Integer.parseInt(Baogangjia.getText()));
-        params.setChaoshi_Hour(Integer.parseInt(Chaoshi_Hour.getText()));
-        params.setOutTime_Fee(Integer.parseInt(OutTime_Fee.getText()));
-        params.setXiaoji_Fee(Integer.parseInt(Xiaoji_Fee.getText()));
-        params.setGas_Fee(Integer.parseInt(Gas_Fee.getText()));
-        params.setDaijia_Fee(Integer.parseInt(Daijia_Fee.getText()));
-        params.setChaobaoyang_Fee(Integer.parseInt(Chaobaoyang_Fee.getText()));
-        params.setWeiyuejin(Integer.parseInt(Weiyuejin.getText()));
-        params.setRepair_Fee(Integer.parseInt(Repair_Fee.getText()));
-        params.setBaoxian_Fee(Integer.parseInt(Baoxian_Fee.getText()));
-        params.setChesun_Fee(Integer.parseInt(Chesun_Fee.getText()));
-        params.setClean_Fee(Integer.parseInt(Clean_Fee.getText()));
-        params.setYunche_Fee(Integer.parseInt(Yunche_Fee.getText()));
-        params.setChaizhuang_Fee(Integer.parseInt(Chaizhuang_Fee.getText()));
-        params.setYidihuanche_Fee(Integer.parseInt(Yidihuanche_Fee.getText()));
-        params.setOther_Fee(Integer.parseInt(Other_Fee.getText()));
-        params.setPeilian_Fee(Integer.parseInt(Peilian_Fee.getText()));
-        params.setFujia_Fee(Integer.parseInt(Fujia_Fee.getText()));
-        params.setYingshou_Jine(Double.parseDouble(Yingshou_Jine.getText()));
-        params.setShishou_Jine(Double.parseDouble(Shishou_Jine.getText()));
-        params.setYingshou_Zhangkuan(Double.parseDouble(Yingshou_Zhangkuan.getText()));
-        params.setYingtui_Zhangkuan(Double.parseDouble(Yingtui_Zhangkuan.getText()));
+        params.setZulin_Qixian(Integer.parseInt(lin(Zulin_Qixian.getText())));
 
+        params.setYingshou_Zujin(Integer.parseInt(lin(Yingshou_Zujin.getText())));
+        params.setEnd_Licheng(Integer.parseInt(lin(End_Licheng.getText())));
+        params.setChaoshi_Licheng(Integer.parseInt(lin(Chaoshi_Licheng.getText())));
+        params.setChaoshi_Fee(Integer.parseInt(lin(Chaoshi_Fee.getText())));
+        params.setBaogangjia(Integer.parseInt(lin(Baogangjia.getText())));
+        params.setChaoshi_Hour(Integer.parseInt(lin(Chaoshi_Hour.getText())));
+        params.setOutTime_Fee(Integer.parseInt(lin(OutTime_Fee.getText())));
+        params.setXiaoji_Fee(Integer.parseInt(lin(Xiaoji_Fee.getText())));
+        params.setGas_Fee(Integer.parseInt(lin(Gas_Fee.getText())));
+        params.setDaijia_Fee(Integer.parseInt(lin(Daijia_Fee.getText())));
+        params.setChaobaoyang_Fee(Integer.parseInt(lin(Chaobaoyang_Fee.getText())));
+        params.setWeiyuejin(Integer.parseInt(lin(Weiyuejin.getText())));
+        params.setRepair_Fee(Integer.parseInt(lin(Repair_Fee.getText())));
+        params.setBaoxian_Fee(Integer.parseInt(lin(Baoxian_Fee.getText())));
+        params.setChesun_Fee(Integer.parseInt(lin(Chesun_Fee.getText())));
+        params.setClean_Fee(Integer.parseInt(lin(Clean_Fee.getText())));
+        params.setYunche_Fee(Integer.parseInt(lin(Yunche_Fee.getText())));
+        params.setChaizhuang_Fee(Integer.parseInt(lin(Chaizhuang_Fee.getText())));
+        params.setYidihuanche_Fee(Integer.parseInt(lin(Yidihuanche_Fee.getText())));
+        params.setOther_Fee(Integer.parseInt(lin(Other_Fee.getText())));
+        params.setPeilian_Fee(Integer.parseInt(lin(Peilian_Fee.getText())));
+        params.setFujia_Fee(Integer.parseInt(lin(Fujia_Fee.getText())));
+        params.setYingshou_Jine(Double.parseDouble(lin(Yingshou_Jine.getText())));
+        params.setShishou_Jine(Double.parseDouble(lin(Shishou_Jine.getText())));
+        params.setYingshou_Zhangkuan(Double.parseDouble(lin(Yingshou_Zhangkuan.getText())));
+        params.setYingtui_Zhangkuan(Double.parseDouble(lin(Yingtui_Zhangkuan.getText())));
         params.setJiesuanren(String.valueOf(Jiesuanren.getSelectedItem()));
+        params.setJiaokuanren(lin2(jiaokuanren.getText()));
 
-        params.setJiaokuanren(jiaokuanren.getText());
-
-        Date da3 = new Date();//取当前时间
-        SimpleDateFormat sf3 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
+        java.util.Date da3 = new java.util.Date();//取当前时间
+        SimpleDateFormat sf3 = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");        //转换时间格式
         String formatDa3 = sf3.format(da3);//
         params.setShoukuan_Date(Timestamp.valueOf(formatDa3));
 
@@ -769,6 +778,7 @@ public class CarSettlement extends JDialog {
             JOptionPane.showMessageDialog(jPanel, "存盘成功", "标题", JOptionPane.WARNING_MESSAGE);
         } else JOptionPane.showMessageDialog(jPanel, "存盘失败", "标题", JOptionPane.WARNING_MESSAGE);
     }
+
 
     //取消功能    清空
     protected void initDate() {
@@ -829,7 +839,7 @@ public class CarSettlement extends JDialog {
     protected void count_settlement(int id) {
         // TODO Auto-generated method stub
         List<Object> params = new ArrayList<>();
-        System.out.println(id);
+//		System.out.println(id);
         params.add(id);
         List<CustZL> carList = new CommonDAOImpl().executeQuery(CustZL.class, "SELECT * FROM tb_cust_zl WHERE Inner_Id=?", params);
 
@@ -848,37 +858,128 @@ public class CarSettlement extends JDialog {
             Fache_Date.setText(car.getFache_Date().toString());
             Driver.setText(car.getDriver() + "");
             Start_Licheng.setText(car.getStart_Licheng() + "");
-            count();
+            Demo.setText(car.getDemo() + "");
+            int i = count();
+            //收车日期比发车日期小报错
 
+            if (i == 0) JOptionPane.showMessageDialog(jPanel, "计算正确", "标题", JOptionPane.WARNING_MESSAGE);
+            else ;
         } else {
-            JOptionPane.showMessageDialog(CarSettlement.this, "没有这辆车");
+            JOptionPane.showMessageDialog(CarSettlement.this, "没有这个编号");
         }
     }
 
     //日历调用
     public void test(JTextField t, JPanel p) {
         t.setText("1900-01-01");
-//	        Chooser ser = Chooser.getInstance("yyyy-MM-dd HH-MM-ss");
         Chooser ser = Chooser.getInstance("yyyy-MM-dd");
         ser.register(t);
-//	        Chooser ser2 = Chooser.getInstance("yyyy年MM月dd日");        
         p.add(t);
         p.setVisible(true);
     }
 
     //计算方法
-    public void count() {
+    public int count() {
+        int i = 0;
+        int j = 0;
+        Regex r = new Regex();
+        int flag = 1;
+
+        Zulin_Qixian.setText(lin(Zulin_Qixian.getText()));
+        if (r.isAllNum(Zulin_Qixian.getText())) ;
+        else j = 1;
+
+        Baogangjia.setText(lin(Baogangjia.getText()));
+        if (r.isAllNum(Baogangjia.getText())) ;
+        else j = 1;
+
+        Gas_Fee.setText(lin(Gas_Fee.getText()));
+        if (r.isAllNum(Gas_Fee.getText())) ;
+        else j = 1;
+        Daijia_Fee.setText(lin(Daijia_Fee.getText()));
+        if (r.isAllNum(Daijia_Fee.getText())) ;
+        else j = 1;
+        Chaobaoyang_Fee.setText(lin(Chaobaoyang_Fee.getText()));
+        if (r.isAllNum(Chaobaoyang_Fee.getText())) ;
+        else j = 1;
+        Weiyuejin.setText(lin(Weiyuejin.getText()));
+        if (r.isAllNum(Weiyuejin.getText())) ;
+        else j = 1;
+        Repair_Fee.setText(lin(Repair_Fee.getText()));
+        if (r.isAllNum(Repair_Fee.getText())) ;
+        else j = 1;
+        Baoxian_Fee.setText(lin(Baoxian_Fee.getText()));
+        if (r.isAllNum(Baoxian_Fee.getText())) ;
+        else j = 1;
+        Chesun_Fee.setText(lin(Chesun_Fee.getText()));
+        if (r.isAllNum(Chesun_Fee.getText())) ;
+        else j = 1;
+        Clean_Fee.setText(lin(Clean_Fee.getText()));
+        if (r.isAllNum(Clean_Fee.getText())) ;
+        else j = 1;
+        Yunche_Fee.setText(lin(Yunche_Fee.getText()));
+        if (r.isAllNum(Yunche_Fee.getText())) ;
+        else j = 1;
+        Chaizhuang_Fee.setText(lin(Chaizhuang_Fee.getText()));
+        if (r.isAllNum(Chaizhuang_Fee.getText())) ;
+        else j = 1;
+        Yidihuanche_Fee.setText(lin(Yidihuanche_Fee.getText()));
+        if (r.isAllNum(Yidihuanche_Fee.getText())) ;
+        else j = 1;
+        Other_Fee.setText(lin(Other_Fee.getText()));
+        if (r.isAllNum(Other_Fee.getText())) ;
+        else j = 1;
+        Peilian_Fee.setText(lin(Peilian_Fee.getText()));
+        if (r.isAllNum(Peilian_Fee.getText())) ;
+        else j = 1;
+        if (j == 1) {
+            JOptionPane.showMessageDialog(jPanel, "输入不能为负值且类型为整型", "标题", JOptionPane.WARNING_MESSAGE);
+            return 1;
+        }
         Chaoshi_Licheng.setText(Integer.valueOf(End_Licheng.getText())
                 - Integer.valueOf(Start_Licheng.getText())
                 - Integer.valueOf(Xianshi_licheng.getText())
                 * Integer.valueOf(Zulin_Qixian.getText()) + "");
+        //收车里程比发车里程小报错
+        if (Double.valueOf(End_Licheng.getText()) < Double.valueOf(Start_Licheng.getText())) {
+            JOptionPane.showMessageDialog(contentPane, "请填写正确收车里程", "消息提示", JOptionPane.WARNING_MESSAGE);
+            i = 1;
+        }
 
-        int i = Integer.valueOf(Chaoshi_Fee1.getText());
-        int j = Integer.valueOf(Chaoshi_Licheng.getText());
-        Chaoshi_Fee.setText(i * j + "");
+        Chaoshi_Fee.setText(Integer.valueOf(Chaoshi_Fee1.getText())
+                * Integer.valueOf(Chaoshi_Licheng.getText()) + "");
 
+        Zulin_Price.setText(lin(Zulin_Price.getText()));
         Yingshou_Zujin.setText(Integer.valueOf(Zulin_Price.getText())
                 * Integer.valueOf(Zulin_Qixian.getText()) + "");
+
+        String str = Fache_Date.getText();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date sdate = null; //初始化
+        try {
+            java.util.Date udate = sdf.parse(str);
+            sdate = new java.sql.Date(udate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        String str2 = Shouche_Date.getText();
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
+        java.sql.Date sdate2 = null; //初始化
+        try {
+            java.util.Date udate2 = sdf2.parse(str2);
+            sdate2 = new java.sql.Date(udate2.getTime());
+        } catch (ParseException e) {
+            JOptionPane.showMessageDialog(contentPane, "请填写收车日期", "消息提示", JOptionPane.WARNING_MESSAGE);
+            i = 1;
+        }
+        if ((getIntervalDays(sdate, sdate2) > Integer.valueOf(Zulin_Qixian.getText()))) {
+            if (getIntervalDays(sdate, sdate2) > 1) {
+                Chaoshi_Hour.setText((getIntervalDays(sdate, sdate2) - 2) * 24 + (Integer.valueOf(Shouche_Time.getText().substring(0, 2))) + "");
+            } else Chaoshi_Hour.setText(Shouche_Time.getText().substring(0, 2));
+        } else Chaoshi_Hour.setText("0");
+
+
         OutTime_Fee.setText(Integer.valueOf(Chaoshi_Hour.getText())
                 * Integer.valueOf(OutTime_Fee1.getText()) + "");
         Xiaoji_Fee.setText(Integer.valueOf(Chaoshi_Fee.getText())
@@ -898,16 +999,60 @@ public class CarSettlement extends JDialog {
                 + Integer.valueOf(Yidihuanche_Fee.getText())
                 + Integer.valueOf(Other_Fee.getText())
                 + Integer.valueOf(Peilian_Fee.getText()) + "");
-        Yingshou_Jine.setText(Integer.valueOf(Xiaoji_Fee.getText())
+
+        Yingshou_Jine.setText(Double.valueOf(Xiaoji_Fee.getText())
                 + Integer.valueOf(Fujia_Fee.getText()) + "");
-        Shishou_Jine.setText(Integer.valueOf(Yingshou_Jine.getText())
+
+
+        Shishou_Jine.setText(Double.valueOf(Yingshou_Jine.getText())
                 > Integer.valueOf(Pre_Zujin.getText()) ? Yingshou_Jine.getText() : "0");
+
+
         Yingshou_Zhangkuan.setText(Yingshou_Jine.getText());
-        Yingtui_Zhangkuan.setText(Integer.valueOf(Yingshou_Jine.getText())
+        Yingtui_Zhangkuan.setText(Double.valueOf(Yingshou_Jine.getText())
                 > Integer.valueOf(Pre_Zujin.getText())
                 ? "0" : (Integer.valueOf(Pre_Zujin.getText())
                 + Integer.valueOf(Yanjin.getText())
                 - Integer.valueOf(Shishou_Jine.getText())) + "");
+        if ((Fache_Date.getText()).compareTo(Shouche_Date.getText()) == 1) {
+            JOptionPane.showMessageDialog(contentPane, "请填写正确收车日期", "消息提示", JOptionPane.WARNING_MESSAGE);
+            i = 1;
+        }
+        jiaokuanren.setText(Customer_Name.getText());
+        Zhipiao_Id.setText(lin2(Zhipiao_Id.getText()));
+        if ((Shouche_Date.getText()).compareTo(Shoukuang_Date.getText()) == 1) {
+            JOptionPane.showMessageDialog(contentPane, "请填写正确收款日期", "消息提示", JOptionPane.WARNING_MESSAGE);
+            i = 1;
+        }
+
+        return i;
+
     }
 
+    //计算小时
+    public int getIntervalDays(Date fDate, Date oDate) {
+        if (null == fDate || null == oDate) {
+            return -1;
+        }
+        long intervalMilli = oDate.getTime() - fDate.getTime();
+        return (int) (intervalMilli / (24 * 60 * 60 * 1000));
+
+    }
+
+    private String lin2(String i) {
+        if (i.equals("")) {
+            i = "null";
+            return i;
+        } else return i;
+    }
+
+    private String lin(String i) {
+        if (i.equals("")) {
+            i = "0";
+            return i;
+        } else if (i.compareTo("0") == 1 && (i.compareTo("9999") == -1)) {
+            i = "-1";
+            return i;
+        } else return i;
+    }
 }

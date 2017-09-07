@@ -30,7 +30,7 @@ public class DBTool {
 			Properties p = new Properties();
 			p.load(new FileInputStream("conf/dbms.properties"));
 			//×Ô¼ºµçÄÔ²âÊÔ
-            //p.load(new FileInputStream("conf/myLayTopdbms.properties"));
+			//p.load(new FileInputStream("conf/myLayTopdbms.properties"));
 			String driverName = p.getProperty("driverName");
 			String url = p.getProperty("url");
 			String username = p.getProperty("username");

@@ -2,26 +2,30 @@ package com.company.editCarInformation;
 
 import com.company.changSkin.ChaneSkin;
 import com.company.dao.CommonDAOImpl;
+import com.company.dao.DBTool;
 import com.company.entity.CarInformation;
 import com.company.frame.RegisterFrame;
 import com.company.other.Regex;
 import org.apache.poi.hssf.usermodel.*;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.security.PrivateKey;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -84,6 +88,8 @@ public class EditCarInfFrame extends JDialog {
     private JSpinner YYZEndTime;
     private JSpinner GLFTime;   //管理费
     private JSpinner GLFEndTime;
+    private JLabel picLabel;
+    private JComboBox choose;
 
     private JLabel jLabel;
     private String[] carTyle = {"小轿车", "中巴车", "大卡车"};
@@ -123,12 +129,12 @@ public class EditCarInfFrame extends JDialog {
                     stringBuffer.append(" WHERE Car_Id = '");
                     stringBuffer.append(jTextFieldCarNo.getText());
                     stringBuffer.append("' ");
-                    if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
-                        warning="停用成功！";
-                    }else{
-                        warning="停用失败";
+                    if (commonDAO.executeUpdate(stringBuffer.toString(), null) > 0) {
+                        warning = "停用成功！";
+                    } else {
+                        warning = "停用失败";
                     }
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, warning);
                     return;
                 } else {
                     StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
@@ -141,12 +147,12 @@ public class EditCarInfFrame extends JDialog {
                     stringBuffer.append(" WHERE Car_Id = '");
                     stringBuffer.append(jTextFieldCarNo.getText());
                     stringBuffer.append("' ");
-                    if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
-                        warning="恢复启用成功！";
-                    }else{
-                        warning="恢复启用失败";
+                    if (commonDAO.executeUpdate(stringBuffer.toString(), null) > 0) {
+                        warning = "恢复启用成功！";
+                    } else {
+                        warning = "恢复启用失败";
                     }
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, warning);
                     return;
                 }
             }
@@ -184,14 +190,45 @@ public class EditCarInfFrame extends JDialog {
         jButtonAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isInfRight()) {
-                    if (commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id")) {
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数！", "错误！", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    if (commonDAO.add2(getPanelINf(), "tb_car") != 0) {
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "添加成功！", "成功！", JOptionPane.WARNING_MESSAGE);
-                    }
+                switch (jTabbedPane.getSelectedIndex()) {
+                    case 0:
+                        if (isInfRight()) {
+                            if (commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id")) {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数！", "错误！", JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            if (commonDAO.add2(getPanelINf(), "tb_car") != 0) {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "添加成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                            }
+                        }
+                        break;
+                    case 1:
+                        int res = 0;
+                        String sql = "insert into image(name,content) values(?,?)";
+                        Connection con = DBTool.getInstance().getConnection();
+                        PreparedStatement ptmt = null;
+                        try {
+                            ptmt = con.prepareStatement(sql);
+                            ptmt.setString(1, (String) choose.getSelectedItem());
+                            InputStream is = null;
+                            is = new FileInputStream("C:\\temp.jpg");
+                            ptmt.setBinaryStream(2, is, is.available());
+                            //方法说明：PreparedStatement.setBinaryStream(int parameterIndex, InputStream x, int length)
+                            res = ptmt.executeUpdate();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } finally {
+                            if (res > 0) {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "成功！");
+                            } else {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "失败！");
+                            }
+                        }
+
                 }
             }
         });
@@ -200,14 +237,44 @@ public class EditCarInfFrame extends JDialog {
         jButtonUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (isInfRight()) {
-                    if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有数据还更新，心里有没有点比数！", "错误！", JOptionPane.WARNING_MESSAGE);
-                        return;
-                    }
-                    if (commonDAO.update2(getPanelINf(), "tb_car") != 0) {
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "更新成功！", "成功！", JOptionPane.WARNING_MESSAGE);
-                    }
+                switch (jTabbedPane.getSelectedIndex()) {
+                    case 0:
+                        if (isInfRight()) {
+                            if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有数据还更新，心里有没有点比数！", "错误！", JOptionPane.WARNING_MESSAGE);
+                                return;
+                            }
+                            if (commonDAO.update2(getPanelINf(), "tb_car") != 0) {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "更新成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                            }
+                        }
+                        break;
+                    case 1:
+                        int res = 0;
+                        String sql = "UPDATE image SET content=? where name=?";
+                        Connection con = DBTool.getInstance().getConnection();
+                        PreparedStatement ptmt = null;
+                        try {
+                            ptmt = con.prepareStatement(sql);
+                            ptmt.setString(2, (String) choose.getSelectedItem());
+                            InputStream is = null;
+                            is = new FileInputStream("C:\\temp.jpg");
+                            ptmt.setBinaryStream(1, is, is.available());
+                            //方法说明：PreparedStatement.setBinaryStream(int parameterIndex, InputStream x, int length)
+                            res = ptmt.executeUpdate();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } finally {
+                            if (res > 0) {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "成功！");
+                            } else {
+                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "失败！");
+                            }
+                        }
                 }
             }
         });
@@ -368,10 +435,67 @@ public class EditCarInfFrame extends JDialog {
         jTabbedPane.addTab("基本资料", null, basicData, "基本资料");
         carInf = new JPanel();
         carInf.setBorder(BorderFactory.createEtchedBorder());
+        iniCarInputPanel();
         jTabbedPane.addTab("车辆照片", null, carInf, "照片");
         demo = new JPanel();
         demo.setBorder(BorderFactory.createEtchedBorder());
         jTabbedPane.addTab("备注", null, demo, "备注");
+    }
+
+    private void iniCarInputPanel() {
+        carInf.setLayout(null);
+        jLabel = new JLabel("车牌号：");
+        jLabel.setBounds(10, 10, 104, 20);
+        jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        carInf.add(jLabel);
+        choose = new JComboBox();
+        choose.setBounds(120, 10, 175, 20);
+        List<CarInformation> List = new CommonDAOImpl().executeQuery(CarInformation.class, "SELECT * FROM tb_car ", null);
+        for (CarInformation s : List) {
+            choose.addItem(s.getCar_Id());
+        }
+        carInf.add(choose);
+        jLabel = new JLabel("选择图片：");
+        jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        jLabel.setBounds(10, 35, 104, 20);
+        carInf.add(jLabel);
+        JButton inputPic = new JButton("选择图片");
+        inputPic.setBounds(120, 35, 84, 40);
+        inputPic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooserPic = new JFileChooser();
+                FileNameExtensionFilter pic = new FileNameExtensionFilter(
+                        "图片文件(*.jpg)", "jpg");
+                chooserPic.setFileFilter(pic);
+                chooserPic.showSaveDialog(EditCarInfFrame.this);
+                File file = chooserPic.getSelectedFile();
+                String fname = chooserPic.getName(file);   //从文件名输入框中获取文件名
+                if (fname.indexOf(".jpg") == -1) {
+                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "文件格式不正确");
+                    return;
+                }
+                new CropImage(file).setVisible(true);
+                Icon icon;
+                try {
+                    icon = new ImageIcon(ImageIO.read(new File("C:\\temp.jpg")));
+                    picLabel.setIcon(icon);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+        carInf.add(inputPic);
+
+        jLabel = new JLabel("预览：");
+        jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        jLabel.setBounds(10, 80, 104, 20);
+        carInf.add(jLabel);
+
+        picLabel = new JLabel();
+        picLabel.setBackground(Color.white);
+        picLabel.setBounds(120, 80, 350, 350);
+        carInf.add(picLabel);
     }
 
     private void iniBasicData() {
@@ -483,15 +607,6 @@ public class EditCarInfFrame extends JDialog {
         basicData.add(GLFEndTime);
         nextErBao.setBounds(385, 390, 175, 20);
         basicData.add(nextErBao);
-    }
-
-    private JSpinner setJSpinner(JSpinner temp, Date tempDate) {
-        SpinnerDateModel model = new SpinnerDateModel();
-        temp = new JSpinner(model);
-        temp.setValue(tempDate);
-        JSpinner.DateEditor edit = new JSpinner.DateEditor(temp, "yyyy-MM-dd");
-        temp.setEditor(edit);
-        return temp;
     }
 
     private JSpinner setJSpinner(JSpinner temp, Date tempDate, boolean isEditable) {

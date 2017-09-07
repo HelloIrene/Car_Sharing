@@ -1,10 +1,16 @@
 package com.company.frame;
 
+import com.company.dao.CommonDAO;
+import com.company.dao.CommonDAOImpl;
+import com.company.entity.LoginIdentity;
+
 import java.awt.BorderLayout;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Login extends JFrame {
 
@@ -91,10 +97,29 @@ public class Login extends JFrame {
         
         JButton btnNewButton = new JButton("\u767B\u5F55");
         btnNewButton.setBounds(100, 260, 60, 25);
+        btnNewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+                if(new CommonDAOImpl().isPasswordRight2(new String(passwordField.getPassword()),textField.getText(),comboBox.getSelectedIndex())){
+                    new MainJframe(comboBox.getSelectedIndex()).setVisible(true);
+                    dispose();
+                    return;
+                }else {
+                    JOptionPane.showMessageDialog(Login.this,"用户名密码或者身份错误！","警告！",JOptionPane.ERROR_MESSAGE);
+                }
+			}
+		});
         panel.add(btnNewButton);
         
         JButton btnNewButton_1 = new JButton("\u91CD\u7F6E");
         btnNewButton_1.setBounds(210, 260, 60, 25);
+        btnNewButton_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                passwordField.setText(null);
+                textField.setText("");
+            }
+        });
         panel.add(btnNewButton_1);
 
 	}

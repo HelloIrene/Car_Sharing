@@ -8,11 +8,6 @@ import java.sql.SQLException;
 import com.company.entity.Car_settlement;
 
 public class Car_settlementDAO {
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub			
-		Car_settlementDAO i =new Car_settlementDAO();		
-		System.out.println(i.findById(123456));
-	}
 	public Car_settlement findById(int id) {
 		Connection conn = null;
 		PreparedStatement ps = null;

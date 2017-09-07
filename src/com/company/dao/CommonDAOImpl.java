@@ -384,6 +384,37 @@ public class CommonDAOImpl implements CommonDAO {
         return false;
     }
 
+    public boolean isPasswordRight2(String oldPassword, String user_id, int identify) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String backPassword = new String();
+        int backIdenfity = 10;
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append("SElECT password,identify from user_customer where user_id = '");
+        stringBuffer.append(user_id);
+        stringBuffer.append("'");
+        conn = DBTool.getInstance().getConnection();
+        try {
+            ps = conn.prepareStatement(stringBuffer.toString());
+            System.out.println(ps);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                backPassword = rs.getString("password");
+                backIdenfity = rs.getInt("identify");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        if (backPassword != null && backIdenfity != 10) {
+            if (backIdenfity == identify){
+                if (backPassword.equals(oldPassword)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean searchClo(String searchInf, String tableName, String columnName) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -422,7 +453,7 @@ public class CommonDAOImpl implements CommonDAO {
         return executeQuery(CarInformation.class, stringBuffer.toString(), null);
     }
 
-    public int setBlock(String sqlquery,String tableName, String primaryKey, String primaryInf, int isBlockUp) {
+    public int setBlock(String sqlquery, String tableName, String primaryKey, String primaryInf, int isBlockUp) {
         int row = 0;
         try {
             // 获取到对象声明的所有属性字段

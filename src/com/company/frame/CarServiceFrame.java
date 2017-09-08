@@ -1,19 +1,12 @@
 package com.company.frame;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.PrintJob;
 import java.awt.Toolkit;
-import javax.swing.JTextField;
-import javax.swing.SpinnerDateModel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
@@ -27,10 +20,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JSpinner;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,7 +31,7 @@ import java.util.List;
 import java.util.Properties;
 import java.awt.event.ActionEvent;
 
-public class CarServiceFrame extends JFrame {
+public class CarServiceFrame extends JDialog {
 	private JPanel panel;
 	private JTextField serviceId; // 维修单号
 	private JTextField serviceLocation; // 维修地点
@@ -59,6 +48,7 @@ public class CarServiceFrame extends JFrame {
 	CommonDAOImpl comDao = new CommonDAOImpl();
 
 	public CarServiceFrame() {
+		setModal(true);
 		initFrame();
 		initBody();
 		getContentPane().add(panel);
@@ -76,21 +66,21 @@ public class CarServiceFrame extends JFrame {
 	public void button() {
 		JButton button = new JButton("打印档案");
 		button.setFont(new Font("宋体", Font.PLAIN, 20));
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				Properties p = new Properties();
-				PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(CarServiceFrame.this, "客户登记表编辑", p);
-				Graphics pg = jp.getGraphics();// Graphics打印图形的图形环境
-				if (pg != null) {
-					try {
-						CarServiceFrame.this.printAll(pg); // 打印该窗体及其所有的组件
-					} finally {
-						pg.dispose(); // 注销图形环境
-					}
-				}
-				jp.end(); // 结束打印作业
-			}
-		});
+		//button.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent e) {
+//				Properties p = new Properties();
+//				PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(CarServiceFrame.this, "客户登记表编辑", p);
+//				Graphics pg = jp.getGraphics();// Graphics打印图形的图形环境
+//				if (pg != null) {
+//					try {
+//						CarServiceFrame.this.printAll(pg); // 打印该窗体及其所有的组件
+//					} finally {
+//						pg.dispose(); // 注销图形环境
+//					}
+//				}
+//				jp.end(); // 结束打印作业
+//			}
+		//});
 		button.setBounds(472, 20, 120, 45);
 		panel.add(button);
 

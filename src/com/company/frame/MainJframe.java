@@ -22,11 +22,12 @@ public class MainJframe extends JFrame {
     private CommonDAOImpl commonDAO;
     private LoginIdentity users;
     private int idIdentify;
+
     /**
      * Create the frame.
      */
     public MainJframe(int inputidIdentify) {
-        idIdentify=inputidIdentify;
+        idIdentify = inputidIdentify;
         try {
             //UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -47,55 +48,115 @@ public class MainJframe extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
-        JMenu mnNewMenu = new JMenu("\u7CFB\u7EDF\u7EF4\u62A4\uFF08S\uFF09");
+        JMenu mnNewMenu = new JMenu("系统维护(S)");
         menuBar.add(mnNewMenu);
 
-        JMenuItem mntmNewMenuItem = new JMenuItem("\u6570\u636E\u521D\u59CB\u5316");
+        JMenuItem mntmNewMenuItem = new JMenuItem("数据初始化");
         mnNewMenu.add(mntmNewMenuItem);
 
-        JMenuItem mntmNewMenuItem_1 = new JMenuItem("\u64CD\u4F5C\u4EBA\u5458\u66F4\u6539");
+        JMenuItem mntmNewMenuItem_1 = new JMenuItem("操作人员更改");
         mnNewMenu.add(mntmNewMenuItem_1);
 
-        JMenu mnNewMenu_1 = new JMenu("\u65E5\u5E38\u4E1A\u52A1\uFF08R\uFF09");
+        JMenu mnNewMenu_1 = new JMenu("日常业务(R)");
         menuBar.add(mnNewMenu_1);
 
-        JMenuItem mntmNewMenuItem_2 = new JMenuItem("\u8F66\u8F86\u6863\u6848\u7BA1\u7406");
+        JMenuItem mntmNewMenuItem_2 = new JMenuItem("车辆档案管理");
+        mntmNewMenuItem_2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new EditCarInfFrame(idIdentify).setVisible(true);
+            }
+        });
         mnNewMenu_1.add(mntmNewMenuItem_2);
 
-        JMenuItem mntmNewMenuItem_3 = new JMenuItem("\u5BA2\u6237\u8D44\u6599\u7BA1\u7406");
+        JMenuItem mntmNewMenuItem_3 = new JMenuItem("客户资料管理");
+        mntmNewMenuItem_3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new MyFrame(idIdentify).setVisible(true);
+            }
+        });
         mnNewMenu_1.add(mntmNewMenuItem_3);
 
-        JMenuItem mntmNewMenuItem_4 = new JMenuItem("\u5BA2\u6237\u9884\u5B9A\u767B\u8BB0");
+        JMenuItem mntmNewMenuItem_4 = new JMenuItem("客户预订登记");
+        mntmNewMenuItem_4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new ClientRegisterWindow(idIdentify).setVisible(true);
+            }
+        });
         mnNewMenu_1.add(mntmNewMenuItem_4);
 
-        JMenuItem mntmNewMenuItem_5 = new JMenuItem("\u6C7D\u8F66\u79DF\u8D41\u767B\u8BB0");
+        JMenuItem mntmNewMenuItem_5 = new JMenuItem("汽车租赁登记");
+        mntmNewMenuItem_5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new RegisterFrame().setVisible(true);
+            }
+        });
         mnNewMenu_1.add(mntmNewMenuItem_5);
 
-        JMenuItem mntmNewMenuItem_6 = new JMenuItem("\u6C7D\u8F66\u79DF\u8D41\u7ED3\u7B97");
+        JMenuItem mntmNewMenuItem_6 = new JMenuItem("汽车租赁结算");
+        mntmNewMenuItem_6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CarSettlement().setVisible(true);
+            }
+        });
         mnNewMenu_1.add(mntmNewMenuItem_6);
 
-        JMenu mnNewMenu_2 = new JMenu("\u5176\u4ED6\u4E1A\u52A1\uFF08Q\uFF09");
+        JMenu mnNewMenu_2 = new JMenu("其他业务(Q)");
         menuBar.add(mnNewMenu_2);
 
-        JMenuItem mntmNewMenuItem_7 = new JMenuItem("\u8F66\u8F86\u7EF4\u4FEE\u767B\u8BB0");
+        JMenuItem mntmNewMenuItem_7 = new JMenuItem("车辆维修登记");
+        mntmNewMenuItem_7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CarServiceFrame().setVisible(true);
+            }
+        });
         mnNewMenu_2.add(mntmNewMenuItem_7);
 
-        JMenuItem mntmNewMenuItem_8 = new JMenuItem("\u8F66\u8F86\u8FDD\u7AE0\u767B\u8BB0");
+        JMenuItem mntmNewMenuItem_8 = new JMenuItem("车辆违章登记");
+        mntmNewMenuItem_8.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new WeiZhangFrame().setVisible(true);
+            }
+        });
         mnNewMenu_2.add(mntmNewMenuItem_8);
 
-        JMenu mnNewMenu_3 = new JMenu("\u7EDF\u8BA1\u5206\u6790\uFF08T\uFF09");
+        JMenu mnNewMenu_3 = new JMenu("统计分析(T)");
         menuBar.add(mnNewMenu_3);
 
-        JMenuItem mntmNewMenuItem_9 = new JMenuItem("\u8F66\u8F86\u79DF\u8D41\u7EDF\u8BA1");
+        JMenuItem mntmNewMenuItem_9 = new JMenuItem("车辆租赁统计");
+        mntmNewMenuItem_9.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CarRent().setVisible(true);
+            }
+        });
         mnNewMenu_3.add(mntmNewMenuItem_9);
 
-        JMenuItem mntmNewMenuItem_10 = new JMenuItem("\u5BA2\u6237\u79DF\u8D41\u7EDF\u8BA1");
+        JMenuItem mntmNewMenuItem_10 = new JMenuItem("客户租赁统计");
+        mntmNewMenuItem_10.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new CustomerRent().setVisible(true);
+            }
+        });
         mnNewMenu_3.add(mntmNewMenuItem_10);
 
-        JMenu mnNewMenu_4 = new JMenu("\u5E2E\u52A9\uFF08H\uFF09");
+        JMenu mnNewMenu_4 = new JMenu("帮助(H)");
         menuBar.add(mnNewMenu_4);
 
-        JMenuItem mntmNewMenuItem_11 = new JMenuItem("\u5E2E\u52A9");
+        JMenuItem mntmNewMenuItem_11 = new JMenuItem("帮助");
+        mntmNewMenuItem_11.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(MainJframe.this,"");
+            }
+        });
         mnNewMenu_4.add(mntmNewMenuItem_11);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -105,7 +166,7 @@ public class MainJframe extends JFrame {
         JToolBar toolBar = new JToolBar();
         contentPane.add(toolBar, BorderLayout.NORTH);
 
-        JButton btnNewButton = new JButton("\u4FEE\u6539\u5BC6\u7801");
+        JButton btnNewButton = new JButton("修改密码");
         btnNewButton.setIcon(new ImageIcon(
                 "img/password_manager.png"));
         Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
@@ -118,7 +179,7 @@ public class MainJframe extends JFrame {
         });
         toolBar.add(btnNewButton);
 
-        JButton btnNewButton_1 = new JButton("\u8F66\u8F86\u6863\u6848");
+        JButton btnNewButton_1 = new JButton("车辆档案");
         btnNewButton_1.setIcon(
                 new ImageIcon("img/carfile.png"));
         btnNewButton_1.setBorder(border);
@@ -130,7 +191,7 @@ public class MainJframe extends JFrame {
         });
         toolBar.add(btnNewButton_1);
 
-        JButton btnNewButton_2 = new JButton("\u5BA2\u6237\u8D44\u6599");
+        JButton btnNewButton_2 = new JButton("客户资料");
         btnNewButton_2.setIcon(
                 new ImageIcon("img/customer.png"));
         btnNewButton_2.setBorder(border);
@@ -142,7 +203,7 @@ public class MainJframe extends JFrame {
         });
         toolBar.add(btnNewButton_2);
 
-        JButton btnNewButton_3 = new JButton("\u5BA2\u6237\u9884\u8BA2");
+        JButton btnNewButton_3 = new JButton("客户预订");
         btnNewButton_3.setIcon(
                 new ImageIcon("img/Order.png"));
         btnNewButton_3.setBorder(border);
@@ -154,19 +215,19 @@ public class MainJframe extends JFrame {
         });
         toolBar.add(btnNewButton_3);
 
-        JButton btnNewButton_4 = new JButton("\u79DF\u8D41\u767B\u8BB0");
+        JButton btnNewButton_4 = new JButton("租赁登记");
         btnNewButton_4.setIcon(
                 new ImageIcon("img/register.png"));
         btnNewButton_4.setBorder(border);
         btnNewButton_4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                 new RegisterFrame().setVisible(true);
+                new RegisterFrame().setVisible(true);
             }
         });
         toolBar.add(btnNewButton_4);
 
-        JButton btnNewButton_5 = new JButton("\u79DF\u8D41\u7ED3\u7B97");
+        JButton btnNewButton_5 = new JButton("租赁结算");
         btnNewButton_5.setIcon(
                 new ImageIcon("img/dollar.png"));
         btnNewButton_5.setBorder(border);
@@ -178,19 +239,19 @@ public class MainJframe extends JFrame {
         });
         toolBar.add(btnNewButton_5);
 
-        JButton btnNewButton_6 = new JButton("\u65E5\u8BB0\u8D26");
+        JButton btnNewButton_6 = new JButton("日记账");
         btnNewButton_6.setIcon(
                 new ImageIcon("img/accounting.png"));
         btnNewButton_6.setBorder(border);
         toolBar.add(btnNewButton_6);
 
-        JButton btnNewButton_7 = new JButton("\u63D0\u9192\u529F\u80FD");
+        JButton btnNewButton_7 = new JButton("提醒功能");
         btnNewButton_7.setIcon(
                 new ImageIcon("img/remind.png"));
         btnNewButton_7.setBorder(border);
         toolBar.add(btnNewButton_7);
 
-        JButton btnNewButton_8 = new JButton("\u9000\u51FA");
+        JButton btnNewButton_8 = new JButton("退出");
         btnNewButton_8.setIcon(
                 new ImageIcon("img/sign_out.png"));
         btnNewButton_8.setBorder(border);
@@ -257,13 +318,13 @@ public class MainJframe extends JFrame {
                     if (!(commonDAO.searchClo(jTextFielduserName.getText(), "user_customer", "user_id"))) {
                         JOptionPane.showMessageDialog(ChangePassword.this, "没有此用户！", "提示！", JOptionPane.ERROR_MESSAGE);
                         return;
-                    } else if(commonDAO.isPasswordRight(new String(jTextFieldOldPassword.getPassword()),jTextFielduserName.getText())){
+                    } else if (commonDAO.isPasswordRight(new String(jTextFieldOldPassword.getPassword()), jTextFielduserName.getText())) {
                         if (commonDAO.updatePassword(new String(jTextFieldNewPassword.getPassword()), jTextFielduserName.getText()) != 0) {
                             JOptionPane.showMessageDialog(ChangePassword.this, "修改成功！", "提示！", JOptionPane.WARNING_MESSAGE);
                         } else {
                             JOptionPane.showMessageDialog(ChangePassword.this, "修改失败！", "提示！", JOptionPane.WARNING_MESSAGE);
                         }
-                    }else {
+                    } else {
                         JOptionPane.showMessageDialog(ChangePassword.this, "密码错误！", "提示！", JOptionPane.ERROR_MESSAGE);
                     }
                 }

@@ -37,18 +37,19 @@ public class CustomerRent extends JDialog {
 	private JPanel contentPane;
 	private JPanel panel1;
 	private JPanel panel2;
-	private JComboBox comboBox;
+	private JLabel comboBox;
 	private List<Object> clientList = new ArrayList<>();
 	private JTextField textField;
+	private String[] s2={"Í£ÓÃÖĞ","ÆôÓÃÖĞ"};
 //	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
 	 * Create the frame.
 	 */
 	public CustomerRent() {
-		setTitle("å®¢æˆ·ç»Ÿè®¡æŸ¥è¯¢");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 680, 490);
+		setTitle("¿Í»§Í³¼Æ²éÑ¯");
+		setSize( 680, 490);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));
@@ -56,20 +57,20 @@ public class CustomerRent extends JDialog {
 		
 		panel1=new JPanel(null);
 		panel1.setBorder(BorderFactory.createLineBorder(Color.gray));
-		JLabel lblNewLabel = new JLabel("å®¢æˆ·å·ï¼š");
+		JLabel lblNewLabel = new JLabel("¿Í»§ºÅ£º");
 		lblNewLabel.setBounds(10, 0, 70, 55);
 		panel1.add(lblNewLabel);
 		
 		panel1.setPreferredSize(lblNewLabel.getSize());
 		contentPane.add(panel1,BorderLayout.NORTH);
 		
-		JLabel lblNewLabel_1 = new JLabel("\u72B6\u6001\u9009\u62E9\uFF1A");
+		JLabel lblNewLabel_1 = new JLabel("×´Ì¬£º");
 		lblNewLabel_1.setBounds(270, 0, 70, 55);
 		panel1.add(lblNewLabel_1);
-		
-		String[] s2={"1","0"};
-		comboBox = new JComboBox(s2);
+
+		comboBox = new JLabel();
 		comboBox.setBounds(340, 15, 130, 25);
+		comboBox.setForeground(Color.red);
 		panel1.add(comboBox);
 		
 		textField = new JTextField();
@@ -77,10 +78,10 @@ public class CustomerRent extends JDialog {
 		panel1.add(textField);
 		textField.setColumns(10);
 		
-		JButton button=new JButton("æŸ¥è¯¢");
+		JButton button=new JButton("²éÑ¯");
 		button.setBounds(0, 70,90, 100);
 		
-		JButton button1=new JButton("å¯¼å‡º");
+		JButton button1=new JButton("µ¼³ö");
 		button1.setBounds(0,230,90, 100);
 		
 		panel2=new JPanel(null);
@@ -101,16 +102,17 @@ public class CustomerRent extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				textArea.setText(" ");
 				String s1=textField.getText();
-				String s2=(String)comboBox.getSelectedItem();
 				CommonDAO dao = new CommonDAOImpl();
-				clientList = dao.findByCondition(Customer.class, "SELECT * FROM tb_customer WHERE cId=? AND isBlockUp=?",s1,s2); //;
+				clientList = dao.findByCondition(Customer.class, "SELECT * FROM tb_customer WHERE cId=?",s1); //;
 				if(clientList.isEmpty()){
-					JOptionPane.showMessageDialog(CustomerRent.this, "æ•°æ®æŸ¥è¯¢å¤±è´¥ï¼");
+					JOptionPane.showMessageDialog(CustomerRent.this, "Êı¾İ²éÑ¯Ê§°Ü£¡");
 				}else{
 					 Iterator it = clientList.iterator();
 				          while(it.hasNext())
 				          {
-				        	  textArea.append(((Customer)it.next()).toString()+"\n");
+							  Customer temp = (Customer) it.next();
+				        	  textArea.append(temp.toString()+"\n");
+							  comboBox.setText(s2[temp.getIsBlockUp()]);
 				          }
 				}
 			}
@@ -121,20 +123,20 @@ public class CustomerRent extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 //				int i=1;
 				if(clientList.isEmpty()){
-					JOptionPane.showMessageDialog(CustomerRent.this, "æ•°æ®ä¸ºç©ºï¼");
+					JOptionPane.showMessageDialog(CustomerRent.this, "Êı¾İÎª¿Õ£¡");
 				}else{
 					int i=0;
 				    int n=0;
 				    HSSFCell cell;
-					// ç¬¬ä¸€æ­¥ï¼Œåˆ›å»ºä¸€ä¸ªwebbookï¼Œå¯¹åº”ä¸€ä¸ªExcelæ–‡ä»¶
+					// µÚÒ»²½£¬´´½¨Ò»¸öwebbook£¬¶ÔÓ¦Ò»¸öExcelÎÄ¼ş
 			        HSSFWorkbook wb = new HSSFWorkbook();
-			        // ç¬¬äºŒæ­¥ï¼Œåœ¨webbookä¸­æ·»åŠ ä¸€ä¸ªsheet,å¯¹åº”Excelæ–‡ä»¶ä¸­çš„sheet
-			        HSSFSheet sheet = wb.createSheet("è¡¨ä¸€");
-			        // ç¬¬ä¸‰æ­¥ï¼Œåœ¨sheetä¸­æ·»åŠ è¡¨å¤´ç¬¬0è¡Œ,æ³¨æ„è€ç‰ˆæœ¬poiå¯¹Excelçš„è¡Œæ•°åˆ—æ•°æœ‰é™åˆ¶short
+			        // µÚ¶ş²½£¬ÔÚwebbookÖĞÌí¼ÓÒ»¸ösheet,¶ÔÓ¦ExcelÎÄ¼şÖĞµÄsheet
+			        HSSFSheet sheet = wb.createSheet("±íÒ»");
+			        // µÚÈı²½£¬ÔÚsheetÖĞÌí¼Ó±íÍ·µÚ0ĞĞ,×¢ÒâÀÏ°æ±¾poi¶ÔExcelµÄĞĞÊıÁĞÊıÓĞÏŞÖÆshort
 			        HSSFRow row = sheet.createRow((int) 0);
-//			        // åˆ›å»ºå•å…ƒæ ¼ï¼Œå¹¶è®¾ç½®å€¼è¡¨å¤´ è®¾ç½®è¡¨å¤´å±…ä¸­
+//			        // ´´½¨µ¥Ôª¸ñ£¬²¢ÉèÖÃÖµ±íÍ· ÉèÖÃ±íÍ·¾ÓÖĞ
 //			        HSSFCellStyle style = wb.createCellStyle();
-//			        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // åˆ›å»ºä¸€ä¸ªå±…ä¸­æ ¼å¼
+//			        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // ´´½¨Ò»¸ö¾ÓÖĞ¸ñÊ½
 			        Customer cus=new Customer();
 			        Field[] fields = Customer.class.getDeclaredFields();
 					for (Field field : fields)
@@ -145,7 +147,7 @@ public class CustomerRent extends JDialog {
 						cell.setCellValue(rsVal);
 						i++;
 					}
-					// ç¬¬å››æ­¥ï¼Œåˆ›å»ºå•å…ƒæ ¼ï¼Œå¹¶è®¾ç½®å€¼
+					// µÚËÄ²½£¬´´½¨µ¥Ôª¸ñ£¬²¢ÉèÖÃÖµ
 					Iterator it = clientList.iterator();
 			         while(it.hasNext())
 			         {
@@ -169,13 +171,13 @@ public class CustomerRent extends JDialog {
 			            n++;
 			         }
 			         JFileChooser jfc = new JFileChooser();
-			         FileNameExtensionFilter filter = new FileNameExtensionFilter("Excelæ–‡ä»¶(*.xls)", "xls");
+			         FileNameExtensionFilter filter = new FileNameExtensionFilter("ExcelÎÄ¼ş(*.xls)", "xls");
 			         jfc.setFileFilter(filter);
 			         int option = jfc.showSaveDialog(CustomerRent.this);
 			         if (option == JFileChooser.APPROVE_OPTION) {
 			             File file = jfc.getSelectedFile();
-			             String fname = jfc.getName(file);   //ä»æ–‡ä»¶åè¾“å…¥æ¡†ä¸­è·å–æ–‡ä»¶å
-			             //å‡å¦‚ç”¨æˆ·å¡«å†™çš„æ–‡ä»¶åä¸å¸¦æˆ‘ä»¬åˆ¶å®šçš„åç¼€åï¼Œé‚£ä¹ˆæˆ‘ä»¬ç»™å®ƒæ·»ä¸Šåç¼€
+			             String fname = jfc.getName(file);   //´ÓÎÄ¼şÃûÊäÈë¿òÖĞ»ñÈ¡ÎÄ¼şÃû
+			             //¼ÙÈçÓÃ»§ÌîĞ´µÄÎÄ¼şÃû²»´øÎÒÃÇÖÆ¶¨µÄºó×ºÃû£¬ÄÇÃ´ÎÒÃÇ¸øËüÌíÉÏºó×º
 			             if (fname.indexOf(".xls") == -1) {
 			                 file = new File(jfc.getCurrentDirectory(), fname + ".xls");
 			             }

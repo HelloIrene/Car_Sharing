@@ -29,8 +29,8 @@ public class WeiZhangFrame extends JDialog {
      */
     public WeiZhangFrame() {
         setTitle("\u8F66\u8F86\u8FDD\u7AE0\u767B\u8BB0");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 406, 425);
+        setSize(406, 425);
+        setLocationRelativeTo(null);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));

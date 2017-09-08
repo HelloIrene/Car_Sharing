@@ -44,7 +44,7 @@ public class Regex {
         Matcher m = null;
         boolean b = false;
         p = Pattern.compile(
-                "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$"); // 验证车牌号
+                "^[1-9]\\d{5}[1-9]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9]|X)$"); // 验证身份证
         m = p.matcher(str);
         b = m.matches();
         return b;
@@ -55,7 +55,7 @@ public class Regex {
         Matcher m = null;
         boolean b = false;
         p = Pattern.compile(
-                "^\\d{1,9}$"); // 是否为数字
+                "^[0-9]+(.[0-9]{2})?$"); // 金额校验
         m = p.matcher(str);
         b = m.matches();
         return b;

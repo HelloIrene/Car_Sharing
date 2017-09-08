@@ -22,6 +22,16 @@ public class Customer {
 	private String gongSiAddress;
 	private Double yingShouFee;
 	private Double shiShouFee;
+	private int isBlockUp;
+
+	public int getIsBlockUp() {
+		return isBlockUp;
+	}
+
+	public void setIsBlockUp(int isBlockUp) {
+		this.isBlockUp = isBlockUp;
+	}
+
 	public String getcId() {
 		return cId;
 	}

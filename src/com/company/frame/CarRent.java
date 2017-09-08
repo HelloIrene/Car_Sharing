@@ -39,7 +39,8 @@ public class CarRent extends JDialog {
 	 */
 	public CarRent() {
 		setTitle("\u8F66\u8F86\u7EDF\u8BA1\u67E5\u8BE2");
-		setBounds(100, 100, 680, 490);
+		setSize(680, 490);
+		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

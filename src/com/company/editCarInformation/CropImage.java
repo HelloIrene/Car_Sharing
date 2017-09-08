@@ -53,7 +53,7 @@ public class CropImage extends JDialog implements MouseListener, MouseMotionList
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                File save_path = new File("C:\\temp.jpg");
+                File save_path = new File("C:\\temp2.jpg");
                 try {
                     ImageIO.write(img, "JPG", save_path);
                 } catch (IOException e1) {

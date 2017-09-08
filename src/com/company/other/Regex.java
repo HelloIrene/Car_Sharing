@@ -61,6 +61,17 @@ public class Regex {
         return b;
     }
 
+    public boolean isAge(String str){
+        Pattern p = null;
+        Matcher m = null;
+        boolean b = false;
+        p = Pattern.compile(
+                "^1?[0-9]{1}[0-9]{1}$"); // ƒÍ¡‰–£—È
+        m = p.matcher(str);
+        b = m.matches();
+        return b;
+    }
+
     public boolean isPhone(String str){
         Pattern p = null;
         Matcher m = null;

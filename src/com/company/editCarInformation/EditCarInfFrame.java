@@ -4,9 +4,11 @@ import com.company.changSkin.ChaneSkin;
 import com.company.dao.CommonDAOImpl;
 import com.company.dao.DBTool;
 import com.company.entity.CarInformation;
-import com.company.frame.RegisterFrame;
 import com.company.other.Regex;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -17,7 +19,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.math.BigDecimal;
-import java.security.PrivateKey;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -26,9 +27,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author student Ross
@@ -379,7 +377,7 @@ public class EditCarInfFrame extends JDialog {
         carInformation.setErbaolicheng(new BigDecimal(erBaoMils.getText()));
 
         carInformation.setBuy_Time(new Timestamp(((Date) buyyingTime.getValue()).getTime()));
-        carInformation.setCar_Color(carColor[color.getSelectedIndex()]);
+        carInformation.setCar_Color((String) color.getSelectedItem());
         carInformation.setMotor_Id(enginerNo.getText());
         carInformation.setChair_Num(carSeat[seatNum.getSelectedIndex()]);
         carInformation.setBuy_tax(new BigDecimal(purchaseTax.getText()));
@@ -478,7 +476,7 @@ public class EditCarInfFrame extends JDialog {
                 new CropImage(file).setVisible(true);
                 Icon icon;
                 try {
-                    icon = new ImageIcon(ImageIO.read(new File("C:\\temp.jpg")));
+                    icon = new ImageIcon(ImageIO.read(new File("C:\\temp2.jpg")));
                     picLabel.setIcon(icon);
                 } catch (IOException e1) {
                     e1.printStackTrace();
@@ -562,6 +560,7 @@ public class EditCarInfFrame extends JDialog {
         buyyingTime.setBounds(385, 15, 175, 22);
         basicData.add(buyyingTime);
         color = new JComboBox(carColor);
+        color.setEditable(true);
         color.setBounds(385, 40, 175, 22);
         basicData.add(color);
         enginerNo = new JTextField();
@@ -632,15 +631,15 @@ public class EditCarInfFrame extends JDialog {
 
     private int saveASExcel() {
         // 第一步，创建一个webbook，对应一个Excel文件
-        HSSFWorkbook wb = new HSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-        HSSFSheet sheet = wb.createSheet("汽车信息表");
+        XSSFSheet sheet = wb.createSheet("汽车信息表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-        HSSFRow row = sheet.createRow((int) 0);
+        XSSFRow row = sheet.createRow((int) 0);
 //        // 第四步，创建单元格，并设置值表头 设置表头居中
 //        HSSFCellStyle style = wb.createCellStyle();
 //        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-        HSSFCell cell = row.createCell(0);
+        XSSFCell cell = row.createCell(0);
         cell.setCellValue("车牌号");
         cell = row.createCell(1);
         cell.setCellValue("购买时间");
@@ -747,18 +746,18 @@ public class EditCarInfFrame extends JDialog {
         return saveFile(wb);
     }
 
-    private int saveFile(HSSFWorkbook wb) {
+    private int saveFile(XSSFWorkbook wb) {
         JFileChooser jfc = new JFileChooser();
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                "Excel文件(*.xls)", "xls");
+                "Excel 工作簿(*.xlsx)", "xlsx");
         jfc.setFileFilter(filter);
         int option = jfc.showSaveDialog(EditCarInfFrame.this);
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = jfc.getSelectedFile();
             String fname = jfc.getName(file);   //从文件名输入框中获取文件名
             //假如用户填写的文件名不带我们制定的后缀名，那么我们给它添上后缀
-            if (fname.indexOf(".xls") == -1) {
-                file = new File(jfc.getCurrentDirectory(), fname + ".xls");
+            if (fname.indexOf(".xlsx") == -1) {
+                file = new File(jfc.getCurrentDirectory(), fname + ".xlsx");
             }
             try {
                 FileOutputStream fout = new FileOutputStream(file);

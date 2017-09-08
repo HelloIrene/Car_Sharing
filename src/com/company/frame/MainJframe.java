@@ -27,6 +27,7 @@ public class MainJframe extends JFrame {
      * Create the frame.
      */
     public MainJframe(int inputidIdentify) {
+        setTitle("主页面");
         idIdentify = inputidIdentify;
         try {
             //UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
@@ -154,7 +155,15 @@ public class MainJframe extends JFrame {
         mntmNewMenuItem_11.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(MainJframe.this,"");
+                //TODO 需要升级成带超链接的网址链接 @2017年9月8日19:18:04
+                JOptionPane.showMessageDialog(
+                        MainJframe.this,
+                        "<html>" +
+                                "<p><font size=\"4\">Thanks<br></br>thumbnailator<br></br>https://github.com/coobird/thumbnailator" +
+                                "<br></br>Darcula Theme<br></br>https://github.com/bulenkov/Darcula" +
+                                "<br></br>Apache POI<br></br>http://poi.apache.org/</font>"+
+                                "<br></br>&copy; 2017 Group 13 .All rights reserved.&emsp;&emsp;</p>" +
+                        "<html>");
             }
         });
         mnNewMenu_4.add(mntmNewMenuItem_11);

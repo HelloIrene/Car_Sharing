@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.text.DateFormatter;
 
 import com.company.dao.CommonDAOImpl;
+import com.company.entity.CarInformation;
 import com.company.entity.CarWeiZhang;
 
 import java.awt.event.ActionListener;
@@ -19,7 +20,7 @@ public class WeiZhangFrame extends JDialog {
 
     private static final long serialVersionUID = -6306209419729755327L;
     private JPanel contentPane;
-    private JTextField textFieldCarNo;
+    private JComboBox textFieldCarNo;
     private JTextField textField_DriverCard_No;
     private JTextField textField_penalty;
     private JTextField textField_fadanNo;
@@ -28,6 +29,7 @@ public class WeiZhangFrame extends JDialog {
      * Create the frame.
      */
     public WeiZhangFrame() {
+        setModal(true);
         setTitle("\u8F66\u8F86\u8FDD\u7AE0\u767B\u8BB0");
         setSize(406, 425);
         setLocationRelativeTo(null);
@@ -43,11 +45,14 @@ public class WeiZhangFrame extends JDialog {
         label.setBounds(22, 54, 70, 20);
         panel.add(label);
 
-        textFieldCarNo = new JTextField();
-        textFieldCarNo.setEditable(false);
+        textFieldCarNo = new JComboBox();
+        List<CarInformation> List = new CommonDAOImpl().executeQuery(CarInformation.class, "SELECT * FROM tb_car ", null);
+        for (CarInformation s : List) {
+            textFieldCarNo.addItem(s.getCar_Id());
+        }
         textFieldCarNo.setBounds(102, 53, 152, 23);
         panel.add(textFieldCarNo);
-        textFieldCarNo.setColumns(10);
+        //textFieldCarNo.setColumns(10);
 
         JLabel label_1 = new JLabel("\u8FDD\u7AE0\u60C5\u51B5\uFF1A");
         label_1.setBounds(22, 93, 70, 20);
@@ -114,7 +119,7 @@ public class WeiZhangFrame extends JDialog {
                 if (!txtFieldIsNull()) {
                     CarWeiZhang carWeiZhang = new CarWeiZhang();
                     carWeiZhang.setWeizhangNo(Integer.parseInt(textField_fadanNo.getText()));
-                    carWeiZhang.setCar_Id(textFieldCarNo.getText());
+                    carWeiZhang.setCar_Id((String)textFieldCarNo.getSelectedItem());
                     carWeiZhang.setWeizhangqingkuang((String) comboBoxWeiZhangThings.getSelectedItem());
                     carWeiZhang.setCar_card_No(Integer.parseInt(textField_DriverCard_No.getText()));
                     carWeiZhang.setPenalty(Integer.parseInt(textField_penalty.getText()));
@@ -143,7 +148,7 @@ public class WeiZhangFrame extends JDialog {
                 if (!txtFieldIsNull()) {
                     CarWeiZhang carWeiZhang = new CarWeiZhang();
                     carWeiZhang.setWeizhangNo(Integer.parseInt(textField_fadanNo.getText()));
-                    carWeiZhang.setCar_Id(textFieldCarNo.getText());
+                    carWeiZhang.setCar_Id((String)textFieldCarNo.getSelectedItem());
                     carWeiZhang.setWeizhangqingkuang((String) comboBoxWeiZhangThings.getSelectedItem());
                     carWeiZhang.setCar_card_No(Integer.parseInt(textField_DriverCard_No.getText()));
                     carWeiZhang.setPenalty(Integer.parseInt(textField_penalty.getText()));
@@ -179,7 +184,7 @@ public class WeiZhangFrame extends JDialog {
                             "SELECT * FROM tb_car_weizhang WHERE weizhangNo = ?", tempParams);
                     if (!tempCarWeiZhang.isEmpty()) {
                         CarWeiZhang carWeiZhang = tempCarWeiZhang.get(0);
-                        textFieldCarNo.setText(carWeiZhang.getCar_Id());
+                        textFieldCarNo.setSelectedItem(carWeiZhang.getCar_Id());
                         comboBoxWeiZhangThings.setSelectedItem(carWeiZhang.getWeizhangqingkuang());
                         textField_DriverCard_No.setText("" + carWeiZhang.getCar_card_No());
                         textField_penalty.setText(carWeiZhang.getPenalty() + "");
@@ -210,8 +215,8 @@ public class WeiZhangFrame extends JDialog {
 
     protected boolean txtFieldIsNull() {
         boolean result = true;
-        result = ("".equals(textField_fadanNo.getText())) || ("".equals(textFieldCarNo.getText()))
-                || ("".equals(textField_DriverCard_No.getText())) || ("".equals(textField_penalty.getText()));
+        result = ("".equals(textField_fadanNo.getText())) ||
+                 ("".equals(textField_DriverCard_No.getText())) || ("".equals(textField_penalty.getText()));
 
         return result;
     }

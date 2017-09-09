@@ -379,7 +379,7 @@ public class EditCarInfFrame extends JDialog {
         carInformation.setBuy_Time(new Timestamp(((Date) buyyingTime.getValue()).getTime()));
         carInformation.setCar_Color((String) color.getSelectedItem());
         carInformation.setMotor_Id(enginerNo.getText());
-        carInformation.setChair_Num(carSeat[seatNum.getSelectedIndex()]);
+        carInformation.setChair_Num((String) seatNum.getSelectedItem());
         carInformation.setBuy_tax(new BigDecimal(purchaseTax.getText()));
         System.out.println(new BigDecimal(decorationFee.getText()));
         carInformation.setCar_Zhuangshi(new BigDecimal(decorationFee.getText()));
@@ -508,6 +508,20 @@ public class EditCarInfFrame extends JDialog {
         }
         jTextFieldCarNo = new JTextField();
         jTextFieldCarNo.setBounds(120, 15, 175, 20);
+        jTextFieldCarNo.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isCar(jTextFieldCarNo.getText()))) {
+                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！");
+                    showWarning("车牌号", "格式不正确！");
+                }
+            }
+        });
         basicData.add(jTextFieldCarNo);
         jTextFieldOutFactoryNo = new JTextField();
         carClass = new JComboBox(carTyle);
@@ -520,15 +534,57 @@ public class EditCarInfFrame extends JDialog {
         basicData.add(jTextFieldDIPANNo);
         jTextFieldPrice = new JTextField();
         jTextFieldPrice.setBounds(120, 115, 175, 20);
+        jTextFieldPrice.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(jTextFieldPrice.getText()))) {
+                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "价格格式不正确！");
+                    showWarning("价格", "格式不正确！");
+                }
+            }
+        });
         basicData.add(jTextFieldPrice);
         jTextFieldGetCarNoFee = new JTextField();
         jTextFieldGetCarNoFee.setBounds(120, 140, 175, 20);
+        jTextFieldGetCarNoFee.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(jTextFieldGetCarNoFee.getText()))) {
+                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "上牌费格式不正确！");
+                    showWarning("上牌费", "格式不正确！");
+                }
+            }
+        });
         basicData.add(jTextFieldGetCarNoFee);
         jTextFieldCarOwnerName = new JTextField();
         jTextFieldCarOwnerName.setBounds(120, 165, 175, 20);
         basicData.add(jTextFieldCarOwnerName);
         jTextFieldStartMils = new JTextField();
         jTextFieldStartMils.setBounds(120, 190, 175, 20);
+        jTextFieldStartMils.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(jTextFieldStartMils.getText()))) {
+                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "起始里程格式不正确！");
+                    showWarning("起始里程", "格式不正确！");
+                }
+            }
+        });
         basicData.add(jTextFieldStartMils);
 
         YLFTime = setJSpinner(YLFTime, today, true);
@@ -554,6 +610,19 @@ public class EditCarInfFrame extends JDialog {
         basicData.add(GLFTime);
         erBaoMils = new JTextField();
         erBaoMils.setBounds(120, 390, 175, 20);
+        erBaoMils.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(erBaoMils.getText()))) {
+                    showWarning("二保里程", "格式不正确！");
+                }
+            }
+        });
         basicData.add(erBaoMils);
 
         buyyingTime = setJSpinner(buyyingTime, today, true);
@@ -567,6 +636,7 @@ public class EditCarInfFrame extends JDialog {
         enginerNo.setBounds(385, 65, 175, 20);
         basicData.add(enginerNo);
         seatNum = new JComboBox(carSeat);
+        seatNum.setEditable(true);
         seatNum.setBounds(385, 90, 175, 22);
         basicData.add(seatNum);
         purchaseTax = new JTextField();
@@ -605,6 +675,7 @@ public class EditCarInfFrame extends JDialog {
         GLFEndTime.setBounds(385, 365, 175, 22);
         basicData.add(GLFEndTime);
         nextErBao.setBounds(385, 390, 175, 20);
+        //nextErBao
         basicData.add(nextErBao);
     }
 
@@ -636,9 +707,7 @@ public class EditCarInfFrame extends JDialog {
         XSSFSheet sheet = wb.createSheet("汽车信息表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
         XSSFRow row = sheet.createRow((int) 0);
-//        // 第四步，创建单元格，并设置值表头 设置表头居中
-//        HSSFCellStyle style = wb.createCellStyle();
-//        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+        // 第四步，创建单元格，并设置值表头
         XSSFCell cell = row.createCell(0);
         cell.setCellValue("车牌号");
         cell = row.createCell(1);
@@ -784,8 +853,6 @@ public class EditCarInfFrame extends JDialog {
             public void windowClosing(WindowEvent e) {
                 int exitChoose = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
                 if (exitChoose == JOptionPane.OK_OPTION) {
-//		        	Register.this.dispose(); //退出本界面
-                    //System.exit(0);
                     dispose();
                 } else {
                     return;
@@ -842,56 +909,6 @@ public class EditCarInfFrame extends JDialog {
         }
     }
 
-//    class ItemCheckBoxListener implements ItemListener {
-//        @Override
-//        public void itemStateChanged(ItemEvent e) {
-//            if (jCheckBox.isSelected()) {
-//                StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
-//                String warning = new String();
-//                if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
-//                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//                stringBuffer.append(0);
-//                stringBuffer.append(" WHERE Car_Id = '");
-//                stringBuffer.append(jTextFieldCarNo.getText());
-//                stringBuffer.append("' ");
-//                if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
-//                    warning="成功！";
-//                }else{
-//                    warning="失败";
-//                }
-//                JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
-//                return;
-//            } else {
-//                StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
-//                String warning = new String();
-//                if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
-//                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
-//                    return;
-//                }
-//                stringBuffer.append(1);
-//                stringBuffer.append(" WHERE Car_Id = '");
-//                stringBuffer.append(jTextFieldCarNo.getText());
-//                stringBuffer.append("' ");
-//                if(commonDAO.executeUpdate(stringBuffer.toString(),null)>0){
-//                    warning="成功！";
-//                }else{
-//                    warning="失败";
-//                }
-//                JOptionPane.showMessageDialog(EditCarInfFrame.this,warning);
-//                return;
-//            }
-//
-//        }
-//    }
-
-    /*
-        private JTextField jTextFieldOutFactoryNo;
-        private JTextField jTextFieldDIPANNo;
-        private JTextField enginerNo;
-        private JTextField nowMils;
-     */
     private boolean isInfRight() {
         if (!(regex.isCar(jTextFieldCarNo.getText()))) {
             //JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！");

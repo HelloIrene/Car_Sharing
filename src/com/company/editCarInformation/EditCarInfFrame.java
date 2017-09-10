@@ -447,6 +447,20 @@ public class EditCarInfFrame extends JDialog {
         jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         carInf.add(jLabel);
         choose = new JComboBox();
+        choose.setEditable(true);
+        choose.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isCar((String) choose.getSelectedItem()))) {
+                    showWarning("车牌号", "格式不正确！");
+                }
+            }
+        });
         choose.setBounds(120, 10, 175, 20);
         List<CarInformation> List = new CommonDAOImpl().executeQuery(CarInformation.class, "SELECT * FROM tb_car ", null);
         for (CarInformation s : List) {
@@ -640,18 +654,70 @@ public class EditCarInfFrame extends JDialog {
         seatNum.setBounds(385, 90, 175, 22);
         basicData.add(seatNum);
         purchaseTax = new JTextField();
+        purchaseTax.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(purchaseTax.getText()))) {
+                    showWarning("购置税", "格式不正确！");
+                }
+            }
+        });
         purchaseTax.setBounds(385, 115, 175, 20);
         basicData.add(purchaseTax);
         decorationFee = new JTextField();
+        decorationFee.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(decorationFee.getText()))) {
+                    showWarning("汽车装饰费", "格式不正确！");
+                }
+            }
+        });
         decorationFee.setBounds(385, 140, 175, 20);
         basicData.add(decorationFee);
         telNo = new JTextField();
+        telNo.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isTel(telNo.getText()))) {
+                    showWarning("联系电话(手机)", "格式不正确！");
+                }
+            }
+        });
         telNo.setBounds(385, 165, 175, 20);
         basicData.add(telNo);
         nowMils = new JTextField();
+        nowMils.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(nowMils.getText()))) {
+                    showWarning("当前里程", "格式不正确！");
+                }
+            }
+        });
         nowMils.setBounds(385, 190, 175, 20);
         basicData.add(nowMils);
-        nextErBao = new JTextField();
+
 
         YLFEndTime = setJSpinner(YLFEndTime, nextyearToday, false);
         YLFEndTime.setBounds(385, 215, 175, 22);
@@ -674,7 +740,22 @@ public class EditCarInfFrame extends JDialog {
         GLFEndTime = setJSpinner(GLFEndTime, nextyearToday, false);
         GLFEndTime.setBounds(385, 365, 175, 22);
         basicData.add(GLFEndTime);
+        nextErBao = new JTextField();
         nextErBao.setBounds(385, 390, 175, 20);
+        nextErBao.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (!(regex.isAllNum(nextErBao.getText()))) {
+                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "下次二保格式不正确！");
+                    showWarning("下次二保", "格式不正确！");
+                }
+            }
+        });
         //nextErBao
         basicData.add(nextErBao);
     }

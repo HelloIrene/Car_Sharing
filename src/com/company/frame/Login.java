@@ -49,7 +49,7 @@ public class Login extends JFrame {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(270, 150, 70, 25);
 		panel.add(comboBox);
-		String[] s={"customer","master","system"};
+		String[] s={"顾客","管理员","system"};
 		for(String dept:s){
 			comboBox.addItem(dept);
 		}
@@ -72,18 +72,18 @@ public class Login extends JFrame {
 		panel.add(passwordField);
 		
 		String path1 = "img/0.png";
-        // 背景图片  
-        ImageIcon background1 = new ImageIcon(path1);  
-        // 把背景图片显示在一个标签里面  
-        JLabel label1 = new JLabel(background1);  
-        label1.setBounds(150, 5, 100, 120);
+        // 背景图片
+        ImageIcon background1 = new ImageIcon(path1);
+         //把背景图片显示在一个标签里面
+        JLabel label1 = new JLabel(background1);
+        label1.setBounds(140, 5, 100, 120);
         panel.add(label1);
         //背景图片的路径。（相对路径或者绝对路径。本例图片放于"java项目名"的文件下）  
-        String path = "img/2.png";
-        // 背景图片  
-        ImageIcon background = new ImageIcon(path);  
-        // 把背景图片显示在一个标签里面  
-        JLabel label = new JLabel(background);  
+//        String path = "img/2.png";
+//        // 背景图片
+//        ImageIcon background = new ImageIcon(path);
+//        // 把背景图片显示在一个标签里面
+        JLabel label = new JLabel();
         // 把标签的大小位置设置为图片刚好填充整个面板  
         label.setBounds(0, 0, this.getWidth(), this.getHeight());  
         // 把内容窗格转化为JPanel，否则不能用方法setOpaque()来使内容窗格透明  

@@ -39,15 +39,15 @@ public class CarInformation {
     public Timestamp YGF_Endtime;
     public BigDecimal Erbaolicheng;
     public BigDecimal NextErbao;
-    public int isBlockUp;
-
-    public int getIsBlockUp() {
-        return isBlockUp;
-    }
-
-    public void setIsBlockUp(int isBlockUp) {
-        this.isBlockUp = isBlockUp;
-    }
+//    public int isBlockUp;
+//
+//    public int getIsBlockUp() {
+//        return isBlockUp;
+//    }
+//
+//    public void setIsBlockUp(int isBlockUp) {
+//        this.isBlockUp = isBlockUp;
+//    }
 
     public String getCar_Id() {
         return Car_Id;

@@ -1,6 +1,6 @@
-package com.company.frame;
+package com.company.ui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
-public class WeiZhangFrame extends JDialog {
+public class WeiZhang extends JDialog {
 
     private static final long serialVersionUID = -6306209419729755327L;
     private JPanel contentPane;
@@ -26,9 +26,10 @@ public class WeiZhangFrame extends JDialog {
     private JTextField textField_fadanNo;
 
     /**
-     * Create the frame.
+     * Create the ui.
      */
-    public WeiZhangFrame() {
+    public WeiZhang() {
+        setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
         setModal(true);
         setTitle("\u8F66\u8F86\u8FDD\u7AE0\u767B\u8BB0");
         setSize(406, 425);
@@ -103,7 +104,7 @@ public class WeiZhangFrame extends JDialog {
         JButton button_Exit = new JButton("\u9000\u51FA");
         button_Exit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                WeiZhangFrame.this.dispose();
+                WeiZhang.this.dispose();
             }
         });
         button_Exit.setBounds(284, 264, 70, 23);
@@ -127,14 +128,14 @@ public class WeiZhangFrame extends JDialog {
                     carWeiZhang.setRemark(editorPaneRemark.getText());
                     int row = new CommonDAOImpl().add(carWeiZhang);
                     if (row > 0) {
-                        JOptionPane.showMessageDialog(WeiZhangFrame.this, "添加成功！", "信息",
+                        JOptionPane.showMessageDialog(WeiZhang.this, "添加成功！", "信息",
                                 JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(WeiZhangFrame.this, "添加失败！", "信息",
+                        JOptionPane.showMessageDialog(WeiZhang.this, "添加失败！", "信息",
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(WeiZhangFrame.this, "添加内容不能为空！！！", "信息",
+                    JOptionPane.showMessageDialog(WeiZhang.this, "添加内容不能为空！！！", "信息",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -156,14 +157,14 @@ public class WeiZhangFrame extends JDialog {
                     carWeiZhang.setRemark(editorPaneRemark.getText());
                     int row = new CommonDAOImpl().update(carWeiZhang);
                     if (row > 0) {
-                        JOptionPane.showMessageDialog(WeiZhangFrame.this, "更新成功！", "信息",
+                        JOptionPane.showMessageDialog(WeiZhang.this, "更新成功！", "信息",
                                 JOptionPane.INFORMATION_MESSAGE);
                     } else {
-                        JOptionPane.showMessageDialog(WeiZhangFrame.this, "更新失败！", "信息",
+                        JOptionPane.showMessageDialog(WeiZhang.this, "更新失败！", "信息",
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(WeiZhangFrame.this, "添加内容不能为空！！！", "信息",
+                    JOptionPane.showMessageDialog(WeiZhang.this, "添加内容不能为空！！！", "信息",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }
@@ -191,11 +192,11 @@ public class WeiZhangFrame extends JDialog {
                         spinnerWeiZhangDate.setValue(carWeiZhang.getWeizhangdate());
                         editorPaneRemark.setText(carWeiZhang.getRemark());
                     } else {
-                        JOptionPane.showMessageDialog(WeiZhangFrame.this, "没有找到该内容！", "信息",
+                        JOptionPane.showMessageDialog(WeiZhang.this, "没有找到该内容！", "信息",
                                 JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(WeiZhangFrame.this, "罚单号不能为空！！！", "信息",
+                    JOptionPane.showMessageDialog(WeiZhang.this, "罚单号不能为空！！！", "信息",
                             JOptionPane.INFORMATION_MESSAGE);
                 }
             }

@@ -1,7 +1,6 @@
-package com.company.editCarInformation;
+package com.company.ui.editCarInformation;
 
 import net.coobird.thumbnailator.Thumbnails;
-import net.coobird.thumbnailator.geometry.Positions;
 
 import java.awt.Graphics;
 import java.awt.event.*;

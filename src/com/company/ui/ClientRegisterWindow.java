@@ -1,6 +1,5 @@
-package com.company.frame;
+package com.company.ui;
 
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -67,6 +66,7 @@ public class ClientRegisterWindow extends JDialog implements ActionListener {
 	public ClientRegisterWindow(int i) {
 		idIdentify=i;
 		setModal(true);
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
 		iniClientJFrame();
 		labelNeiBuNo = new JLabel("内部编号:");
 		labelNeiBuNo.setBounds(12, 25, 60, 20);
@@ -252,9 +252,7 @@ public class ClientRegisterWindow extends JDialog implements ActionListener {
 	}
 
 	private void iniClientJFrame() {
-		Toolkit kit = Toolkit.getDefaultToolkit();
-		Image img = kit.getImage("img/car.png");
-		this.setIconImage(img);
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
 		this.setTitle("汽车租赁系统");
 		this.setSize(710, 480);
 		this.setLocationRelativeTo(null);

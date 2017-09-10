@@ -1,4 +1,4 @@
-package com.company.frame;
+package com.company.ui;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -27,15 +27,12 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.SwingUtilities;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 /**
  *

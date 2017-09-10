@@ -1,6 +1,6 @@
 package com.company.test;
 
-import com.company.frame.RegisterFrame;
+import com.company.ui.RegisterFrame;
 
 public class RegisterTest {
     public static void main(String[] args) {

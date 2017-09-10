@@ -1,8 +1,6 @@
-package com.company.frame;
+package com.company.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -17,8 +15,8 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import com.company.dao.impl.CommonDAO;
-import com.company.dao.impl.CommonDAOImpl;
+import com.company.dao.newDAO.CommonDAO;
+import com.company.dao.newDAO.CommonDAOImpl;
 import com.company.entity.CarInformation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -35,9 +33,11 @@ public class CarRent extends JDialog {
 	private List<Object> carList = new ArrayList<>();
 
 	/**
-	 * Create the frame.
+	 * Create the ui.
 	 */
 	public CarRent() {
+		setModal(true);
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
 		setTitle("\u8F66\u8F86\u7EDF\u8BA1\u67E5\u8BE2");
 		setSize(680, 490);
 		setLocationRelativeTo(null);

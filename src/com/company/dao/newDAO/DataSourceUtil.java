@@ -1,4 +1,4 @@
-package com.company.dao.impl;
+package com.company.dao.newDAO;
 
 import com.alibaba.druid.pool.DruidDataSource;
 

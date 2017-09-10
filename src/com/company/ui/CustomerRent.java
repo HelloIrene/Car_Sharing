@@ -1,18 +1,12 @@
-package com.company.frame;
+package com.company.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,14 +16,11 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Workbook;
-import com.company.dao.impl.CommonDAO;
-import com.company.dao.impl.CommonDAOImpl;
+import com.company.dao.newDAO.CommonDAO;
+import com.company.dao.newDAO.CommonDAOImpl;
 import com.company.entity.Customer;
 
 public class CustomerRent extends JDialog {
@@ -44,9 +35,11 @@ public class CustomerRent extends JDialog {
 //	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	/**
-	 * Create the frame.
+	 * Create the ui.
 	 */
 	public CustomerRent() {
+		setModal(true);
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
 		setTitle("客户统计查询");
 		setSize( 680, 490);
 		setLocationRelativeTo(null);

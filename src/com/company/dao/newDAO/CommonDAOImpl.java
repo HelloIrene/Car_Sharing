@@ -1,4 +1,4 @@
-package com.company.dao.impl;
+package com.company.dao.newDAO;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,8 +10,6 @@ import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
-import com.company.dao.impl.CommonDAO;
-import com.company.dao.impl.DataSourceUtil;
 
 public class CommonDAOImpl implements CommonDAO {
 

@@ -1,6 +1,8 @@
 package com.company.entity;
 
 import com.company.dao.Id;
+
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class Customer {
@@ -20,8 +22,8 @@ public class Customer {
 	private String homeAddress;
 	private String gongSiName;
 	private String gongSiAddress;
-	private Double yingShouFee;
-	private Double shiShouFee;
+	private BigDecimal yingShouFee;
+	private BigDecimal shiShouFee;
 	private int isBlockUp;
 
 	public int getIsBlockUp() {
@@ -122,16 +124,16 @@ public class Customer {
 	public void setGongSiAddress(String gongSiAddress) {
 		this.gongSiAddress = gongSiAddress;
 	}
-	public Double getYingShouFee() {
+	public BigDecimal getYingShouFee() {
 		return yingShouFee;
 	}
-	public void setYingShouFee(Double yingShouFee) {
+	public void setYingShouFee(BigDecimal yingShouFee) {
 		this.yingShouFee = yingShouFee;
 	}
-	public Double getShiShouFee() {
+	public BigDecimal getShiShouFee() {
 		return shiShouFee;
 	}
-	public void setShiShouFee(Double shiShouFee) {
+	public void setShiShouFee(BigDecimal shiShouFee) {
 		this.shiShouFee = shiShouFee;
 	}
 

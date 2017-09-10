@@ -143,7 +143,7 @@ public class CarSettlement extends JDialog {
 	}
 
 	/**
-	 * Create the frame.
+	 * Create the ui.
 	 */
 	public CarSettlement() {
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -1,8 +1,6 @@
-package com.company.frame;
+package com.company.ui;
 
-import com.company.dao.CommonDAO;
 import com.company.dao.CommonDAOImpl;
-import com.company.entity.LoginIdentity;
 
 import java.awt.BorderLayout;
 
@@ -17,9 +15,6 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField textField;
 	private JPasswordField passwordField;
-	/**
-	 * Create the frame.
-	 */
 	public Login() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -32,7 +27,8 @@ public class Login extends JFrame {
 		} catch (UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
-		setIconImage(Toolkit.getDefaultToolkit().getImage("img/1.png"));
+		setTitle("Car-Sharing");
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize( 400, 385);
 		setLocationRelativeTo(null);
@@ -101,11 +97,11 @@ public class Login extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
                 if(new CommonDAOImpl().isPasswordRight2(new String(passwordField.getPassword()),textField.getText(),comboBox.getSelectedIndex())){
-                    new MainJframe(comboBox.getSelectedIndex()).setVisible(true);
+                    new MainPage(comboBox.getSelectedIndex()).setVisible(true);
                     dispose();
                     return;
                 }else {
-                    JOptionPane.showMessageDialog(Login.this,"用户名密码或者身份错误！","警告！",JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(Login.this,"用户名、密码或者身份错误！","警告！",JOptionPane.ERROR_MESSAGE);
                 }
 			}
 		});

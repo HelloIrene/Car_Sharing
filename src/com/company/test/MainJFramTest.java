@@ -1,9 +1,9 @@
 package com.company.test;
 
-import com.company.frame.MainJframe;
+import com.company.ui.MainPage;
 
 public class MainJFramTest {
     public static void main(String[] args) {
-        new MainJframe(1).setVisible(true);
+        new MainPage(1).setVisible(true);
     }
 }

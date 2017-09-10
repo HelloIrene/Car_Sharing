@@ -1,7 +1,6 @@
 package com.company.test;
 
-import com.company.changSkin.ShowSystemLookNFeelClass;
-import com.company.frame.Login;
+import com.company.ui.Login;
 
 import java.awt.*;
 

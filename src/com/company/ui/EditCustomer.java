@@ -1,33 +1,42 @@
-package com.company.frame;
+package com.company.ui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatterFactory;
 
 import com.company.dao.*;
+import com.company.ui.editCarInformation.CropImage;
 import com.company.entity.Bondsman;
 import com.company.entity.Company;
 import com.company.entity.Customer;
 import com.company.entity.Driver;
 
 import com.company.other.Regex;
-import org.apache.poi.hssf.usermodel.*;;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;;
 
-public class MyFrame extends JDialog {
+public class EditCustomer extends JDialog {
     /**
      * @author Irene
      * @2017年8月30日
@@ -64,9 +73,14 @@ public class MyFrame extends JDialog {
     private JButton btnReplace;
     private JButton btnDesign;
     private JButton btnPrint;
+    //private JButton
 
     private JPanel panel;
     private JTabbedPane showInfo;
+    private JPanel panel_5;
+    private JLabel jLabel;
+    private JLabel picLabel;
+    private JComboBox choose;
 
     private JTextField driverName;
     private JTextField drivingAge;
@@ -96,9 +110,10 @@ public class MyFrame extends JDialog {
     BondsmanDAO bmanDao = new BondsmanDAO();
     CompanyDAO comDao = new CompanyDAO();
 
-    public MyFrame(int i) {
+    public EditCustomer(int i) {
         identify = i;
         setModal(true);
+        setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
         initFrame();
         initBody();
         judgeId();
@@ -252,7 +267,7 @@ public class MyFrame extends JDialog {
         StringBuffer temp = new StringBuffer("将要导出数据库");
         temp.append(jTabbedPaneName[i]);
         temp.append("的全部信息，是否继续！！");
-        int res = JOptionPane.showConfirmDialog(MyFrame.this, temp.toString(), "警告！", JOptionPane.YES_NO_OPTION,
+        int res = JOptionPane.showConfirmDialog(EditCustomer.this, temp.toString(), "警告！", JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
         if (res == JOptionPane.OK_OPTION) {
             switch (i) {
@@ -284,17 +299,17 @@ public class MyFrame extends JDialog {
 
         btnReturn = new JButton("返回(R)");
         btnReturn.setToolTipText("返回上一页");
-        btnReturn.setBounds(550, 406, 93, 23);
+        btnReturn.setBounds(561, 397, 93, 45);
         btnReturn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                MyFrame.this.dispose();
+                EditCustomer.this.dispose();
             }
         });
         panel.add(btnReturn);
         btnCancle = new JButton("取消(C)");
         btnCancle.setToolTipText("取消信息的输入");
-        btnCancle.setBounds(550, 370, 93, 23);
+        btnCancle.setBounds(561, 342, 93, 45);
         btnCancle.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -317,7 +332,7 @@ public class MyFrame extends JDialog {
         panel.add(btnCancle);
         btnCunPan = new JButton("存盘(S)");
         btnCunPan.setToolTipText("导出资料为Excel文件保存");
-        btnCunPan.setBounds(550, 337, 93, 23);
+        btnCunPan.setBounds(561, 287, 93, 45);
         btnCunPan.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -328,7 +343,7 @@ public class MyFrame extends JDialog {
         panel.add(btnCunPan);
         btnAdd = new JButton("增加(A)");
         btnAdd.setToolTipText("添加新客户的信息");
-        btnAdd.setBounds(550, 301, 93, 23);
+        btnAdd.setBounds(561, 232, 93, 45);
         btnAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -338,62 +353,89 @@ public class MyFrame extends JDialog {
                             break;
                         }
                         if (cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "有了！！");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "有了！！");
                             break;
                         }
                         cusDao.add(getCustInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "添加成功！请继续填完驾驶员资料！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "添加成功！请继续填完驾驶员资料！");
                         break;
                     case 1:
                         if (!(judgedriverInputInf())) {
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有对应的客户外键");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有对应的客户外键");
                             break;
                         }
-                        if ((commonDAO.searchClo(driverIdentityCardId.getText(), "tb_driver", "driverId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "驾驶员身份证重复");
+                        if ((commonDAO.searchClo(driverIdentityCardId.getText(), "tb_driver", "driverId"))) {
+                            JOptionPane.showMessageDialog(EditCustomer.this, "驾驶员身份证重复");
                             break;
                         }
                         driDao.add(getDriInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "添加成功！请继续填完担保人资料！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "添加成功！请继续填完担保人资料！");
                         break;
                     case 2:
                         if (!(judgeBoundsInputInf())) {
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有对应的客户外键");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有对应的客户外键");
                             break;
                         }
                         if ((commonDAO.searchClo(bondsmanIdentityCardId.getText(), "tb_bondsman", "bondsmanId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "担保人身份证重复");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "担保人身份证重复");
                             break;
                         }
                         bmanDao.add(getBonInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "添加成功！请继续填完企业资料！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "添加成功！请继续填完企业资料！");
                         break;
                     case 3:
                         if (!(regex.isCustomerNo(clientId.getText()))) {
-                            //JOptionPane.showMessageDialog(MyFrame.this, "客户号格式不正确！");
+                            //JOptionPane.showMessageDialog(EditCustomer.this, "客户号格式不正确！");
                             showWarning("客户号格式不正确!", "正确格式如：C00000");
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有客户，你尽管添加，能添加进去算我输");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有客户，你尽管添加，能添加进去算我输");
                             break;
                         }
                         comDao.add(getComInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "添加成功！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "添加成功！");
                         break;
+                    case 4:
+                        int res = 0;
+                        String sql = "insert into image(name,content) values(?,?)";
+                        Connection con = DBTool.getInstance().getConnection();
+                        PreparedStatement ptmt = null;
+                        try {
+                            ptmt = con.prepareStatement(sql);
+                            ptmt.setString(1, (String) choose.getSelectedItem());
+                            InputStream is = null;
+                            is = new FileInputStream("C:\\temp.jpg");
+                            ptmt.setBinaryStream(2, is, is.available());
+                            // 方法说明：PreparedStatement.setBinaryStream(int
+                            // parameterIndex, InputStream x, int length)
+                            res = ptmt.executeUpdate();
+                        } catch (SQLException e1) {
+                            e1.printStackTrace();
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } finally {
+                            if (res > 0) {
+                                JOptionPane.showMessageDialog(EditCustomer.this, "成功！");
+                            } else {
+                                JOptionPane.showMessageDialog(EditCustomer.this, "失败！");
+                            }
+                        }
                 }
             }
         });
         panel.add(btnAdd);
         btnReplace = new JButton("替换(T)");
         btnReplace.setToolTipText("更新旧客户的信息");
-        btnReplace.setBounds(550, 268, 93, 23);
+        btnReplace.setBounds(561, 177, 93, 45);
         btnReplace.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -404,70 +446,70 @@ public class MyFrame extends JDialog {
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有写对应客户外键");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有写对应客户外键");
                             break;
                         }
                         cusDao.update(getCustInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "更新成功！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "更新成功！");
                         break;
                     case 1:
                         if (!(judgedriverInputInf())) {
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有写对应客户外键");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有写对应客户外键");
                             break;
                         }
                         driDao.update(getDriInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "更新成功！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "更新成功！");
                         break;
                     case 2:
                         if (!(judgeBoundsInputInf())) {
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有客户，无法对此进行更新！");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有客户，无法对此进行更新！");
                             break;
                         }
                         bmanDao.update(getBonInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "更新成功！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "更新成功！");
                         break;
                     case 3:
                         if (!(regex.isCustomerNo(clientId.getText()))) {
-                            //JOptionPane.showMessageDialog(MyFrame.this, "客户号格式不正确！");
+                            //JOptionPane.showMessageDialog(EditCustomer.this, "客户号格式不正确！");
                             showWarning("客户号格式不正确!", "正确格式如：C00000");
                             break;
                         }
                         if ((cusDao.searchColumn(clientId.getText(), "tb_customer", "cId")) == false) {
-                            JOptionPane.showMessageDialog(MyFrame.this, "没有客户，无法对此进行更新！");
+                            JOptionPane.showMessageDialog(EditCustomer.this, "没有客户，无法对此进行更新！");
                             break;
                         }
                         comDao.update(getComInf());
-                        JOptionPane.showMessageDialog(MyFrame.this, "更新成功！");
+                        JOptionPane.showMessageDialog(EditCustomer.this, "更新成功！");
                         break;
                 }
             }
         });
         panel.add(btnReplace);
-        btnPrint = new JButton("打印档案");
-        btnPrint.setBounds(550, 233, 93, 23);
-        btnPrint.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//				Properties p = new Properties();
-//				PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(MyFrame.this, "客户登记表编辑", p);
-//				Graphics pg = jp.getGraphics();// Graphics打印图形的图形环境
-//				if (pg != null) {
-//					try {
-//						MyFrame.this.printAll(pg); // 打印该窗体及其所有的组件
-//					} finally {
-//						pg.dispose(); // 注销图形环境
-//					}
-//				}
-//				jp.end(); // 结束打印作业
-            }
-        });
-        panel.add(btnPrint);
+//        btnPrint = new JButton("打印档案");
+//        btnPrint.setBounds(550, 233, 93, 23);
+//        btnPrint.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+////				Properties p = new Properties();
+////				PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(EditCustomer.this, "客户登记表编辑", p);
+////				Graphics pg = jp.getGraphics();// Graphics打印图形的图形环境
+////				if (pg != null) {
+////					try {
+////						EditCustomer.this.printAll(pg); // 打印该窗体及其所有的组件
+////					} finally {
+////						pg.dispose(); // 注销图形环境
+////					}
+////				}
+////				jp.end(); // 结束打印作业
+//            }
+//        });
+//        panel.add(btnPrint);
     }
 
     // 取消客户编辑界面的输入
@@ -527,8 +569,8 @@ public class MyFrame extends JDialog {
         tbcus.setHomeAddress(clientHomeAdd.getText());
         tbcus.setGongSiName(clientWorkUnit.getText());
         tbcus.setGongSiAddress(clientUnitAdd.getText());
-        tbcus.setYingShouFee(Double.parseDouble(yingShouMembershipFee.getText()));
-        tbcus.setShiShouFee(Double.parseDouble(shiShouMembershipFee.getText()));
+        tbcus.setYingShouFee(new BigDecimal(yingShouMembershipFee.getText()));
+        tbcus.setShiShouFee(new BigDecimal(shiShouMembershipFee.getText()));
         return tbcus;
     }
 
@@ -889,9 +931,72 @@ public class MyFrame extends JDialog {
     }
 
     public void photo() {
-        JPanel panel_5 = new JPanel();
+        panel_5 = new JPanel();
+        iniCarInputPanel();
         showInfo.addTab("照片", null, panel_5, null);
         panel_5.setLayout(null);
+
+    }
+
+    private void iniCarInputPanel() {
+        panel_5.setLayout(null);
+        jLabel = new JLabel("客户号：");
+        jLabel.setBounds(10, 10, 104, 20);
+        jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        panel_5.add(jLabel);
+        choose = new JComboBox();
+        choose.setEditable(true);
+        choose.setBounds(120, 10, 175, 20);
+        List<Customer> List = new CommonDAOImpl().executeQuery(Customer.class, "SELECT * FROM tb_customer ", null);
+        for (Customer s : List) {
+            choose.addItem(s.getcId());
+        }
+        panel_5.add(choose);
+        jLabel = new JLabel("选择图片：");
+        jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        jLabel.setBounds(10, 35, 104, 20);
+        panel_5.add(jLabel);
+        JButton inputPic = new JButton("选择图片");
+        inputPic.setBounds(120, 35, 84, 40);
+        inputPic.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooserPic = new JFileChooser();
+                chooserPic.setApproveButtonText("确定");
+                chooserPic.setDialogTitle("选择文件");
+                FileNameExtensionFilter pic = new FileNameExtensionFilter(
+                        "图片文件(*.jpg)", "jpg");
+                chooserPic.setFileFilter(pic);
+                int res = chooserPic.showOpenDialog(EditCustomer.this);
+                if (res == JFileChooser.APPROVE_OPTION) {
+                    File file = chooserPic.getSelectedFile();
+                    String fname = chooserPic.getName(file);   //从文件名输入框中获取文件名
+                    if (fname.indexOf(".jpg") == -1) {
+                        JOptionPane.showMessageDialog(EditCustomer.this, "文件格式不正确");
+                        return;
+                    }
+                    new CropImage(file).setVisible(true);
+                    Icon icon;
+                    try {
+                        icon = new ImageIcon(ImageIO.read(new File("C:\\temp2.jpg")));
+                        picLabel.setIcon(icon);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+        panel_5.add(inputPic);
+
+        jLabel = new JLabel("预览：");
+        jLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        jLabel.setBounds(10, 80, 104, 20);
+        panel_5.add(jLabel);
+
+        picLabel = new JLabel();
+        picLabel.setBackground(Color.white);
+        picLabel.setBounds(120, 80, 350, 350);
+        panel_5.add(picLabel);
     }
 
     public void initFrame() {
@@ -914,7 +1019,7 @@ public class MyFrame extends JDialog {
         }
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int exitChoose = JOptionPane.showConfirmDialog(MyFrame.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
+                int exitChoose = JOptionPane.showConfirmDialog(EditCustomer.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
                 if (exitChoose == JOptionPane.OK_OPTION) {
 //		        	Register.this.dispose(); //退出本界面
                     //System.exit(0);
@@ -944,65 +1049,45 @@ public class MyFrame extends JDialog {
     // 客户表存盘
     public int cunClient() {
         // 第一步，创建一个webbook,对应一个Excel文件
-        HSSFWorkbook wb = new HSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-        HSSFSheet sheet = wb.createSheet("客户表");
+        XSSFSheet sheet = wb.createSheet("客户表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-        HSSFRow row = sheet.createRow((int) 0);
-        // 第四步，创建单元格，并设置值表头 设置表头居中
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 创建一个居中格式
-        HSSFCell cell = row.createCell((short) 0);
+        XSSFRow row = sheet.createRow((int) 0);
+        XSSFCell cell = row.createCell((short) 0);
         cell.setCellValue("客户号");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 1);
         cell.setCellValue("起始日期");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 2);
         cell.setCellValue("终止日期");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 3);
         cell.setCellValue("姓名");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 4);
         cell.setCellValue("性别");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 5);
         cell.setCellValue("客户类型");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 6);
         cell.setCellValue("密码");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 7);
         cell.setCellValue("初次领证日期");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 8);
         cell.setCellValue("准驾类型");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 9);
         cell.setCellValue("身份证号");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 10);
         cell.setCellValue("联系电话");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 11);
         cell.setCellValue("移动电话");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 12);
         cell.setCellValue("家庭地址");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 13);
         cell.setCellValue("工作单位");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 14);
         cell.setCellValue("单位地址");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 15);
         cell.setCellValue("应收会费");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 16);
         cell.setCellValue("实收会费");
-        cell.setCellStyle(style);
         // TODO 存盘excel文件
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
         // java.awt和java.util下都有list要声明正确
@@ -1027,8 +1112,8 @@ public class MyFrame extends JDialog {
             row.createCell(12).setCellValue(cusInf.getHomeAddress());
             row.createCell(13).setCellValue(cusInf.getGongSiName());
             row.createCell(14).setCellValue(cusInf.getGongSiAddress());
-            row.createCell(15).setCellValue(cusInf.getYingShouFee());
-            row.createCell(16).setCellValue(cusInf.getShiShouFee());
+            row.createCell(15).setCellValue(String.valueOf(cusInf.getYingShouFee()));
+            row.createCell(16).setCellValue(String.valueOf(cusInf.getShiShouFee()));
         }
         return saveFile(wb);
     }
@@ -1036,35 +1121,35 @@ public class MyFrame extends JDialog {
     // 驾驶员表存盘
     public int cunDriver() {
         // 第一步，创建一个webbook,对应一个Excel文件
-        HSSFWorkbook wb = new HSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-        HSSFSheet sheet = wb.createSheet("驾驶员表");
+        XSSFSheet sheet = wb.createSheet("驾驶员表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-        HSSFRow row = sheet.createRow((int) 0);
-        // 第四步，创建单元格，并设置值表头 设置表头居中
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 创建一个居中格式
-        HSSFCell cell = row.createCell((short) 0);
+        XSSFRow row = sheet.createRow((int) 0);
+//        // 第四步，创建单元格，并设置值表头 设置表头居中
+//        HSSFCellStyle style = wb.createCellStyle();
+//        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 创建一个居中格式
+        XSSFCell cell = row.createCell((short) 0);
         cell.setCellValue("驾驶员姓名");
-        cell.setCellStyle(style);
+        //cell.setCellStyle(style);
         cell = row.createCell((short) 1);
         cell.setCellValue("驾驶员性别");
-        cell.setCellStyle(style);
+        //cell.setCellStyle(style);
         cell = row.createCell((short) 2);
         cell.setCellValue("驾龄");
-        cell.setCellStyle(style);
+        //cell.setCellStyle(style);
         cell = row.createCell((short) 3);
         cell.setCellValue("驾驶员类型");
-        cell.setCellStyle(style);
+        // cell.setCellStyle(style);
         cell = row.createCell((short) 4);
         cell.setCellValue("身份证号");
-        cell.setCellStyle(style);
+        //cell.setCellStyle(style);
         cell = row.createCell((short) 5);
         cell.setCellValue("移动电话");
-        cell.setCellStyle(style);
+        //cell.setCellStyle(style);
         cell = row.createCell((short) 6);
         cell.setCellValue("客户号");
-        cell.setCellStyle(style);
+        // cell.setCellStyle(style);
         // TODO 存盘excel文件
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
         // java.awt和java.util下都有list要声明正确
@@ -1088,32 +1173,24 @@ public class MyFrame extends JDialog {
     // 担保人表存盘
     public int cunBondsman() {
         // 第一步，创建一个webbook,对应一个Excel文件
-        HSSFWorkbook wb = new HSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-        HSSFSheet sheet = wb.createSheet("担保人表");
+        XSSFSheet sheet = wb.createSheet("担保人表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-        HSSFRow row = sheet.createRow((int) 0);
+        XSSFRow row = sheet.createRow((int) 0);
         // 第四步，创建单元格，并设置值表头 设置表头居中
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 创建一个居中格式
-        HSSFCell cell = row.createCell((short) 0);
+        XSSFCell cell = row.createCell((short) 0);
         cell.setCellValue("担保人姓名");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 1);
         cell.setCellValue("担保人性别");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 2);
         cell.setCellValue("年龄");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 3);
         cell.setCellValue("身份证号");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 4);
         cell.setCellValue("移动电话");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 5);
         cell.setCellValue("客户号");
-        cell.setCellStyle(style);
         // TODO 存盘excel文件
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
         // java.awt和java.util下都有list要声明正确
@@ -1136,26 +1213,19 @@ public class MyFrame extends JDialog {
     // 企业表存盘
     public int cunCompany() {
         // 第一步，创建一个webbook,对应一个Excel文件
-        HSSFWorkbook wb = new HSSFWorkbook();
+        XSSFWorkbook wb = new XSSFWorkbook();
         // 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-        HSSFSheet sheet = wb.createSheet("企业表");
+        XSSFSheet sheet = wb.createSheet("企业表");
         // 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-        HSSFRow row = sheet.createRow((int) 0);
-        // 第四步，创建单元格，并设置值表头 设置表头居中
-        HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 创建一个居中格式
-        HSSFCell cell = row.createCell((short) 0);
+        XSSFRow row = sheet.createRow((int) 0);
+        XSSFCell cell = row.createCell((short) 0);
         cell.setCellValue("企业名称");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 1);
         cell.setCellValue("企业类型");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 2);
         cell.setCellValue("企业地址");
-        cell.setCellStyle(style);
         cell = row.createCell((short) 3);
         cell.setCellValue("客户号");
-        cell.setCellStyle(style);
         // TODO 存盘excel文件
         // 第五步，写入实体数据 实际应用中这些数据从数据库得到，
         // java.awt和java.util下都有list要声明正确
@@ -1173,17 +1243,17 @@ public class MyFrame extends JDialog {
         return saveFile(wb);
     }
 
-    private int saveFile(HSSFWorkbook wb) {
+    private int saveFile(XSSFWorkbook wb) {
         JFileChooser jfc = new JFileChooser();
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel文件(*.xls)", "xls");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel 文件(*.xlsx)", "xlsx");
         jfc.setFileFilter(filter);
-        int option = jfc.showSaveDialog(MyFrame.this);
+        int option = jfc.showSaveDialog(EditCustomer.this);
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = jfc.getSelectedFile();
             String fname = jfc.getName(file); // 从文件名输入框中获取文件名
             // 假如用户填写的文件名不带我们制定的后缀名，那么我们给它添上后缀
-            if (fname.indexOf(".xls") == -1) {
-                file = new File(jfc.getCurrentDirectory(), fname + ".xls");
+            if (fname.indexOf(".xlsx") == -1) {
+                file = new File(jfc.getCurrentDirectory(), fname + ".xlsx");
                 // System.out.println("renamed");
                 // System.out.println(file.getName());
             }
@@ -1204,10 +1274,10 @@ public class MyFrame extends JDialog {
     private void outputInf(int i) {
         switch (i) {
             case 0:
-                JOptionPane.showMessageDialog(MyFrame.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(EditCustomer.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                 break;
             case 1:
-                JOptionPane.showMessageDialog(MyFrame.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(EditCustomer.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
                 break;
             default:
                 break;
@@ -1216,32 +1286,32 @@ public class MyFrame extends JDialog {
 
     private boolean judgeCustomerInputInf() {
         if (!(regex.isCustomerNo(clientId.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "客户号格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "客户号格式不正确！");
             showWarning("客户号格式不正确!", "正确格式如：C00000");
             return false;
         }
-        if (!(regex.isTel(clientPhone.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "手机号格式不正确！");
-            showWarning("手机号", "格式不正确！");
-            return false;
-        }
-        if (!(regex.isPhone(clientTel.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "固话格式不正确！");
-            showWarning("固话", "格式不正确！");
-            return false;
-        }
         if (!(regex.isIdNo(clientIdentityCardId.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "身份证格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "身份证格式不正确！");
             showWarning("身份证", "格式不正确！");
             return false;
         }
+        if (!(regex.isPhone(clientTel.getText())) || !clientTel.getText().equals("")) {
+            //JOptionPane.showMessageDialog(EditCustomer.this, "固话格式不正确！");
+            showWarning("固话", "格式不正确！");
+            return false;
+        }
+        if (!(regex.isTel(clientPhone.getText()))) {
+            //JOptionPane.showMessageDialog(EditCustomer.this, "手机号格式不正确！");
+            showWarning("手机号", "格式不正确！");
+            return false;
+        }
         if (!(regex.isAllNum(yingShouMembershipFee.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "应收会费不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "应收会费不正确！");
             showWarning("应收会费", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(shiShouMembershipFee.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "实收会费不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "实收会费不正确！");
             showWarning("实收会费", "格式不正确！");
             return false;
         }
@@ -1250,26 +1320,26 @@ public class MyFrame extends JDialog {
 
     private boolean judgedriverInputInf() {
         if (!(regex.isCustomerNo(clientId.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "客户号格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "客户号格式不正确！");
             showWarning("客户号格式不正确!", "正确格式如：C00000");
             return false;
         }
-        if (!(regex.isTel(driverPhone.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "手机号格式不正确！");
-            showWarning("手机号", "格式不正确！");
-            return false;
-        }
         if (!(regex.isIdNo(driverIdentityCardId.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "身份证格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "身份证格式不正确！");
             showWarning("身份证", "格式不正确！");
             return false;
         }
+        if (!(regex.isTel(driverPhone.getText()))) {
+            //JOptionPane.showMessageDialog(EditCustomer.this, "手机号格式不正确！");
+            showWarning("手机号", "格式不正确！");
+            return false;
+        }
         if (!(regex.isAllNum(drivingAge.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "驾龄格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "驾龄格式不正确！");
             showWarning("驾龄", "格式不正确！");
             return false;
         } else if (Integer.parseInt(drivingAge.getText()) > 50) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "驾龄超过限制！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "驾龄超过限制！");
             showWarning("驾龄", "超过限制！");
             return false;
         }
@@ -1278,26 +1348,27 @@ public class MyFrame extends JDialog {
 
     private boolean judgeBoundsInputInf() {
         if (!(regex.isCustomerNo(clientId.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "客户号格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "客户号格式不正确！");
             showWarning("客户号格式不正确!", "正确格式如：C00000");
             return false;
         }
-        if (!(regex.isTel(bondsmanPhone.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "手机号格式不正确！");
-            showWarning("手机号", "格式不正确！");
-            return false;
-        }
         if (!(regex.isIdNo(bondsmanIdentityCardId.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "身份证格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "身份证格式不正确！");
             showWarning("身份证", "格式不正确！");
             return false;
         }
+        if (!(regex.isTel(bondsmanPhone.getText()))) {
+            //JOptionPane.showMessageDialog(EditCustomer.this, "手机号格式不正确！");
+            showWarning("手机号", "格式不正确！");
+            return false;
+        }
+
         if (!(regex.isAllNum(bondsmanAge.getText()))) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "年龄格式不正确！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "年龄格式不正确！");
             showWarning("年龄", "格式不正确！");
             return false;
         } else if (Integer.parseInt(bondsmanAge.getText()) > 100) {
-            //JOptionPane.showMessageDialog(MyFrame.this, "年龄超过限制！");
+            //JOptionPane.showMessageDialog(EditCustomer.this, "年龄超过限制！");
             showWarning("年龄", "超过限制！");
             return false;
         }

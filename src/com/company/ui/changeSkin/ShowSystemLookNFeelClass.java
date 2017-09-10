@@ -1,4 +1,4 @@
-package com.company.changSkin;
+package com.company.ui.changeSkin;
 
 import javax.swing.*;
 

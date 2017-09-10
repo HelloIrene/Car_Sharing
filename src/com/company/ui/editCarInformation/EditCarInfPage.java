@@ -1,6 +1,6 @@
-package com.company.editCarInformation;
+package com.company.ui.editCarInformation;
 
-import com.company.changSkin.ChaneSkin;
+import com.company.ui.changeSkin.ChangeSkin;
 import com.company.dao.CommonDAOImpl;
 import com.company.dao.DBTool;
 import com.company.entity.CarInformation;
@@ -32,13 +32,13 @@ import java.util.List;
  * @author student Ross
  * @2017年8月30日
  */
-public class EditCarInfFrame extends JDialog {
+public class EditCarInfPage extends JDialog {
     private JLabel warningInf;
     private JLabel warningBody;
     private Regex regex = new Regex();
     private int idIdentify;
     private CommonDAOImpl commonDAO = new CommonDAOImpl();
-    private ChaneSkin chaneSkin;
+    private ChangeSkin changeSkin;
     private boolean skin;
     private JPanel mianBody;
     private JTabbedPane jTabbedPane;
@@ -95,11 +95,13 @@ public class EditCarInfFrame extends JDialog {
     private String[] carSeat = {"4", "5", "6", "7"};
     private String[] basicDateName = {
             "车牌号：", "车型：", "出厂编号：", "底盘编号：", "购买价格：", "上牌费：", "车主姓名：", "起始公里数："
-            , "养路费购买时间：", "年审时间：", "保险购买时间：", "车船税购买时间：", "路桥票购买时间：", "运营证办理时间：", "运营费购买时间：", "二保里程："
+            , "养路费购买时间：", "年审时间：", "保险购买时间：", "车船税购买时间：", "路桥票购买时间：", "运营证办理时间：", "运营证购买时间：", "二保里程："
             , "购买时间：", "颜色：", "发动机号：", "座位数：", "购置税：", "汽车装饰：", "联系电话：", "当前公里数："
             , "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "截止时间：", "下次二保："};
+    private Date today;
+    private Date nextyearToday;
 
-    public EditCarInfFrame(int i) {
+    public EditCarInfPage(int i) {
         idIdentify = i;
         setModal(true);
         iniFrame();
@@ -120,7 +122,7 @@ public class EditCarInfFrame extends JDialog {
                     StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
                     String warning = new String();
                     if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(EditCarInfPage.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
                     stringBuffer.append(0);
@@ -132,13 +134,13 @@ public class EditCarInfFrame extends JDialog {
                     } else {
                         warning = "停用失败";
                     }
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, warning);
+                    JOptionPane.showMessageDialog(EditCarInfPage.this, warning);
                     return;
                 } else {
                     StringBuffer stringBuffer = new StringBuffer("UPDATE tb_car SET isBlockUp = ");
                     String warning = new String();
                     if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
-                        JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(EditCarInfPage.this, "没有该车牌！", "错误！", JOptionPane.WARNING_MESSAGE);
                         return;
                     }
                     stringBuffer.append(1);
@@ -150,7 +152,7 @@ public class EditCarInfFrame extends JDialog {
                     } else {
                         warning = "恢复启用失败";
                     }
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, warning);
+                    JOptionPane.showMessageDialog(EditCarInfPage.this, warning);
                     return;
                 }
             }
@@ -165,23 +167,23 @@ public class EditCarInfFrame extends JDialog {
         warningBody.setBounds(585, 120, 84, 30);
         mianBody.add(warningBody);
 
-        jButtonPrint = new JButton("打印档案");
-        jButtonPrint.setBounds(585, 210, 84, 40);
-        jButtonPrint.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-//                Properties p = new Properties();
-//                PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(EditCarInfFrame.this, "客户登记表编辑", p);
-//                Graphics pg = jp.getGraphics();//Graphics打印图形的图形环境
-//                if (pg != null) {
-//                    try {
-//                        EditCarInfFrame.this.printAll(pg); //打印该窗体及其所有的组件
-//                    } finally {
-//                        pg.dispose(); //注销图形环境
-//                    }
-//                }
-//                jp.end(); //结束打印作业
-            }
-        });
+//        jButtonPrint = new JButton("打印档案");
+//        jButtonPrint.setBounds(585, 210, 84, 40);
+//        jButtonPrint.addActionListener(new ActionListener() {
+//            public void actionPerformed(ActionEvent e) {
+////                Properties p = new Properties();
+////                PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(EditCarInfPage.this, "客户登记表编辑", p);
+////                Graphics pg = jp.getGraphics();//Graphics打印图形的图形环境
+////                if (pg != null) {
+////                    try {
+////                        EditCarInfPage.this.printAll(pg); //打印该窗体及其所有的组件
+////                    } finally {
+////                        pg.dispose(); //注销图形环境
+////                    }
+////                }
+////                jp.end(); //结束打印作业
+//            }
+//        });
 
         jButtonAdd = new JButton("增加(A)");
         jButtonAdd.setBounds(585, 250, 84, 40);
@@ -192,11 +194,11 @@ public class EditCarInfFrame extends JDialog {
                     case 0:
                         if (isInfRight()) {
                             if (commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id")) {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "有了还添，心里有没有比数！", "错误！", JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "有了还添，心里有没有比数！", "错误！", JOptionPane.WARNING_MESSAGE);
                                 return;
                             }
                             if (commonDAO.add2(getPanelINf(), "tb_car") != 0) {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "添加成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "添加成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                             }
                         }
                         break;
@@ -221,9 +223,9 @@ public class EditCarInfFrame extends JDialog {
                             e1.printStackTrace();
                         } finally {
                             if (res > 0) {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "成功！");
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "成功！");
                             } else {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "失败！");
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "失败！");
                             }
                         }
 
@@ -239,11 +241,11 @@ public class EditCarInfFrame extends JDialog {
                     case 0:
                         if (isInfRight()) {
                             if (!(commonDAO.searchClo(jTextFieldCarNo.getText(), "tb_car", "Car_Id"))) {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "没有数据还更新，心里有没有点比数！", "错误！", JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "没有数据还更新，心里有没有点比数！", "错误！", JOptionPane.WARNING_MESSAGE);
                                 return;
                             }
                             if (commonDAO.update2(getPanelINf(), "tb_car") != 0) {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "更新成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "更新成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                             }
                         }
                         break;
@@ -268,9 +270,9 @@ public class EditCarInfFrame extends JDialog {
                             e1.printStackTrace();
                         } finally {
                             if (res > 0) {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "成功！");
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "成功！");
                             } else {
-                                JOptionPane.showMessageDialog(EditCarInfFrame.this, "失败！");
+                                JOptionPane.showMessageDialog(EditCarInfPage.this, "失败！");
                             }
                         }
                 }
@@ -281,14 +283,14 @@ public class EditCarInfFrame extends JDialog {
         jButtonSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int res = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "将要导出数据库全部汽车信息，是否继续！", "警告！", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                int res = JOptionPane.showConfirmDialog(EditCarInfPage.this, "将要导出数据库全部汽车信息，是否继续！", "警告！", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
                 if (res == JOptionPane.OK_OPTION) {
                     switch (saveASExcel()) {
                         case 0:
-                            JOptionPane.showMessageDialog(EditCarInfFrame.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+                            JOptionPane.showMessageDialog(EditCarInfPage.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
                             break;
                         case 1:
-                            JOptionPane.showMessageDialog(EditCarInfFrame.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(EditCarInfPage.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
                             break;
                         default:
                             break;
@@ -330,14 +332,14 @@ public class EditCarInfFrame extends JDialog {
         iniTabbedPanel();
 
         jButtonChangeSkin = new JButton("换肤");
-        jButtonChangeSkin.setBounds(585, 170, 84, 40);
+        jButtonChangeSkin.setBounds(585, 210, 84, 40);
         jButtonChangeSkin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                chaneSkin = new ChaneSkin(skin);
-                int back = chaneSkin.showChangeSkin(EditCarInfFrame.this);
-                if (back == chaneSkin.APPROVE_OPTION) {
-                    skin = chaneSkin.returnSkinStyle();
+                changeSkin = new ChangeSkin(skin);
+                int back = changeSkin.showChangeSkin(EditCarInfPage.this);
+                if (back == changeSkin.APPROVE_OPTION) {
+                    skin = changeSkin.returnSkinStyle();
                     changeSkin();
                     revalidate();
                 }
@@ -346,7 +348,7 @@ public class EditCarInfFrame extends JDialog {
 
         mianBody.add(jButtonChangeSkin);
         mianBody.add(jCheckBox);
-        mianBody.add(jButtonPrint);
+        //mianBody.add(jButtonPrint);
         mianBody.add(jButtonAdd);
         mianBody.add(jButtonSave);
         mianBody.add(jButtonCancel);
@@ -408,7 +410,7 @@ public class EditCarInfFrame extends JDialog {
             }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    SwingUtilities.updateComponentTreeUI(EditCarInfFrame.this);
+                    SwingUtilities.updateComponentTreeUI(EditCarInfPage.this);
                 }
             });
         } catch (ClassNotFoundException e) {
@@ -421,7 +423,6 @@ public class EditCarInfFrame extends JDialog {
             e.printStackTrace();
         }
     }
-
 
     private void iniTabbedPanel() {
         jTabbedPane = new JTabbedPane();
@@ -477,23 +478,27 @@ public class EditCarInfFrame extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 JFileChooser chooserPic = new JFileChooser();
+                chooserPic.setApproveButtonText("确定");
+                chooserPic.setDialogTitle("选择文件");
                 FileNameExtensionFilter pic = new FileNameExtensionFilter(
                         "图片文件(*.jpg)", "jpg");
                 chooserPic.setFileFilter(pic);
-                chooserPic.showSaveDialog(EditCarInfFrame.this);
-                File file = chooserPic.getSelectedFile();
-                String fname = chooserPic.getName(file);   //从文件名输入框中获取文件名
-                if (fname.indexOf(".jpg") == -1) {
-                    JOptionPane.showMessageDialog(EditCarInfFrame.this, "文件格式不正确");
-                    return;
-                }
-                new CropImage(file).setVisible(true);
-                Icon icon;
-                try {
-                    icon = new ImageIcon(ImageIO.read(new File("C:\\temp2.jpg")));
-                    picLabel.setIcon(icon);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                int res = chooserPic.showOpenDialog(EditCarInfPage.this);
+                if (res == JFileChooser.APPROVE_OPTION) {
+                    File file = chooserPic.getSelectedFile();
+                    String fname = chooserPic.getName(file);//从文件名输入框中获取文件名
+                    if (fname.indexOf(".jpg") == -1) {
+                        JOptionPane.showMessageDialog(EditCarInfPage.this, "文件格式不正确");
+                        return;
+                    }
+                    new CropImage(file).setVisible(true);
+                    Icon icon;
+                    try {
+                        icon = new ImageIcon(ImageIO.read(new File("C:\\temp2.jpg")));
+                        picLabel.setIcon(icon);
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
                 }
             }
         });
@@ -512,11 +517,11 @@ public class EditCarInfFrame extends JDialog {
 
     private void iniBasicData() {
         Calendar calendar = Calendar.getInstance();
-        Date today = new Date(System.currentTimeMillis());
+        today = new Date(System.currentTimeMillis());
         calendar.setTime(today);
 //        calendar.add(Calendar.WEEK_OF_YEAR, -1);
         calendar.add(Calendar.YEAR, 1);
-        Date nextyearToday = (Date) calendar.getTime();
+        nextyearToday = (Date) calendar.getTime();
         for (int i = 0; i < basicDateName.length; i++) {
             basicData.add(setjLabel(basicDateName[i], i));
         }
@@ -531,7 +536,7 @@ public class EditCarInfFrame extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (!(regex.isCar(jTextFieldCarNo.getText()))) {
-                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！");
+                    //JOptionPane.showMessageDialog(EditCarInfPage.this, "车牌格式不正确！");
                     showWarning("车牌号", "格式不正确！");
                 }
             }
@@ -557,7 +562,7 @@ public class EditCarInfFrame extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (!(regex.isAllNum(jTextFieldPrice.getText()))) {
-                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "价格格式不正确！");
+                    //JOptionPane.showMessageDialog(EditCarInfPage.this, "价格格式不正确！");
                     showWarning("价格", "格式不正确！");
                 }
             }
@@ -574,7 +579,7 @@ public class EditCarInfFrame extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (!(regex.isAllNum(jTextFieldGetCarNoFee.getText()))) {
-                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "上牌费格式不正确！");
+                    //JOptionPane.showMessageDialog(EditCarInfPage.this, "上牌费格式不正确！");
                     showWarning("上牌费", "格式不正确！");
                 }
             }
@@ -594,7 +599,7 @@ public class EditCarInfFrame extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (!(regex.isAllNum(jTextFieldStartMils.getText()))) {
-                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "起始里程格式不正确！");
+                    //JOptionPane.showMessageDialog(EditCarInfPage.this, "起始里程格式不正确！");
                     showWarning("起始里程", "格式不正确！");
                 }
             }
@@ -751,7 +756,7 @@ public class EditCarInfFrame extends JDialog {
             @Override
             public void focusLost(FocusEvent e) {
                 if (!(regex.isAllNum(nextErBao.getText()))) {
-                    //JOptionPane.showMessageDialog(EditCarInfFrame.this, "下次二保格式不正确！");
+                    //JOptionPane.showMessageDialog(EditCarInfPage.this, "下次二保格式不正确！");
                     showWarning("下次二保", "格式不正确！");
                 }
             }
@@ -901,7 +906,7 @@ public class EditCarInfFrame extends JDialog {
         FileNameExtensionFilter filter = new FileNameExtensionFilter(
                 "Excel 工作簿(*.xlsx)", "xlsx");
         jfc.setFileFilter(filter);
-        int option = jfc.showSaveDialog(EditCarInfFrame.this);
+        int option = jfc.showSaveDialog(EditCarInfPage.this);
         if (option == JFileChooser.APPROVE_OPTION) {
             File file = jfc.getSelectedFile();
             String fname = jfc.getName(file);   //从文件名输入框中获取文件名
@@ -924,6 +929,7 @@ public class EditCarInfFrame extends JDialog {
     }
 
     private void iniFrame() {
+        this.setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
         this.setTitle("汽车档案编辑");
         this.setSize(680, 490);
         this.setResizable(false);
@@ -932,7 +938,7 @@ public class EditCarInfFrame extends JDialog {
         changeSkin();
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int exitChoose = JOptionPane.showConfirmDialog(EditCarInfFrame.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
+                int exitChoose = JOptionPane.showConfirmDialog(EditCarInfPage.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
                 if (exitChoose == JOptionPane.OK_OPTION) {
                     dispose();
                 } else {
@@ -992,52 +998,101 @@ public class EditCarInfFrame extends JDialog {
 
     private boolean isInfRight() {
         if (!(regex.isCar(jTextFieldCarNo.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "车牌格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "车牌格式不正确！");
             showWarning("车牌号", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(jTextFieldPrice.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "价格格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "价格格式不正确！");
             showWarning("价格", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(purchaseTax.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "购置税格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "购置税格式不正确！");
             showWarning("购置税", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(jTextFieldGetCarNoFee.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "上牌费格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "上牌费格式不正确！");
             showWarning("上牌费", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(decorationFee.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "装饰费格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "装饰费格式不正确！");
             showWarning("汽车装饰费", "格式不正确！");
             return false;
         }
         if (!(regex.isTel(telNo.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "手机号格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "手机号格式不正确！");
             showWarning("联系电话", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(jTextFieldStartMils.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "起始里程格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "起始里程格式不正确！");
             showWarning("起始里程", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(nowMils.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "当前公里数格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "当前公里数格式不正确！");
             showWarning("当前公里数", "格式不正确！");
             return false;
         }
+        if (((Date) YLFTime.getValue()).getTime() > today.getTime()) {
+            showWarning("养路费购买时间", "超过了今天！");
+            return false;
+        }
+        if (((Date) NSTime.getValue()).getTime() > today.getTime()) {
+            showWarning("年审时间", "超过了今天！");
+            return false;
+        }
+        if (((Date) BXTime.getValue()).getTime() > today.getTime()) {
+            showWarning("保险购买时间", "超过了今天！");
+            return false;
+        }
+        if (((Date) CCSTime.getValue()).getTime() > today.getTime()) {
+            showWarning("车船税购买时间", "超过了今天！");
+            return false;
+        }if (((Date) LQPTime.getValue()).getTime() > today.getTime()) {
+            showWarning("路桥票购买时间", "超过了今天！");
+            return false;
+        }if (((Date) YYZTime.getValue()).getTime() > today.getTime()) {
+            showWarning("运营证办理时间", "超过了今天！");
+            return false;
+        }if (((Date) GLFTime.getValue()).getTime() > today.getTime()) {
+            showWarning("运营证购买时间", "超过了今天！");
+            return false;
+        }
+        if (((Date) YLFTime.getValue()).getTime() > ((Date) YLFEndTime.getValue()).getTime()) {
+            showWarning("养路费截止时间", "超过购买时间！");
+            return false;
+        }
+        if (((Date) NSTime.getValue()).getTime() > ((Date) NSEndTime.getValue()).getTime()) {
+            showWarning("年审截止时间", "超过开始时间！");
+            return false;
+        }
+        if (((Date) BXTime.getValue()).getTime() > ((Date) BXEndTime.getValue()).getTime()) {
+            showWarning("保险截止时间", "超过购买时间！");
+            return false;
+        }
+        if (((Date) CCSTime.getValue()).getTime() > ((Date) CCSEndTime.getValue()).getTime()) {
+            showWarning("车船税截止时间", "超过购买时间！");
+            return false;
+        }if (((Date) LQPTime.getValue()).getTime() >((Date) LQPEndTime.getValue()).getTime()) {
+            showWarning("路桥票截止时间", "超过购买时间！");
+            return false;
+        }if (((Date) YYZTime.getValue()).getTime() > ((Date) YLFEndTime.getValue()).getTime()) {
+            showWarning("运营证截止时间", "超过办理时间！");
+            return false;
+        }if (((Date) GLFTime.getValue()).getTime() > ((Date) YLFEndTime.getValue()).getTime()) {
+            showWarning("运营证截止时间", "超过购买时间！");
+            return false;
+        }
         if (!(regex.isAllNum(erBaoMils.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "二保里程格式不正确！");
             showWarning("二保里程", "格式不正确！");
             return false;
         }
         if (!(regex.isAllNum(nextErBao.getText()))) {
-            //JOptionPane.showMessageDialog(EditCarInfFrame.this, "下次二保格式不正确！");
+            //JOptionPane.showMessageDialog(EditCarInfPage.this, "下次二保格式不正确！");
             showWarning("下次二保", "格式不正确！");
             return false;
         }

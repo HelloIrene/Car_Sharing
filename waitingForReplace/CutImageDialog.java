@@ -35,10 +35,10 @@ public class CutImageDialog extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					//CutImageDialog frame = new CutImageDialog(null,new File("image/timgcopy.jpg"));
-					CutImageDialog frame = new CutImageDialog(null,new File("image/Penguins.jpg"));
-					frame.setVisible(true);
-					Image image=frame.getImage();
+					//CutImageDialog ui = new CutImageDialog(null,new File("image/timgcopy.jpg"));
+					CutImageDialog ui = new CutImageDialog(null,new File("image/Penguins.jpg"));
+					ui.setVisible(true);
+					Image image=ui.getImage();
 					System.out.println(image);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +48,7 @@ public class CutImageDialog extends JDialog {
 	}*/
 
 	/**
-	 * Create the frame.
+	 * Create the ui.
 	 */
 	public BufferedImage  getImage(){
 		if(this.ciCutImage.hasPrevious()){

@@ -1,7 +1,7 @@
-package com.company.frame;
+package com.company.ui;
 
 import com.company.dao.CommonDAOImpl;
-import com.company.editCarInformation.EditCarInfFrame;
+import com.company.ui.editCarInformation.EditCarInfPage;
 import com.company.entity.LoginIdentity;
 
 import java.awt.*;
@@ -15,7 +15,7 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-public class MainJframe extends JFrame {
+public class MainPage extends JFrame {
     //todo 导入身份权限后的相应限制
     private static final long serialVersionUID = 4745675222291465223L;
     private JPanel contentPane;
@@ -23,14 +23,11 @@ public class MainJframe extends JFrame {
     private LoginIdentity users;
     private int idIdentify;
 
-    /**
-     * Create the frame.
-     */
-    public MainJframe(int inputidIdentify) {
+    public MainPage(int inputidIdentify) {
         setTitle("主页面");
+        setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
         idIdentify = inputidIdentify;
         try {
-            //UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -53,9 +50,26 @@ public class MainJframe extends JFrame {
         menuBar.add(mnNewMenu);
 
         JMenuItem mntmNewMenuItem = new JMenuItem("数据初始化");
+        mntmNewMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int res = JOptionPane.showConfirmDialog(MainPage.this, "是否要清空数据库！！", "警告！", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+                if (res == JOptionPane.OK_OPTION) {
+                    commonDAO.iniDB();
+                    JOptionPane.showMessageDialog(MainPage.this, "初始化成功！");
+                }
+            }
+        });
         mnNewMenu.add(mntmNewMenuItem);
 
         JMenuItem mntmNewMenuItem_1 = new JMenuItem("操作人员更改");
+        mntmNewMenuItem_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new Login().setVisible(true);
+                dispose();
+            }
+        });
         mnNewMenu.add(mntmNewMenuItem_1);
 
         JMenu mnNewMenu_1 = new JMenu("日常业务(R)");
@@ -65,7 +79,7 @@ public class MainJframe extends JFrame {
         mntmNewMenuItem_2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new EditCarInfFrame(idIdentify).setVisible(true);
+                new EditCarInfPage(idIdentify).setVisible(true);
             }
         });
         mnNewMenu_1.add(mntmNewMenuItem_2);
@@ -74,7 +88,7 @@ public class MainJframe extends JFrame {
         mntmNewMenuItem_3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new MyFrame(idIdentify).setVisible(true);
+                new EditCustomer(idIdentify).setVisible(true);
             }
         });
         mnNewMenu_1.add(mntmNewMenuItem_3);
@@ -113,7 +127,7 @@ public class MainJframe extends JFrame {
         mntmNewMenuItem_7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new CarServiceFrame().setVisible(true);
+                new CarService().setVisible(true);
             }
         });
         mnNewMenu_2.add(mntmNewMenuItem_7);
@@ -122,7 +136,7 @@ public class MainJframe extends JFrame {
         mntmNewMenuItem_8.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new WeiZhangFrame().setVisible(true);
+                new WeiZhang().setVisible(true);
             }
         });
         mnNewMenu_2.add(mntmNewMenuItem_8);
@@ -157,13 +171,13 @@ public class MainJframe extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 //TODO 需要升级成带超链接的网址链接 @2017年9月8日19:18:04
                 JOptionPane.showMessageDialog(
-                        MainJframe.this,
+                        MainPage.this,
                         "<html>" +
                                 "<p><font size=\"4\">Thanks<br></br>thumbnailator<br></br>https://github.com/coobird/thumbnailator" +
                                 "<br></br>Darcula Theme<br></br>https://github.com/bulenkov/Darcula" +
-                                "<br></br>Apache POI<br></br>http://poi.apache.org/</font>"+
+                                "<br></br>Apache POI<br></br>http://poi.apache.org/</font>" +
                                 "<br></br>&copy; 2017 Group 13 .All rights reserved.&emsp;&emsp;</p>" +
-                        "<html>");
+                                "<html>");
             }
         });
         mnNewMenu_4.add(mntmNewMenuItem_11);
@@ -183,7 +197,7 @@ public class MainJframe extends JFrame {
         btnNewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new MainJframe.ChangePassword().setVisible(true);
+                new MainPage.ChangePassword().setVisible(true);
             }
         });
         toolBar.add(btnNewButton);
@@ -195,7 +209,7 @@ public class MainJframe extends JFrame {
         btnNewButton_1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new EditCarInfFrame(idIdentify).setVisible(true);
+                new EditCarInfPage(idIdentify).setVisible(true);
             }
         });
         toolBar.add(btnNewButton_1);
@@ -207,7 +221,7 @@ public class MainJframe extends JFrame {
         btnNewButton_2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new MyFrame(idIdentify).setVisible(true);
+                new EditCustomer(idIdentify).setVisible(true);
             }
         });
         toolBar.add(btnNewButton_2);
@@ -252,11 +266,31 @@ public class MainJframe extends JFrame {
         btnNewButton_6.setIcon(
                 new ImageIcon("img/accounting.png"));
         btnNewButton_6.setBorder(border);
+        btnNewButton_6.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new DailyCount().setVisible(true);
+            }
+        });
         toolBar.add(btnNewButton_6);
 
         JButton btnNewButton_7 = new JButton("提醒功能");
         btnNewButton_7.setIcon(
                 new ImageIcon("img/remind.png"));
+        btnNewButton_7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //TODO 需要升级成带超链接的网址链接 @2017年9月8日19:18:04
+                JOptionPane.showMessageDialog(
+                        MainPage.this,
+                        "<html>" +
+                                "<p><font size=\"4\">Thanks<br></br>thumbnailator<br></br>https://github.com/coobird/thumbnailator" +
+                                "<br></br>Darcula Theme<br></br>https://github.com/bulenkov/Darcula" +
+                                "<br></br>Apache POI<br></br>http://poi.apache.org/</font>" +
+                                "<br></br>&copy; 2017 Group 13 .All rights reserved.&emsp;&emsp;</p>" +
+                                "<html>");
+            }
+        });
         btnNewButton_7.setBorder(border);
         toolBar.add(btnNewButton_7);
 

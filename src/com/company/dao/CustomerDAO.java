@@ -37,8 +37,8 @@ public class CustomerDAO {
 				ptmt.setString(13, tbcus.getHomeAddress());
 				ptmt.setString(14, tbcus.getGongSiName());
 				ptmt.setString(15, tbcus.getGongSiAddress());
-				ptmt.setDouble(16, tbcus.getYingShouFee());
-				ptmt.setDouble(17, tbcus.getShiShouFee());
+				ptmt.setBigDecimal(16, tbcus.getYingShouFee());
+				ptmt.setBigDecimal(17, tbcus.getShiShouFee());
 				ptmt.executeUpdate();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -69,8 +69,8 @@ public class CustomerDAO {
 				ptmt.setString(12, tbcus.getHomeAddress());
 				ptmt.setString(13, tbcus.getGongSiName());
 				ptmt.setString(14, tbcus.getGongSiAddress());
-				ptmt.setDouble(15, tbcus.getYingShouFee());
-				ptmt.setDouble(16, tbcus.getShiShouFee());
+				ptmt.setBigDecimal(15, tbcus.getYingShouFee());
+				ptmt.setBigDecimal(16, tbcus.getShiShouFee());
 				ptmt.setString(17, tbcus.getcId());
 				ptmt.executeUpdate();
 			} catch (SQLException e) {

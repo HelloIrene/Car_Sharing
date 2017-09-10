@@ -1,4 +1,4 @@
-package com.company.editCarInformation;
+package com.company.ui.editCarInformation;
 
 import java.awt.Dimension;
 import java.awt.Graphics;

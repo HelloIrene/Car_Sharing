@@ -1,6 +1,6 @@
 package com.company.test;
 
-import com.company.editCarInformation.EditCarInfFrame;
+import com.company.ui.editCarInformation.EditCarInfPage;
 
 import java.awt.*;
 
@@ -9,7 +9,7 @@ public class FrameTest {
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     try {
-                        EditCarInfFrame frame = new EditCarInfFrame(1);
+                        EditCarInfPage frame = new EditCarInfPage(1);
                         frame.setVisible(true);
                     } catch (Exception e) {
                         e.printStackTrace();

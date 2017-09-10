@@ -73,6 +73,46 @@ public class CommonDAOImpl implements CommonDAO {
         return itemList;
     }
 
+    public <T> List<T> executeQueryTwo(Class<?> clazz, String query, List<Object> params) {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<T> itemList = new ArrayList<T>();
+        try {
+            conn = DBTool.getInstance().getConnection();
+            // 设置隔离级别
+            conn.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+            ps = conn.prepareStatement(query);
+            if (params != null && params.size() > 0) {
+                for (int i = 0; i < params.size(); i++) {
+                    ps.setObject(i + 1, params.get(i));
+                }
+            }
+            rs = ps.executeQuery();
+            Field[] fields = clazz.getDeclaredFields();
+            // System.out.println(ps);
+            while (rs.next()) {
+                @SuppressWarnings("unchecked")
+                T entity = (T) clazz.newInstance(); // 利用反射实例化一个对象
+                for (Field field : fields) {
+                    // VERY IMPORTANT!!!
+                    field.setAccessible(true);
+                    Object rsVal = rs.getObject(field.getName());
+
+                    // ##############ORACLE##############
+
+                    // ##############ORACLE##############
+                    field.set(entity, rsVal);
+                }
+                itemList.add(entity);
+            }
+        } catch (SQLException | InstantiationException | IllegalAccessException | SecurityException e) {
+            e.printStackTrace();
+        } finally {
+            DBTool.closeAll(rs, ps, conn);
+        }
+        return itemList;
+    }
+
     public int executeUpdate(String query, List<Object> params) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -326,7 +366,66 @@ public class CommonDAOImpl implements CommonDAO {
         }
         return row;
     }
+    public int add3(Object obj)
+    {
+        int row = 0;
+        try
+        {
+            // 获取到对象声明的所有属性字段
+            Field[] fields = obj.getClass().getDeclaredFields();
+            List<Object> params = new ArrayList<Object>();
+            StringBuffer sb = new StringBuffer();
+            sb.append("INSERT INTO ");
+            sb.append("tb_car_zl");
+            sb.append(" (");
+            for (int i = 0; i < fields.length; i++)
+            {
+                fields[i].setAccessible(true);
+                // 如果字段上标记了@Id注解，表示这是一个主键
+                boolean b = fields[i].isAnnotationPresent(Id.class);
+                if (!b)
+                {
+                    if (i < fields.length - 1)
+                    {
+                        sb.append(fields[i].getName() + ",");
+                    }
+                    else
+                    {
+                        sb.append(fields[i].getName() + ") VALUES (");
+                    }
+                    params.add(fields[i].get(obj));
+                }
+            }
+            for (int i = 0; i < params.size() - 1; i++)
+            {
+                sb.append("?,");
+            }
+            sb.append("?)");
+            System.out.println(sb.toString());
+            row = executeUpdate(sb.toString(), params);
+        }
+        catch (IllegalArgumentException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        return row;
+    }
 
+    public int iniDB(){
+        int row = 0;
+        try {
+            // 获取到对象声明的所有属性字段
+
+            StringBuffer sb = new StringBuffer();
+            sb.append("TRUNCATE  TABLE  tb_car;");
+            sb.append("TRUNCATE  TABLE  tb_customer");
+            System.out.println(sb.toString());
+            row = executeUpdate(sb.toString(), null);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
     @Override
     public int delete(Object obj) {
         int row = 0;

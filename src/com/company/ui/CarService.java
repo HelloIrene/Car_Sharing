@@ -1,11 +1,9 @@
-package com.company.frame;
+package com.company.ui;
 
 import javax.swing.*;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.PrintJob;
 import java.awt.Toolkit;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.DateFormatter;
@@ -13,7 +11,6 @@ import javax.swing.text.DefaultFormatterFactory;
 
 import com.company.dao.CommonDAOImpl;
 import com.company.entity.CarInformation;
-import com.company.entity.CarService;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -28,10 +25,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 import java.awt.event.ActionEvent;
 
-public class CarServiceFrame extends JDialog {
+public class CarService extends JDialog {
 	private JPanel panel;
 	private JTextField serviceId; // 维修单号
 	private JTextField serviceLocation; // 维修地点
@@ -44,11 +40,12 @@ public class CarServiceFrame extends JDialog {
 
 	Date today = new Date(System.currentTimeMillis());
 
-	CarService serDao = new CarService();
+	com.company.entity.CarService serDao = new com.company.entity.CarService();
 	CommonDAOImpl comDao = new CommonDAOImpl();
 
-	public CarServiceFrame() {
+	public CarService() {
 		setModal(true);
+		setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
 		initFrame();
 		initBody();
 		getContentPane().add(panel);
@@ -69,11 +66,11 @@ public class CarServiceFrame extends JDialog {
 		//button.addActionListener(new ActionListener() {
 //			public void actionPerformed(ActionEvent e) {
 //				Properties p = new Properties();
-//				PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(CarServiceFrame.this, "客户登记表编辑", p);
+//				PrintJob jp = Toolkit.getDefaultToolkit().getPrintJob(CarService.this, "客户登记表编辑", p);
 //				Graphics pg = jp.getGraphics();// Graphics打印图形的图形环境
 //				if (pg != null) {
 //					try {
-//						CarServiceFrame.this.printAll(pg); // 打印该窗体及其所有的组件
+//						CarService.this.printAll(pg); // 打印该窗体及其所有的组件
 //					} finally {
 //						pg.dispose(); // 注销图形环境
 //					}
@@ -88,10 +85,10 @@ public class CarServiceFrame extends JDialog {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comDao.searchClo(serviceId.getText(), "tb_service", "Service_Id")) {
-					JOptionPane.showMessageDialog(CarServiceFrame.this, "已有此维修单号，不能重复添加！");
+					JOptionPane.showMessageDialog(CarService.this, "已有此维修单号，不能重复添加！");
 				}else{
 				new CommonDAOImpl().add2(getInfo(), "tb_service");
-				JOptionPane.showMessageDialog(CarServiceFrame.this, "添加成功！");
+				JOptionPane.showMessageDialog(CarService.this, "添加成功！");
 				}
 			}
 		});
@@ -105,10 +102,10 @@ public class CarServiceFrame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if ((comDao.searchClo(serviceId.getText(), "tb_service", "Service_Id")) == false) {
-					JOptionPane.showMessageDialog(CarServiceFrame.this, "没有此订单，无法更新！");
+					JOptionPane.showMessageDialog(CarService.this, "没有此订单，无法更新！");
 				}else{
 				new CommonDAOImpl().update2(getInfo(), "tb_service");
-				JOptionPane.showMessageDialog(CarServiceFrame.this, "更新成功！");
+				JOptionPane.showMessageDialog(CarService.this, "更新成功！");
 				}
 			}
 		});
@@ -149,7 +146,7 @@ public class CarServiceFrame extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				CarServiceFrame.this.dispose();
+				CarService.this.dispose();
 			}
 		});
 		returnButton.setFont(new Font("宋体", Font.PLAIN, 20));
@@ -243,8 +240,8 @@ public class CarServiceFrame extends JDialog {
 		}
 	}
 
-	private CarService getInfo() {
-		CarService tbser = new CarService();
+	private com.company.entity.CarService getInfo() {
+		com.company.entity.CarService tbser = new com.company.entity.CarService();
 		tbser.setService_Id(serviceId.getText());
 		tbser.setCar_Id((String) licenseNumberComboBox.getSelectedItem());
 		tbser.setService_Location(serviceLocation.getText());
@@ -270,7 +267,7 @@ public class CarServiceFrame extends JDialog {
 
 	private void saveASExcelWaringInf() {
 		StringBuffer temp = new StringBuffer("将要导出数据库的全部信息，是否继续！！");
-		int res = JOptionPane.showConfirmDialog(CarServiceFrame.this, temp.toString(), "警告！", JOptionPane.YES_NO_OPTION,
+		int res = JOptionPane.showConfirmDialog(CarService.this, temp.toString(), "警告！", JOptionPane.YES_NO_OPTION,
 				JOptionPane.WARNING_MESSAGE);
 		if (res == JOptionPane.OK_OPTION) {			
 				outputInf(saveInfo());		
@@ -281,10 +278,10 @@ public class CarServiceFrame extends JDialog {
 	private void outputInf(int i) {
 		switch (i) {
 		case 0:
-			JOptionPane.showMessageDialog(CarServiceFrame.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(CarService.this, "导出成功！", "成功！", JOptionPane.WARNING_MESSAGE);
 			break;
 		case 1:
-			JOptionPane.showMessageDialog(CarServiceFrame.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(CarService.this, "导出失败！", "错误！", JOptionPane.ERROR_MESSAGE);
 			break;
 		default:
 			break;
@@ -322,11 +319,11 @@ public class CarServiceFrame extends JDialog {
 		// 存盘excel文件
 		// 第五步，写入实体数据 实际应用中这些数据从数据库得到，
 		// java.awt和java.util下都有list要声明正确
-		List<CarService> list = new CommonDAOImpl().executeQuery(CarService.class,"select * from tb_service",null);
+		List<com.company.entity.CarService> list = new CommonDAOImpl().executeQuery(com.company.entity.CarService.class,"select * from tb_service",null);
 		System.out.println(list);
 		for (int i = 0; i < list.size(); i++) {
 			row = sheet.createRow((int) i + 1);
-			CarService serInf = list.get(i);
+			com.company.entity.CarService serInf = list.get(i);
 			// 创建单元格，并设置值
 			row.createCell(0).setCellValue(serInf.getService_Id());
 			row.createCell(1).setCellValue(serInf.getCar_Id());
@@ -342,7 +339,7 @@ public class CarServiceFrame extends JDialog {
 		JFileChooser jfc = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel文件(*.xls)", "xls");
 		jfc.setFileFilter(filter);
-		int option = jfc.showSaveDialog(CarServiceFrame.this);
+		int option = jfc.showSaveDialog(CarService.this);
 		if (option == JFileChooser.APPROVE_OPTION) {
 			File file = jfc.getSelectedFile();
 			String fname = jfc.getName(file); // 从文件名输入框中获取文件名

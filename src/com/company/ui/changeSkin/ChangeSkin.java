@@ -1,6 +1,4 @@
-package com.company.changSkin;
-
-import com.bulenkov.darcula.ui.DarculaButtonPainter;
+package com.company.ui.changeSkin;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,9 +6,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
-public class ChaneSkin extends JDialog  {
+public class ChangeSkin extends JDialog  {
     public static final int CANCEL_OPTION = 0;
     /**
      * 选择确定按钮的返回值
@@ -28,7 +25,7 @@ public class ChaneSkin extends JDialog  {
         return this.skin;
     }
 
-    public ChaneSkin(boolean skinStyle) {
+    public ChangeSkin(boolean skinStyle) {
         this.skin=skinStyle;
         iniFrame();
         setMainJPanel();
@@ -110,7 +107,7 @@ public class ChaneSkin extends JDialog  {
             }
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    SwingUtilities.updateComponentTreeUI(ChaneSkin.this);
+                    SwingUtilities.updateComponentTreeUI(ChangeSkin.this);
                 }
             });
         } catch (ClassNotFoundException e) {

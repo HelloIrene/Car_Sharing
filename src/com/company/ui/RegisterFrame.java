@@ -1,8 +1,6 @@
-package com.company.frame;
+package com.company.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.EventQueue;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -48,11 +46,12 @@ public class RegisterFrame extends JDialog {
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     /**
-     * Create the frame.
+     * Create the ui.
      */
     public RegisterFrame() {
         setModal(true);
         setResizable(false);
+        setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
         setTitle("\u6C7D\u8F66\u79DF\u8D41\u767B\u8BB0\u8868\u7F16\u8F91");
         setSize(680, 490);
         setLocationRelativeTo(null);

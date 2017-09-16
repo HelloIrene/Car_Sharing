@@ -137,6 +137,12 @@ public class ChangeSkin extends JDialog  {
         setVisible(true);
         return returnValue;
     }
+    public final int showChangeSkin(JFrame jFrame){
+        setLocationRelativeTo(jFrame);
+        revalidate();
+        setVisible(true);
+        return returnValue;
+    }
 
     class MyPanel extends JPanel {
         Image image = null;

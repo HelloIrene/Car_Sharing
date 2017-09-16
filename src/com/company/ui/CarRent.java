@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -22,6 +23,7 @@ import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 public class CarRent extends JDialog {
 
@@ -115,74 +117,84 @@ public class CarRent extends JDialog {
 				if(carList.isEmpty()){
 					JOptionPane.showMessageDialog(CarRent.this, "数据为空！");
 				}else{
-					int i=0;
-					int n=0;
-					HSSFCell cell;
-					// 第一步，创建一个webbook，对应一个Excel文件
-					HSSFWorkbook wb = new HSSFWorkbook();
-					// 第二步，在webbook中添加一个sheet,对应Excel文件中的sheet
-					HSSFSheet sheet = wb.createSheet("表一");
-					// 第三步，在sheet中添加表头第0行,注意老版本poi对Excel的行数列数有限制short
-					HSSFRow row = sheet.createRow((int) 0);
-//			        // 创建单元格，并设置值表头 设置表头居中
-//			        HSSFCellStyle style = wb.createCellStyle();
-//			        style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
-					CarInformation car=new CarInformation();
-					Field[] fields = CarInformation.class.getDeclaredFields();
-					for (Field field : fields)
-					{
-						field.setAccessible(true);
-						String rsVal = field.getName();
-						cell = row.createCell(i);
-						cell.setCellValue(rsVal);
-						i++;
-					}
-					// 第四步，创建单元格，并设置值
-					Iterator it = carList.iterator();
-					while(it.hasNext())
-					{
-						int m=0;
-						row = sheet.createRow(n + 1);
-						CarInformation carInf = (CarInformation)it.next();
-						for (Field field1 : carInf.getClass().getDeclaredFields())
-						{
-							field1.setAccessible(true);
-							try {
-								row.createCell(m).setCellValue(field1.get(carInf)+"");
-							} catch (IllegalArgumentException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							} catch (IllegalAccessException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							m++;
-						}
-						n++;
-					}
-					JFileChooser jfc = new JFileChooser();
-					FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel文件(*.xls)", "xls");
-					jfc.setFileFilter(filter);
-					int option = jfc.showSaveDialog(CarRent.this);
-					if (option == JFileChooser.APPROVE_OPTION) {
-						File file = jfc.getSelectedFile();
-						String fname = jfc.getName(file);   //从文件名输入框中获取文件名
-						//假如用户填写的文件名不带我们制定的后缀名，那么我们给它添上后缀
-						if (fname.indexOf(".xls") == -1) {
-							file = new File(jfc.getCurrentDirectory(), fname + ".xls");
-						}
-						try {
-							FileOutputStream fout = new FileOutputStream(file);
-							wb.write(fout);
-							fout.close();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
+				     HSSFCell cell;
+					 // 第一步，创建一个webbook，对应一个Excel文件
+			         HSSFWorkbook wb = new HSSFWorkbook();
+			         JFileChooser jfc = new JFileChooser();
+			         FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel文件(*.xls)", "xls");
+			         jfc.setFileFilter(filter);
+			         int option = jfc.showSaveDialog(CarRent.this);
+			         if (option == JFileChooser.APPROVE_OPTION) {
+			             File file = jfc.getSelectedFile();
+			             String fname = jfc.getName(file);   //从文件名输入框中获取文件名
+			             //假如用户填写的文件名不带我们制定的后缀名，那么我们给它添上后缀
+			             if (fname.indexOf(".xls") == -1) {
+			                 file = new File(jfc.getCurrentDirectory(), fname + ".xls");
+			             }
+			             try {
+							 if(file.exists()){
+								 FileInputStream fs = new FileInputStream(file);
+								 POIFSFileSystem ps=new POIFSFileSystem(fs);  //使用POI提供的方法得到excel的信息  
+								 wb = new HSSFWorkbook(ps);
+								 HSSFSheet sheet1 = wb.createSheet("表"+wb.getNumberOfSheets());
+								 sheet1=outputToExcel(sheet1);
+								 fs.close();
+								 file.delete();
+//								 }
+							 }else{
+								 HSSFSheet sheet = wb.createSheet("表"+wb.getNumberOfSheets());
+								 sheet=outputToExcel(sheet);
+							 }
+			                 FileOutputStream fout = new FileOutputStream(file,true);
+			                 wb.write(fout);
+			                 fout.close();
+			             } catch (IOException e1) {
+			                 e1.printStackTrace();
+			             }
+			         }
 				}
 			}
+
+			private HSSFSheet outputToExcel(HSSFSheet sheet) {
+				int i=0;
+			    int n=0;
+				HSSFCell cell;
+				HSSFRow row = sheet.createRow((int) 0);
+				CarInformation car=new CarInformation();
+				Field[] fields = CarInformation.class.getDeclaredFields();
+				for (Field field : fields)
+				{
+					field.setAccessible(true);
+					String rsVal = field.getName();
+					cell = row.createCell(i);
+					cell.setCellValue(rsVal);
+					i++;
+				}
+				// 第四步，创建单元格，并设置值
+				Iterator it = carList.iterator();
+				 while(it.hasNext())
+				 {
+					int m=0;
+				    row = sheet.createRow(n + 1);
+				    CarInformation carInf = (CarInformation)it.next();
+				    for (Field field1 : carInf.getClass().getDeclaredFields())
+					{
+				    	field1.setAccessible(true);
+				    	try {
+				    		row.createCell(m).setCellValue(field1.get(carInf)+"");
+						} catch (IllegalArgumentException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IllegalAccessException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+				    	m++;
+					}
+				    n++;
+				 }
+				 return sheet;
+			}
 		});
-
-
 	}
 }

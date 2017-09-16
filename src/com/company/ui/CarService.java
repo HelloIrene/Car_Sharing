@@ -225,19 +225,19 @@ public class CarService extends JDialog {
 		setTitle("汽车维修编辑");
 		this.setResizable(false);
 		this.setLocationRelativeTo(null);
-		try {
-			// UIManager.setLookAndFeel("com.whitenkov.darcula.DarculaLaf");
-			// DarculaLaf主题最后统一换
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			// UIManager.setLookAndFeel("com.whitenkov.darcula.DarculaLaf");
+//			// DarculaLaf主题最后统一换
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (InstantiationException e) {
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) {
+//			e.printStackTrace();
+//		} catch (UnsupportedLookAndFeelException e) {
+//			e.printStackTrace();
+//		}
 	}
 
 	private com.company.entity.CarService getInfo() {

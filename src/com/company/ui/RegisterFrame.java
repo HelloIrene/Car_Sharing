@@ -10,12 +10,13 @@ import java.awt.event.WindowEvent;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import com.company.dao.CommonDAOImpl;
+import com.company.dao.CommonDAOImpl1;
 import com.company.entity.*;
 
 public class RegisterFrame extends JDialog {
@@ -43,7 +44,7 @@ public class RegisterFrame extends JDialog {
     private JComboBox<String> comboBox_4;
     private JTextArea textArea;
 
-    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat sdf = new SimpleDateFormat(" HH:mm:ss");
 
     /**
      * Create the ui.
@@ -74,6 +75,13 @@ public class RegisterFrame extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
+            	List<CustZL> List = new CommonDAOImpl1().executeQuery(CustZL.class, "SELECT * FROM tb_cust_zl", null);
+            	for (CustZL s : List) {
+                    if(s.getFache_Id().equals(textField_11.getText())||textField_11.getText().length()>4){
+                    	JOptionPane.showMessageDialog(RegisterFrame.this, "发车单号重复，请重设(长度不能超过4)");
+                    	return;
+                    }
+                }
                 int row=addCustZL();
                 if (row > 0) {
                     JOptionPane.showMessageDialog(RegisterFrame.this, "添加完成");
@@ -90,13 +98,13 @@ public class RegisterFrame extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub 存盘按钮
-                //new CommonDAOImpl().commitBatch();
+                new CommonDAOImpl1().commitBatch();
 //				if (row > 0) {
 //				//推荐更新成功后，刷新一下数据，也就是再查询一下
 //					searchCustZL(Integer.parseInt(textField1.getText()));
-//					JOptionPane.showMessageDialog(Register.this, "数据库添加成功");
+//					JOptionPane.showMessageDialog(RegisterFrame.this, "数据库添加成功");
 //				} else {
-//					JOptionPane.showMessageDialog(Register.this, "数据库添加失败！");
+//					JOptionPane.showMessageDialog(RegisterFrame.this, "数据库添加失败！");
 //				}
             }
         });
@@ -119,12 +127,12 @@ public class RegisterFrame extends JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub 返回按钮
-//                int row=new CommonDAOImpl().rollbackBatch();
-//                if (row > 0) {
-//                    JOptionPane.showMessageDialog(Register.this, "数据已存盘，返回失败");
-//                } else if(row==0){
-//                    JOptionPane.showMessageDialog(Register.this, "数据已回滚");
-//                }
+                int row=new CommonDAOImpl1().rollbackBatch();
+                if (row > 0) {
+                    JOptionPane.showMessageDialog(RegisterFrame.this, "数据已存盘，返回失败");
+                } else if(row==0){
+                    JOptionPane.showMessageDialog(RegisterFrame.this, "数据已回滚");
+                }
             }
         });
         panel2.add(btnNewButton_4);
@@ -355,19 +363,36 @@ public class RegisterFrame extends JDialog {
             }
         });
 
+//        this.addWindowListener(new WindowAdapter(){
+//            public void windowClosing(WindowEvent e){
+//                int exitChoose=JOptionPane.showConfirmDialog(RegisterFrame.this,"确定要退出吗?","退出提示",JOptionPane.OK_CANCEL_OPTION);
+//                if(exitChoose==JOptionPane.OK_OPTION)
+//                {
+////		        	Register.this.dispose(); //退出本界面
+//                    //System.exit(0);
+//                    dispose();
+//                }else{
+//                    return;
+//                }
+//            }
+//        });
+        
         this.addWindowListener(new WindowAdapter(){
-            public void windowClosing(WindowEvent e){
-                int exitChoose=JOptionPane.showConfirmDialog(RegisterFrame.this,"确定要退出吗?","退出提示",JOptionPane.OK_CANCEL_OPTION);
-                if(exitChoose==JOptionPane.OK_OPTION)
-                {
+			public void windowClosing(WindowEvent e){
+			    int exitChoose=JOptionPane.showConfirmDialog(RegisterFrame.this,"是否保存退出吗?","退出提示",JOptionPane.YES_NO_CANCEL_OPTION);  
+		        if(exitChoose==JOptionPane.YES_OPTION)  
+		        {  
 //		        	Register.this.dispose(); //退出本界面
-                    //System.exit(0);
-                    dispose();
-                }else{
-                    return;
-                }
-            }
-        });
+	        		new CommonDAOImpl1().commitBatch();
+	        		dispose();
+		        }else if(exitChoose==JOptionPane.NO_OPTION){
+		        	new CommonDAOImpl1().rollbackBatch();
+		        	dispose();
+		        }else{
+		        	return;
+		        } 
+		        }
+			  });
 
     }
 
@@ -397,26 +422,26 @@ public class RegisterFrame extends JDialog {
     }
 
     private void loadDept1() {
-        List<Customer> List = new CommonDAOImpl().executeQuery(Customer.class, "SELECT * FROM tb_customer", null);
+        List<Customer> List = new CommonDAOImpl1().executeQuery(Customer.class, "SELECT * FROM tb_customer", null);
         for (Customer c : List) {
             comboBox1.addItem(c.getcId());
         }
     }
     private void loadDept2() {//要根据其他表格实体修改,包括CommonDAOImp中的部分语句；
-        List<CarInformation> List = new CommonDAOImpl().executeQuery(CarInformation.class, "SELECT * FROM tb_car where isBlockup = 1", null);
+        List<CarInformation> List = new CommonDAOImpl1().executeQuery(CarInformation.class, "SELECT * FROM tb_car where isBlockup = 1", null);
         for (CarInformation s : List) {
             comboBox_1.addItem(s.getCar_Id());
         }
     }
 
     private void loadDept4() {
-        List<LoginIdentity> List = new CommonDAOImpl().executeQuery(LoginIdentity.class, "SELECT * FROM user_customer where identify=1", null);
+        List<LoginIdentity> List = new CommonDAOImpl1().executeQuery(LoginIdentity.class, "SELECT * FROM user_customer where identify=1", null);
         for (LoginIdentity d : List) {
             comboBox_3.addItem(d.getUser_id());
         }
     }
     private void loadDept5() {//要根据其他表格实体修改
-        List<Driver> List = new CommonDAOImpl().executeQuery(Driver.class, "SELECT * FROM tb_driver", null);
+        List<Driver> List = new CommonDAOImpl1().executeQuery(Driver.class, "SELECT * FROM tb_driver", null);
         for (Driver s : List) {
             comboBox_4.addItem(s.getDriverName());
         }
@@ -426,7 +451,7 @@ public class RegisterFrame extends JDialog {
         // Emp emp = new EmpDAO().findById(id);
         List<Object> params = new ArrayList<>();
         params.add(id);
-        List<CustZL> czlList = new CommonDAOImpl().executeQuery(CustZL.class, "SELECT * FROM tb_cust_zl WHERE Inner_Id=?", params);
+        List<CustZL> czlList = new CommonDAOImpl1().executeQuery(CustZL.class, "SELECT * FROM tb_cust_zl WHERE Inner_Id=?", params);
         if (czlList.size() > 0) {
             CustZL czl = czlList.get(0);
             // 绑定数据
@@ -474,13 +499,13 @@ public class RegisterFrame extends JDialog {
         czl.setJinbanren((String)comboBox_3.getSelectedItem());
         StringBuilder sb=new StringBuilder();
         sb.append((String)comboBox_2.getSelectedItem());
-        sb.append(" 00:00:00");
+        sb.append(sdf.format(new Date()));
         czl.setFache_Date(Timestamp.valueOf(sb.toString()));
         czl.setDriver((String)comboBox_4.getSelectedItem());
         czl.setDemo(textArea.getText());
 
-        CommonDAOImpl cdao=new CommonDAOImpl();
-        int row=cdao.add2(czl,"tb_cust_zl");
+        CommonDAOImpl1 cdao=new CommonDAOImpl1();
+        int row=cdao.add(czl);
         return row;
     }
 }

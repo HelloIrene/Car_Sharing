@@ -5,7 +5,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 
@@ -50,4 +52,23 @@ public class DataSourceUtil {
 		}
 		return conn;
 	}
+	public static void closeAll(ResultSet rs, Statement stmt, Connection conn) {
+		// 6、资源关闭
+		close(rs);
+		close(stmt);
+		close(conn);
+	}
+
+	private static void close(AutoCloseable clo) {
+		try {
+			if (clo != null) {
+				clo.close();
+			}
+			clo = null; //赋空以便GC
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }

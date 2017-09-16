@@ -1,6 +1,7 @@
 package com.company.ui;
 
 import com.company.dao.CommonDAOImpl;
+import com.company.ui.changeSkin.ChangeSkin;
 import com.company.ui.editCarInformation.EditCarInfPage;
 import com.company.entity.LoginIdentity;
 
@@ -16,30 +17,23 @@ import java.io.File;
 import javax.imageio.ImageIO;
 
 public class MainPage extends JFrame {
+    private boolean skin;
     //todo 导入身份权限后的相应限制
     private static final long serialVersionUID = 4745675222291465223L;
     private JPanel contentPane;
     private CommonDAOImpl commonDAO;
     private LoginIdentity users;
     private int idIdentify;
+    private ChangeSkin changeSkin;
 
     public MainPage(int inputidIdentify) {
         setTitle("主页面");
         setIconImage(Toolkit.getDefaultToolkit().getImage("img/logo.png"));
         idIdentify = inputidIdentify;
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+        skin = true;
+        changeSkin();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(700, 500);
+        setSize(750, 500);
         setResizable(false);
         setLocationRelativeTo(null);
 
@@ -181,6 +175,21 @@ public class MainPage extends JFrame {
             }
         });
         mnNewMenu_4.add(mntmNewMenuItem_11);
+
+        JMenuItem mntmNewMenuItem_12 = new JMenuItem("换肤");
+        mntmNewMenuItem_12.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                changeSkin = new ChangeSkin(skin);
+                int back = changeSkin.showChangeSkin(MainPage.this);
+                if (back == changeSkin.APPROVE_OPTION) {
+                    skin = changeSkin.returnSkinStyle();
+                    changeSkin();
+                    revalidate();
+                }
+            }
+        });
+        mnNewMenu_4.add(mntmNewMenuItem_12);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(new BorderLayout(0, 0));
@@ -316,7 +325,7 @@ public class MainPage extends JFrame {
         public void paint(Graphics g) {
             try {
                 image = ImageIO.read(new File("img/carPanl.png"));
-                g.drawImage(image, 10, 10, 670, 450, null);
+                g.drawImage(image, 10, 10, 715, 450, null);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -374,6 +383,29 @@ public class MainPage extends JFrame {
             });
             mainPanel.add(isConfirm);
             this.add(mainPanel);
+        }
+    }
+
+    private void changeSkin() {
+        try {
+            if (!skin) {
+                UIManager.setLookAndFeel("com.bulenkov.darcula.DarculaLaf");
+            } else {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    SwingUtilities.updateComponentTreeUI(MainPage.this);
+                }
+            });
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
         }
     }
 }

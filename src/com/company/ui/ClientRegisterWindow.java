@@ -257,17 +257,17 @@ public class ClientRegisterWindow extends JDialog implements ActionListener {
 		this.setSize(710, 480);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (InstantiationException e) {
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) {
+//			e.printStackTrace();
+//		} catch (UnsupportedLookAndFeelException e) {
+//			e.printStackTrace();
+//		}
         this.addWindowListener(new WindowAdapter(){
             public void windowClosing(WindowEvent e){
                 int exitChoose=JOptionPane.showConfirmDialog(ClientRegisterWindow.this,"确定要退出吗?","退出提示",JOptionPane.OK_CANCEL_OPTION);

@@ -947,7 +947,7 @@ public class EditCustomer extends JDialog {
         choose = new JComboBox();
         choose.setEditable(true);
         choose.setBounds(120, 10, 175, 20);
-        List<Customer> List = new CommonDAOImpl().executeQuery(Customer.class, "SELECT * FROM tb_customer ", null);
+        List<Customer> List = new CommonDAOImpl().executeQueryTwo(Customer.class, "SELECT * FROM tb_customer ", null);
         for (Customer s : List) {
             choose.addItem(s.getcId());
         }
@@ -1004,19 +1004,19 @@ public class EditCustomer extends JDialog {
         this.setSize(680, 490);// 设置文本框大小
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        try {
-            // UIManager.setLookAndFeel("com.whitenkov.darcula.DarculaLaf");
-            // DarculaLaf主题最后统一换
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (UnsupportedLookAndFeelException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            // UIManager.setLookAndFeel("com.whitenkov.darcula.DarculaLaf");
+//            // DarculaLaf主题最后统一换
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (UnsupportedLookAndFeelException e) {
+//            e.printStackTrace();
+//        }
         this.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 int exitChoose = JOptionPane.showConfirmDialog(EditCustomer.this, "确定要退出吗?", "退出提示", JOptionPane.OK_CANCEL_OPTION);
@@ -1295,7 +1295,7 @@ public class EditCustomer extends JDialog {
             showWarning("身份证", "格式不正确！");
             return false;
         }
-        if (!(regex.isPhone(clientTel.getText())) || !clientTel.getText().equals("")) {
+        if (!(regex.isPhone(clientTel.getText()))) {
             //JOptionPane.showMessageDialog(EditCustomer.this, "固话格式不正确！");
             showWarning("固话", "格式不正确！");
             return false;

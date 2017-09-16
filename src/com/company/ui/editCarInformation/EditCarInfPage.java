@@ -985,7 +985,7 @@ public class EditCarInfPage extends JDialog {
             YYZEndTime.setEnabled(false);
             GLFTime.setEnabled(false);
             GLFEndTime.setEnabled(false);
-            jButtonPrint.setEnabled(false);
+            //jButtonPrint.setEnabled(false);
             jButtonAdd.setEnabled(false);
             jButtonSave.setEnabled(false);
             jButtonCancel.setEnabled(false);
